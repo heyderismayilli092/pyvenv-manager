@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0 -->
+<interface>
+  <!-- interface-name MainWindow.ui -->
+  <requires lib="gdk" version="4.16"/>
+  <requires lib="gtk" version="4.12"/>
+  <object class="GtkWindow" id="main_window">
+    <property name="title">Python Environment Manager</property>
+    <property name="titlebar">
+      <object class="GtkHeaderBar">
+        <property name="cursor">
+          <object class="GdkCursor"/>
+        </property>
+        <property name="title-widget">
+          <object class="GtkLabel">
+            <property name="label">Python Environment Manager</property>
+          </object>
+        </property>
+        <property name="use-native-controls">True</property>
+      </object>
+    </property>
+    <accessibility>
+      <state name="invalid">true</state>
+    </accessibility>
+    <child>
+      <object class="GtkBox">
+        <property name="baseline-child">0</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkBox" id="buttons">
+            <property name="margin-bottom">8</property>
+            <property name="margin-end">-1</property>
+            <property name="margin-start">7</property>
+            <property name="margin-top">8</property>
+            <child>
+              <object class="GtkButton" id="about_button">
+                <property name="icon-name">help-about-symbolic</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="new_environment">
+                <property name="icon-name">list-add-symbolic</property>
+                <property name="margin-start">5</property>
+                <property name="width-request">0</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAboutDialog" id="about_window">
+    <property name="authors">Heydar Ismayilli &lt;heyderismayilli092@gmail.com&gt;</property>
+    <property name="program-name">Python Environment Manager</property>
+    <property name="version">0.0.1</property>
+    <property name="website">https://github.com/heyderismayilli092/pyvenv-manager</property>
+  </object>
+</interface>
