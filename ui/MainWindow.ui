@@ -3,7 +3,18 @@
 <interface>
   <!-- interface-name MainWindow.ui -->
   <requires lib="gdk" version="4.16"/>
+  <requires lib="gio" version="2.0"/>
   <requires lib="gtk" version="4.12"/>
+  <menu id="python_menu">
+    <item>
+      <attribute name="action">win.select-python3</attribute>
+      <attribute name="label">Python 3</attribute>
+    </item>
+    <item>
+      <attribute name="action">win.select-python2</attribute>
+      <attribute name="label">Python 2</attribute>
+    </item>
+  </menu>
   <object class="GtkWindow" id="main_window">
     <property name="title">Python Environment Manager</property>
     <property name="titlebar">
@@ -23,7 +34,7 @@
       <state name="invalid">true</state>
     </accessibility>
     <child>
-      <object class="GtkBox">
+      <object class="GtkBox" id="panelbox">
         <property name="baseline-child">0</property>
         <property name="orientation">vertical</property>
         <child>
@@ -48,7 +59,23 @@
         </child>
         <child>
           <object class="GtkBox">
+            <property name="can-focus">False</property>
+            <property name="can-target">False</property>
             <property name="orientation">vertical</property>
+            <property name="visible">False</property>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolled_window">
+                <property name="margin-start">7</property>
+                <property name="margin-top">7</property>
+                <child>
+                  <object class="GtkViewport">
+                    <child>
+                      <object class="GtkListBox" id="applications_listbox"/>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </child>
       </object>
@@ -56,8 +83,89 @@
   </object>
   <object class="GtkAboutDialog" id="about_window">
     <property name="authors">Heydar Ismayilli &lt;heyderismayilli092@gmail.com&gt;</property>
+    <property name="comments">Software that allows you to control Python environments from a graphical interface and to map Python programs to the relevant environments</property>
+    <property name="copyright">© OpenSF90</property>
     <property name="program-name">Python Environment Manager</property>
+    <property name="translator-credits">Heydar Ismayilli</property>
     <property name="version">0.0.1</property>
     <property name="website">https://github.com/heyderismayilli092/pyvenv-manager</property>
   </object>
+  <object class="GtkDialog" id="new_venv_dialog">
+    <property name="default-height">250</property>
+    <property name="default-width">550</property>
+    <property name="height-request">5</property>
+    <property name="hexpand">True</property>
+    <property name="hexpand-set">True</property>
+    <property name="title">Create New Environment</property>
+    <property name="titlebar">
+      <object class="GtkHeaderBar">
+        <property name="title-widget">
+          <object class="GtkLabel">
+            <property name="label">Create New Environment</property>
+          </object>
+        </property>
+      </object>
+    </property>
+    <property name="vexpand">True</property>
+    <property name="vexpand-set">True</property>
+    <property name="width-request">5</property>
+    <child internal-child="action_area">
+      <object class="GtkBox" id="venv_create_button">
+        <child>
+          <object class="GtkButton">
+            <property name="label">Cancel</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label">Create</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child internal-child="content_area">
+      <object class="GtkBox">
+        <property name="margin-top">5</property>
+        <child>
+          <object class="GtkLabel" id="enter_environmentname">
+            <property name="label">Enter Environment Name:</property>
+            <property name="margin-bottom">3</property>
+            <property name="margin-top">10</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkEntry" id="environment_name">
+            <property name="margin-bottom">5</property>
+            <property name="placeholder-text">Environment Name:</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuButton" id="python_select_2">
+            <property name="label">Select Python Version</property>
+            <property name="margin-top">3</property>
+            <property name="popover">
+              <object class="GtkPopoverMenu">
+                <property name="menu-model">python_menu</property>
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label">Requirements file choose</property>
+            <property name="margin-top">10</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator" id="requirements_chooser">
+            <property name="margin-bottom">10</property>
+            <property name="margin-start">-1</property>
+            <property name="margin-top">10</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkFileDialog"/>
+  <object class="GtkFileLauncher"/>
 </interface>
