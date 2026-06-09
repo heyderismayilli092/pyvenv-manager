@@ -38,42 +38,86 @@
         <property name="baseline-child">0</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkBox" id="buttons">
-            <property name="margin-bottom">8</property>
-            <property name="margin-end">-1</property>
-            <property name="margin-start">7</property>
-            <property name="margin-top">8</property>
+          <object class="GtkStack" id="mainwindow_stack">
             <child>
-              <object class="GtkButton" id="about_button">
-                <property name="icon-name">help-about-symbolic</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="new_environment">
-                <property name="icon-name">list-add-symbolic</property>
-                <property name="margin-start">5</property>
-                <property name="width-request">0</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="can-focus">False</property>
-            <property name="can-target">False</property>
-            <property name="orientation">vertical</property>
-            <property name="visible">False</property>
-            <child>
-              <object class="GtkScrolledWindow" id="scrolled_window">
-                <property name="margin-start">7</property>
-                <property name="margin-top">7</property>
-                <child>
-                  <object class="GtkViewport">
+              <object class="GtkStackPage" id="page0">
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkListBox" id="applications_listbox"/>
+                      <object class="GtkBox" id="buttons">
+                        <property name="margin-bottom">8</property>
+                        <property name="margin-end">-1</property>
+                        <property name="margin-start">7</property>
+                        <property name="margin-top">8</property>
+                        <child>
+                          <object class="GtkButton" id="about_button">
+                            <property name="icon-name">help-about-symbolic</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="new_environment">
+                            <property name="icon-name">list-add-symbolic</property>
+                            <property name="margin-start">5</property>
+                            <property name="width-request">0</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="can-focus">False</property>
+                        <property name="can-target">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkSeparator"/>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="label">Applications List</property>
+                            <property name="margin-top">5</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow" id="scrolled_window">
+                            <property name="margin-start">7</property>
+                            <property name="margin-top">7</property>
+                            <child>
+                              <object class="GtkViewport">
+                                <child>
+                                  <object class="GtkListBox" id="applications_listbox"/>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
                     </child>
                   </object>
-                </child>
+                </property>
+                <property name="name">page0</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage" id="page1">
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkSpinner">
+                        <property name="margin-bottom">10</property>
+                        <property name="margin-top">10</property>
+                        <property name="spinning">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Creating virtual environment...</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+                <property name="name">page1</property>
               </object>
             </child>
           </object>
@@ -85,6 +129,7 @@
     <property name="authors">Heydar Ismayilli &lt;heyderismayilli092@gmail.com&gt;</property>
     <property name="comments">Software that allows you to control Python environments from a graphical interface and to map Python programs to the relevant environments</property>
     <property name="copyright">© OpenSF90</property>
+    <property name="logo-icon-name">python3.9</property>
     <property name="program-name">Python Environment Manager</property>
     <property name="translator-credits">Heydar Ismayilli</property>
     <property name="version">0.0.1</property>
@@ -112,12 +157,12 @@
     <child internal-child="action_area">
       <object class="GtkBox" id="venv_create_button">
         <child>
-          <object class="GtkButton">
+          <object class="GtkButton" id="cancel_btn">
             <property name="label">Cancel</property>
           </object>
         </child>
         <child>
-          <object class="GtkButton">
+          <object class="GtkButton" id="create_venv">
             <property name="label">Create</property>
           </object>
         </child>
@@ -140,12 +185,55 @@
           </object>
         </child>
         <child>
-          <object class="GtkMenuButton" id="python_select_2">
+          <object class="GtkMenuButton" id="python_verselect">
             <property name="label">Select Python Version</property>
             <property name="margin-top">3</property>
             <property name="popover">
-              <object class="GtkPopoverMenu">
-                <property name="menu-model">python_menu</property>
+              <object class="GtkPopover" id="popover_menu">
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkButton" id="item_python2">
+                        <property name="child">
+                          <object class="GtkBox">
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">python</property>
+                                <property name="margin-end">3</property>
+                                <property name="margin-start">-1</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label">Python 2</property>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="item_python3">
+                        <property name="child">
+                          <object class="GtkBox">
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">python</property>
+                                <property name="margin-end">3</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label">Python 3</property>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
               </object>
             </property>
           </object>
@@ -161,6 +249,12 @@
             <property name="margin-bottom">10</property>
             <property name="margin-start">-1</property>
             <property name="margin-top">10</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="venv_error_msg">
+            <property name="ellipsize">middle</property>
+            <property name="label">Enter the environment name !</property>
           </object>
         </child>
       </object>

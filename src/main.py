@@ -9,6 +9,7 @@ from gi.repository import Gtk, Gio, GLib #Adw
 import locale
 import os
 from locale import gettext as _
+import venv_manager
 
 locale.bindtextdomain('pyvenv-manager', '/usr/share/locale')
 locale.textdomain('pyvenv-manager')
@@ -23,15 +24,27 @@ class pyvenv_manager(Gtk.Application):
         builder = Gtk.Builder()
         builder.add_from_file(GLADE_FILE)  # ui path
 
+        self.python_version = None  # it saves the selected Python version
+
+
         # -------Widget references-------
         # Main Window
         self.window = builder.get_object("main_window")
         self.new_environment_btn = builder.get_object("new_environment")  # create new environment button
         self.about_btn = builder.get_object("about_button")
+        self.mainwindow_stack = builder.get_object("mainwindow_stack")
 
         # New Environment Window
         self.new_venv_dialog = builder.get_object("new_venv_dialog")
-        self.cancel_btn = builder.get_object("cancel_btn")
+        self.venv_error_msg = builder.get_object("venv_error_msg")
+        self.python_verselect = builder.get_object("python_verselect")  # python version select menu
+        self.pythonver_popover_menu = builder.get_object("popover_menu")  # python version select popover
+        self.environment_name = builder.get_object("environment_name")  # set environment name
+        self.item_python2 = builder.get_object("item_python2")  # Python2 select button
+        self.item_python3 = builder.get_object("item_python3")  # Python3 select button
+        self.cancel_btn = builder.get_object("cancel_btn")  # cancel button
+        self.create_venv = builder.get_object("create_venv")  # create button
+
 
         # About Window
         self.about_window = builder.get_object("about_window")
@@ -40,6 +53,9 @@ class pyvenv_manager(Gtk.Application):
         self.new_environment_btn.connect("clicked", self.on_new_environment)
         self.about_btn.connect("clicked", self.on_about)
         self.cancel_btn.connect("clicked", self._on_newvenv_hide)
+        self.create_venv.connect("clicked", self._on_create_venv)
+        self.item_python2.connect("clicked", self.on_item_python2)
+        self.item_python3.connect("clicked", self.on_item_python3)
 
 
         self.window.set_application(app)
@@ -48,11 +64,13 @@ class pyvenv_manager(Gtk.Application):
 
 
 
-    # create new environment
+    # create new environment window
     def on_new_environment(self, button):
         self.new_venv_dialog.set_transient_for(self.window)
         self.new_venv_dialog.set_application(self)
         self.new_venv_dialog.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
+
+        self.venv_error_msg.hide()
         self.new_venv_dialog.present()
 
     # about window
@@ -61,9 +79,35 @@ class pyvenv_manager(Gtk.Application):
         self.about_window.set_application(self)
         self.about_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
         self.about_window.present()
+
     # hide window
     def _on_second_close_request(self, win):
         win.hide()
+        return True
+
+    # -Python version select buttons-
+    def on_item_python2(self, button):
+        self.python_version = "Python2"
+        self.pythonver_popover_menu.popdown()
+        print(self.python_version)
+        return True
+
+    def on_item_python3(self, button):
+        self.python_version = "Python3"
+        self.pythonver_popover_menu.popdown()
+        print(self.python_version)
+        return True
+    # ------------------------------
+
+    # create new environment
+    def _on_create_venv(self, button):
+        venvname = self.environment_name.get_text()
+        if len(venvname) == 0:
+            self.venv_error_msg.show()
+            return False
+        self.mainwindow_stack.set_visible_child_name("page1")
+        self.new_venv_dialog.hide()
+        print("Venv name: ", venvname)
         return True
 
     # close environment window
