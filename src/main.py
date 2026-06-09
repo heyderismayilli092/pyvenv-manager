@@ -25,6 +25,7 @@ class pyvenv_manager(Gtk.Application):
         builder.add_from_file(GLADE_FILE)  # ui path
 
         self.python_version = None  # it saves the selected Python version
+        self.requirements_file = None
 
 
         # -------Widget references-------
@@ -42,9 +43,12 @@ class pyvenv_manager(Gtk.Application):
         self.environment_name = builder.get_object("environment_name")  # set environment name
         self.item_python2 = builder.get_object("item_python2")  # Python2 select button
         self.item_python3 = builder.get_object("item_python3")  # Python3 select button
+        self.requirements_file = builder.get_object("requirements_file")  # requirements file select button
         self.cancel_btn = builder.get_object("cancel_btn")  # cancel button
         self.create_venv = builder.get_object("create_venv")  # create button
 
+        # File Chooser Dialog
+        self.filechooser_dialog = builder.get_object("filechooser_dialog")
 
         # About Window
         self.about_window = builder.get_object("about_window")
@@ -56,6 +60,7 @@ class pyvenv_manager(Gtk.Application):
         self.create_venv.connect("clicked", self._on_create_venv)
         self.item_python2.connect("clicked", self.on_item_python2)
         self.item_python3.connect("clicked", self.on_item_python3)
+        self.requirements_file.connect("clicked", self.on_requirements_file_select)
 
 
         self.window.set_application(app)
@@ -87,27 +92,61 @@ class pyvenv_manager(Gtk.Application):
 
     # -Python version select buttons-
     def on_item_python2(self, button):
-        self.python_version = "Python2"
+        self.python_version = "python2"
         self.pythonver_popover_menu.popdown()
         print(self.python_version)
         return True
 
     def on_item_python3(self, button):
-        self.python_version = "Python3"
+        self.python_version = "python3"
         self.pythonver_popover_menu.popdown()
         print(self.python_version)
         return True
     # ------------------------------
 
+    # select requirements file
+    def on_requirements_file_select(self, button):
+        dialog = Gtk.FileChooserNative(
+            title=_("Choose requirements file"),
+            transient_for=self.window,
+            action=Gtk.FileChooserAction.OPEN,
+            accept_label=_("Open"),
+            cancel_label=_("Cancel")
+        )
+        dialog.connect("response", self.on_file_response)
+        dialog.show()
+
+    def on_file_response(self, dialog, response):
+        if response == Gtk.ResponseType.ACCEPT:
+            file = dialog.get_file()
+            if file:
+                self.requirements_file = file.get_path()
+        dialog.destroy()
+
     # create new environment
     def _on_create_venv(self, button):
         venvname = self.environment_name.get_text()
+        # it checks if a environment name has been entered
         if len(venvname) == 0:
             self.venv_error_msg.show()
+            self.venv_error_msg.set_label(_("Enter the environment name !"))
             return False
+
+        # it is checked whether a Python version has been selected
+        if len(self.python_version) == 0:
+            self.venv_error_msg.show()
+            self.venv_error_msg.set_label(_("Select a Python version !"))
+            return False
+
         self.mainwindow_stack.set_visible_child_name("page1")
         self.new_venv_dialog.hide()
         print("Venv name: ", venvname)
+        print(self.python_version)
+        if self.requirements_file == None:
+            venv_manager.venv_create(venvname, self.python_version)  # create virtual environment
+        else:
+            venv_manager.venv_create(venvname, self.python_version, self.requirements_file)  # create virtual environment and install selected requirements
+        self.mainwindow_stack.set_visible_child_name("page0")
         return True
 
     # close environment window

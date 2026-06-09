@@ -16,6 +16,8 @@
     </item>
   </menu>
   <object class="GtkWindow" id="main_window">
+    <property name="default-height">400</property>
+    <property name="default-width">600</property>
     <property name="title">Python Environment Manager</property>
     <property name="titlebar">
       <object class="GtkHeaderBar">
@@ -239,8 +241,8 @@
           </object>
         </child>
         <child>
-          <object class="GtkButton">
-            <property name="label">Requirements file choose</property>
+          <object class="GtkButton" id="requirements_file">
+            <property name="label">Requirements file choose (optionial)</property>
             <property name="margin-top">10</property>
           </object>
         </child>
@@ -254,12 +256,9 @@
         <child>
           <object class="GtkLabel" id="venv_error_msg">
             <property name="ellipsize">middle</property>
-            <property name="label">Enter the environment name !</property>
           </object>
         </child>
       </object>
     </child>
   </object>
-  <object class="GtkFileDialog"/>
-  <object class="GtkFileLauncher"/>
 </interface>
