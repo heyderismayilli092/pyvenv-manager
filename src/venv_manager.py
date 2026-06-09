@@ -9,17 +9,50 @@ pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing 
 
 
 # a function that creates a new Python environment
-def venv_create(venv_name):
+def venv_create(venv_name, python_version):
     venv_path = pyvenv_path / venv_name  # environment full path
     if os.path.exists(venv_path):
         return False
 
-    print(f"'{venv_path}' creating...")
-    venv.create(
-        env_dir=venv_path,
-        with_pip=True
-    )
-    return True
+    # create environment for python2 version
+    if python_version == "python2":
+        # to create an environment with the older Python 2 version, you first need to download and install some requirements for the Python 2 version
+        # checking if pip is available for Python 2
+        checkpip = subprocess.check_output(["python2", "-m", "pip", "--version"], stderr=subprocess.STDOUT).decode("utf-8", errors="replace")
+        if not "pip" in checkpip:
+            print("Installing pip for Python 2...")
+            subprocess.run(["curl", "-sS", "https://bootstrap.pypa.io/pip/2.7/get-pip.py", "-o", "/tmp/get-pip.py"])
+            subprocess.run(["pkexec", "python2", "/tmp/get-pip.py"])
+            os.remove("/tmp/get-pip.py")
+
+        # the requirements for creating an environment with Python 2 are checked, and if none exist, they are installed
+        print("Install python2 virtualenv required")
+        required = ["pip", "setuptools", "wheel", "virtualenv"]
+        for package in required:
+            try:
+                subprocess.check_output(
+                    ["python2", "-c","import pkg_resources; pkg_resources.get_distribution('%s')" % package],
+                    stderr=subprocess.STDOUT
+                )
+            except subprocess.CalledProcessError:
+                subprocess.run(["python2", "-m", "pip", "install", "--upgrade", package])
+
+        try:
+           print(f"'{venv_path}' creating...")
+           output = subprocess.run(["python2", "-m", "virtualenv", venv_path])  # install package
+        except subprocess.CalledProcessError as e:
+           return e
+        return True
+
+    # create environment for python3 version
+    elif python_version == "python3":
+        print(f"'{venv_path}' creating...")
+        venv.create(
+            env_dir=venv_path,
+            with_pip=True
+        )
+
+        return True
 
 
 # lists the packages installed on the selected venv environment
