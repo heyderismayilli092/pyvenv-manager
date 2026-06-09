@@ -81,3 +81,15 @@ def pack_info(venv_name, package):
     return json.dumps(data, ensure_ascii=False, indent=2)
 
 
+# lists the packages installed on the selected venv environment
+def pack_install(venv_name, package):
+    venv_path = pyvenv_path / venv_name  # environment full path
+    if not os.path.exists(venv_path):
+        return False
+    try:
+      output = subprocess.run([str(venv_path / "bin" / "pip"), "install", package])  # install package
+    except subprocess.CalledProcessError as e:
+        return e
+
+    return True
+
