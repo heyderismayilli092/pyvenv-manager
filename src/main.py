@@ -10,6 +10,7 @@ import locale
 import os
 from locale import gettext as _
 import venv_manager
+from pathlib import Path
 
 locale.bindtextdomain('pyvenv-manager', '/usr/share/locale')
 locale.textdomain('pyvenv-manager')
@@ -25,7 +26,10 @@ class pyvenv_manager(Gtk.Application):
         builder.add_from_file(GLADE_FILE)  # ui path
 
         self.python_version = None  # it saves the selected Python version
-        self.requirements_file = None
+        self.requirements_file = None  # if a requirements file is selected, its path will be writed here
+
+        homefolder = Path.home()
+        self.pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing the created Python environments
 
 
         # -------Widget references-------
@@ -41,6 +45,7 @@ class pyvenv_manager(Gtk.Application):
         self.python_verselect = builder.get_object("python_verselect")  # python version select menu
         self.pythonver_popover_menu = builder.get_object("popover_menu")  # python version select popover
         self.environment_name = builder.get_object("environment_name")  # set environment name
+        self.venv_namests = builder.get_object("venv_namests")  # realtime check environment status label
         self.item_python2 = builder.get_object("item_python2")  # Python2 select button
         self.item_python3 = builder.get_object("item_python3")  # Python3 select button
         self.requirements_file = builder.get_object("requirements_file")  # requirements file select button
@@ -132,6 +137,11 @@ class pyvenv_manager(Gtk.Application):
             self.venv_error_msg.set_label(_("Enter the environment name !"))
             return False
 
+        if os.path.exists(self.pyvenv_path / venvname / "bin" / "activate") and os.path.exists(self.pyvenv_path / venvname / "bin" / "python"):
+            self.venv_error_msg.show()
+            self.venv_error_msg.set_label(_("This environment avaliable"))
+            return False
+
         # it is checked whether a Python version has been selected
         if len(self.python_version) == 0:
             self.venv_error_msg.show()
@@ -148,6 +158,7 @@ class pyvenv_manager(Gtk.Application):
             venv_manager.venv_create(venvname, self.python_version, self.requirements_file)  # create virtual environment and install selected requirements
         self.mainwindow_stack.set_visible_child_name("page0")
         return True
+
 
     # close environment window
     def _on_newvenv_hide(self, button):

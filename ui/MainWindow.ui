@@ -187,6 +187,9 @@
           </object>
         </child>
         <child>
+          <object class="GtkLabel" id="venv_namests"/>
+        </child>
+        <child>
           <object class="GtkMenuButton" id="python_verselect">
             <property name="label">Select Python Version</property>
             <property name="margin-top">3</property>
