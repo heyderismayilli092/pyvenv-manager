@@ -126,3 +126,13 @@ def pack_install(venv_name, package):
 
     return True
 
+
+# environments list
+def venv_lists():
+    lists = os.listdir(pyvenv_path)
+    environments = []
+    for vnv in lists:
+      if os.path.exists(pyvenv_path / vnv / "bin" / "activate") and os.path.exists(pyvenv_path / vnv / "bin" / "python"):
+          environments.append(vnv)
+    return environments
+
