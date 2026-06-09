@@ -44,7 +44,7 @@ def venv_create(venv_name, python_version, req_file=None):
            return e
 
         # if a list of dependencies is provided when the environment is created, then the list is read and the dependencies are installed into the environment
-        if req_file:
+        if req_file != None:
             requirements_file = open(req_file, "r")
             reqlist = requirements_file.read()
             for pack in reqlist.splitlines():
@@ -61,7 +61,7 @@ def venv_create(venv_name, python_version, req_file=None):
             with_pip=True
         )
         # if a list of dependencies is provided when the environment is created, then the list is read and the dependencies are installed into the environment
-        if req_file:
+        if req_file != None:
             requirements_file = open(req_file, "r")
             reqlist = requirements_file.read()
             for pack in reqlist.splitlines():
@@ -152,5 +152,3 @@ def venv_lists():
           environments.append(vnv)
     return environments
 
-
-print(venv_create("deneme_ortampy3_1", "python3"))

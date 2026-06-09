@@ -26,7 +26,7 @@ class pyvenv_manager(Gtk.Application):
         builder.add_from_file(GLADE_FILE)  # ui path
 
         self.python_version = None  # it saves the selected Python version
-        self.requirements_file = None  # if a requirements file is selected, its path will be writed here
+        self.reqrm_file = None  # if a requirements file is selected, its path will be writed here
 
         homefolder = Path.home()
         self.pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing the created Python environments
@@ -152,10 +152,10 @@ class pyvenv_manager(Gtk.Application):
         self.new_venv_dialog.hide()
         print("Venv name: ", venvname)
         print(self.python_version)
-        if self.requirements_file == None:
+        if self.reqrm_file == None:
             venv_manager.venv_create(venvname, self.python_version)  # create virtual environment
         else:
-            venv_manager.venv_create(venvname, self.python_version, self.requirements_file)  # create virtual environment and install selected requirements
+            venv_manager.venv_create(venvname, self.python_version, self.reqrm_file)  # create virtual environment and install selected requirements
         self.mainwindow_stack.set_visible_child_name("page0")
         return True
 
