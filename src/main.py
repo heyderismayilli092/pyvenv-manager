@@ -37,6 +37,7 @@ class pyvenv_manager(Gtk.Application):
         self.window = builder.get_object("main_window")
         self.new_environment_btn = builder.get_object("new_environment")  # create new environment button
         self.about_btn = builder.get_object("about_button")
+        self.environments_listbox = builder.get_object("environments_listbox")  # environments listbox
         self.mainwindow_stack = builder.get_object("mainwindow_stack")
 
         # New Environment Window
@@ -68,11 +69,51 @@ class pyvenv_manager(Gtk.Application):
         self.requirements_file.connect("clicked", self.on_requirements_file_select)
 
 
+        self.envlist = venv_manager.venv_lists()  # list environments
+        for envlst in self.envlist:
+            row = self.create_row_box(envlst)
+            self.environments_listbox.append(row)
+
         self.window.set_application(app)
         self.window.connect("close-request", self._on_destroy)
         self.window.present()
 
 
+    # the created environments are listed
+    def create_row_box(self, text, icon_name="folder-symbolic", icon_size=32, button_label="Open"):
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        icon = Gtk.Image.new_from_icon_name(icon_name)  # icon
+        try:
+            icon.set_pixel_size(icon_size)  # pixel size is being determined
+        except Exception:
+            pass  # if set_pixel_size is not available, this block is silently passed; the icon is resized according to the theme
+
+        label = Gtk.Label(label=text, xalign=0)
+        label.set_margin_start(4)
+        label.set_hexpand(True)
+
+        btn_box = Gtk.Box(spacing=6)
+        btn_icon = Gtk.Image.new_from_icon_name("document-open-symbolic")
+        try:
+            btn_icon.set_pixel_size(20)
+        except Exception:
+            pass
+
+        btn_label = Gtk.Label(label=button_label)
+        btn_box.append(btn_icon)
+        btn_box.append(btn_label)
+        button = Gtk.Button(child=btn_box)
+        #button.connect("clicked", on_button_clicked)
+
+        hbox.append(icon)
+        hbox.append(label)
+        hbox.append(button)
+
+        hbox.set_margin_top(6)
+        hbox.set_margin_bottom(6)
+        hbox.set_margin_start(6)
+        hbox.set_margin_end(6)
+        return hbox
 
     # create new environment window
     def on_new_environment(self, button):

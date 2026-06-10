@@ -76,7 +76,7 @@
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="label">Applications List</property>
+                            <property name="label">Environments List</property>
                             <property name="margin-top">5</property>
                           </object>
                         </child>
@@ -87,7 +87,7 @@
                             <child>
                               <object class="GtkViewport">
                                 <child>
-                                  <object class="GtkListBox" id="applications_listbox"/>
+                                  <object class="GtkListBox" id="environments_listbox"/>
                                 </child>
                               </object>
                             </child>
@@ -104,6 +104,7 @@
               <object class="GtkStackPage" id="page1">
                 <property name="child">
                   <object class="GtkBox">
+                    <property name="homogeneous">True</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkSpinner">
@@ -185,9 +186,6 @@
             <property name="margin-bottom">5</property>
             <property name="placeholder-text">Environment Name:</property>
           </object>
-        </child>
-        <child>
-          <object class="GtkLabel" id="venv_namests"/>
         </child>
         <child>
           <object class="GtkMenuButton" id="python_verselect">
