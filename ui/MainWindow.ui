@@ -87,7 +87,12 @@
                             <child>
                               <object class="GtkViewport">
                                 <child>
-                                  <object class="GtkListBox" id="environments_listbox"/>
+                                  <object class="GtkListBox" id="environments_listbox">
+                                    <property name="margin-bottom">10</property>
+                                    <property name="show-separators">True</property>
+                                    <property name="vexpand">True</property>
+                                    <property name="vexpand-set">True</property>
+                                  </object>
                                 </child>
                               </object>
                             </child>

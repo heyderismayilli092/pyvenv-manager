@@ -71,8 +71,10 @@ class pyvenv_manager(Gtk.Application):
 
         self.envlist = venv_manager.venv_lists()  # list environments
         for envlst in self.envlist:
-            row = self.create_row_box(envlst)
-            self.environments_listbox.append(row)
+            child = self.create_row_box(envlst)
+            print("child id:", id(child), "type:", type(child))
+            self.environments_listbox.append(child)
+
 
         self.window.set_application(app)
         self.window.connect("close-request", self._on_destroy)
