@@ -243,7 +243,30 @@ class pyvenv_manager(Gtk.Application):
     def on_envabout_clicked(self, button, pyvenv):
         self.environment_about_name.set_label(pyvenv)  # environment name write
         venvinfo = venv_manager.venv_about(pyvenv)  # retrieve environment about
-
+        # information about the environment is being written
+        # IMPORTANT NOTE: Environments built with Python 2 and Python 3 may display different information. Therefore, KeyError handlers have been added below. The information shown for Python 2 may not be shown for Python 3
+        self.venvinfo_cfg.set_markup(f"<b>pyvenv_cfg_exists:</b> {venvinfo['pyvenv_cfg_exists']}")
+        try:
+            self.venvinfo_implementation.set_markup(f"<b>Implementation:</b> {venvinfo['raw']['implementation']}")
+        except KeyError:
+            self.venvinfo_implementation.set_markup(f"<b>Implementation:</b> -- not found")
+        try:
+            self.venvinfo_versioninfo.set_markup(f"<b>Version Info:</b> {venvinfo['raw']['version_info']}")
+        except KeyError:
+            self.venvinfo_versioninfo.set_markup(f"<b>Version Info:</b> {venvinfo['raw']['version']}")
+        try:
+            self.venvinfo_virtualenv_version.set_markup(f"<b>Virutalenv Version Info:</b> {venvinfo['raw']['virtualenv']}")
+        except KeyError:
+            self.venvinfo_virtualenv_version.set_markup(f"<b>Executable:</b> {venvinfo['raw']['executable']}")
+        try:
+            self.venvinfo_baseprefix.set_markup(f"<b>Base prefix:</b> {venvinfo['raw']['base-prefix']}")
+        except KeyError:
+            pass
+        try:
+            self.venvinfo_baseexecprefix.set_markup(f"<b>Base exec prefix:</b> {venvinfo['raw']['base-exec-prefix']}")
+        except KeyError:
+            pass
+        # --------------------------------------
         self.mainwindow_stack.set_visible_child_name("page2")
         return True
 
