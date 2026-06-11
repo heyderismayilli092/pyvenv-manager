@@ -40,6 +40,7 @@ class pyvenv_manager(Gtk.Application):
         self.about_btn = builder.get_object("about_button")
         self.environments_listbox = builder.get_object("environments_listbox")  # environments listbox
         self.mainwindow_stack = builder.get_object("mainwindow_stack")
+        self.environment_about_listbox = builder.get_object("environment_about_listbox")  # listbox to list information about the environment
 
         # New Environment Window
         self.new_venv_dialog = builder.get_object("new_venv_dialog")
@@ -72,12 +73,14 @@ class pyvenv_manager(Gtk.Application):
 
         self.envlist = venv_manager.venv_lists()  # list environments
         for envlst in self.envlist:
-            child = self.create_row_box(envlst)
-            print("child id:", id(child), "type:", type(child))
-            self.environments_listbox.append(child)
+            row = Gtk.ListBoxRow()
+            row.set_child(self.create_row_box(envlst))
+            print("child id:", id(row), "type:", type(row))
+            row.set_activatable(True)
+            self.environments_listbox.append(row)
 
 
-        self.window.set_application(app)
+        self.window.set_application(self)
         self.window.connect("close-request", self._on_destroy)
         self.window.present()
 
@@ -85,28 +88,30 @@ class pyvenv_manager(Gtk.Application):
     # the created environments are listed
     def create_row_box(self, text, icon_name="python", icon_size=32):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        icon = Gtk.Image.new_from_icon_name(icon_name)  # icon
-        try:
-            icon.set_pixel_size(icon_size)  # pixel size is being determined
-        except Exception:
-            pass  # if set_pixel_size is not available, this block is silently passed; the icon is resized according to the theme
+        # ICON
+        icon = Gtk.Image.new_from_icon_name(icon_name)
+        icon.set_pixel_size(icon_size)
 
+        # LABEL
         label = Gtk.Label(label=text, xalign=0)
-        label.set_margin_start(4)
         label.set_hexpand(True)
+        label.set_halign(Gtk.Align.START)
 
-        btn_box = Gtk.Box(spacing=6)
-        btn_icon = Gtk.Image.new_from_icon_name("document-open-symbolic")
-        try:
-            btn_icon.set_pixel_size(20)
-        except Exception:
-            pass
+        # BUTTON
+        button = Gtk.Button(label=_("About"))
+        button.set_valign(Gtk.Align.CENTER)
+        #button.connect("clicked", on_button_clicked)
+
+        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        btn_icon = Gtk.Image.new_from_icon_name("help-about-symbolic")
+        btn_icon.set_pixel_size(20)
 
         btn_label = Gtk.Label(label=_("About"))
         btn_box.append(btn_icon)
         btn_box.append(btn_label)
-        button = Gtk.Button(child=btn_box)
-        #button.connect("clicked", on_button_clicked)
+
+        button.set_child(btn_box)
+        label.set_selectable(False)
 
         hbox.append(icon)
         hbox.append(label)
@@ -216,7 +221,6 @@ class pyvenv_manager(Gtk.Application):
             self.environments_listbox.append(child)
         self.mainwindow_stack.set_visible_child_name("page0")
         return True
-
 
     # close environment window
     def _on_newvenv_hide(self, button):

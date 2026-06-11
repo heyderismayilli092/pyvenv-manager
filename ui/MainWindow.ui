@@ -18,6 +18,7 @@
   <object class="GtkWindow" id="main_window">
     <property name="default-height">400</property>
     <property name="default-width">600</property>
+    <property name="gravity">center</property>
     <property name="title">Python Environment Manager</property>
     <property name="titlebar">
       <object class="GtkHeaderBar">
@@ -67,37 +68,26 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkBox">
-                        <property name="can-focus">False</property>
-                        <property name="can-target">False</property>
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkSeparator"/>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="label">Environments List</property>
-                            <property name="margin-top">5</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkScrolledWindow" id="scrolled_window">
-                            <property name="margin-start">7</property>
-                            <property name="margin-top">7</property>
-                            <child>
-                              <object class="GtkViewport">
-                                <child>
-                                  <object class="GtkListBox" id="environments_listbox">
-                                    <property name="margin-bottom">10</property>
-                                    <property name="show-separators">True</property>
-                                    <property name="vexpand">True</property>
-                                    <property name="vexpand-set">True</property>
-                                  </object>
-                                </child>
+                      <object class="GtkLabel">
+                        <property name="label">Environments list:</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkScrolledWindow">
+                        <property name="child">
+                          <object class="GtkViewport">
+                            <property name="child">
+                              <object class="GtkListBox" id="environments_listbox">
+                                <property name="vexpand">True</property>
                               </object>
-                            </child>
+                            </property>
                           </object>
-                        </child>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparator">
+                        <property name="margin-top">10</property>
                       </object>
                     </child>
                   </object>
@@ -129,7 +119,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkStackPage">
+              <object class="GtkStackPage" id="page2">
                 <property name="child">
                   <object class="GtkBox">
                     <property name="homogeneous">True</property>
@@ -154,6 +144,19 @@
                     <child>
                       <object class="GtkBox">
                         <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkScrolledWindow">
+                            <child>
+                              <object class="GtkViewport">
+                                <child>
+                                  <object class="GtkListBox" id="environment_about_listbox">
+                                    <property name="vexpand">True</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
