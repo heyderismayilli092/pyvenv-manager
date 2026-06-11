@@ -128,6 +128,39 @@
                 <property name="name">page1</property>
               </object>
             </child>
+            <child>
+              <object class="GtkStackPage">
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="homogeneous">True</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">python</property>
+                            <property name="pixel-size">70</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="environment_about_name"/>
+                        </child>
+                        <child>
+                          <object class="GtkSeparator"/>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+                <property name="name">page2</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
@@ -137,7 +170,7 @@
     <property name="authors">Heydar Ismayilli &lt;heyderismayilli092@gmail.com&gt;</property>
     <property name="comments">Software that allows you to control Python environments from a graphical interface and to map Python programs to the relevant environments</property>
     <property name="copyright">© OpenSF90</property>
-    <property name="logo-icon-name">python3.9</property>
+    <property name="logo-icon-name">python</property>
     <property name="program-name">Python Environment Manager</property>
     <property name="translator-credits">Heydar Ismayilli</property>
     <property name="version">0.0.1</property>
