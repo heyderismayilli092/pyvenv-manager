@@ -8,8 +8,9 @@ from gi.repository import Gtk, Gio, GLib #Adw
 
 import locale
 import os
-from locale import gettext as _
+import threading
 import venv_manager
+from locale import gettext as _
 from pathlib import Path
 
 locale.bindtextdomain('pyvenv-manager', '/usr/share/locale')
@@ -82,7 +83,7 @@ class pyvenv_manager(Gtk.Application):
 
 
     # the created environments are listed
-    def create_row_box(self, text, icon_name="folder-symbolic", icon_size=32, button_label="Open"):
+    def create_row_box(self, text, icon_name="python", icon_size=32):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         icon = Gtk.Image.new_from_icon_name(icon_name)  # icon
         try:
@@ -101,7 +102,7 @@ class pyvenv_manager(Gtk.Application):
         except Exception:
             pass
 
-        btn_label = Gtk.Label(label=button_label)
+        btn_label = Gtk.Label(label=_("About"))
         btn_box.append(btn_icon)
         btn_box.append(btn_label)
         button = Gtk.Button(child=btn_box)
@@ -195,10 +196,24 @@ class pyvenv_manager(Gtk.Application):
         self.new_venv_dialog.hide()
         print("Venv name: ", venvname)
         print(self.python_version)
+        thread = threading.Thread(target=self.venv_creating, args=(venvname, self.python_version), daemon=True)
+        thread.start()
+
+    def venv_creating(self, venvname, python_version):
         if self.reqrm_file == None:
-            venv_manager.venv_create(venvname, self.python_version)  # create virtual environment
+            venv_manager.venv_create(venvname, python_version)  # create virtual environment
         else:
-            venv_manager.venv_create(venvname, self.python_version, self.reqrm_file)  # create virtual environment and install selected requirements
+            venv_manager.venv_create(venvname, python_version, self.reqrm_file)  # create virtual environment and install selected requirements
+        print("Environment created")
+        GLib.idle_add(self.on_result_ready)
+
+    def on_result_ready(self):
+        for row in list(self.environments_listbox):  # the list of environments is being cleared to be written again
+            self.environments_listbox.remove(row)
+        self.envlist = venv_manager.venv_lists()  # list environments
+        for envlst in self.envlist:  # the newly received list is being writed
+            child = self.create_row_box(envlst)
+            self.environments_listbox.append(child)
         self.mainwindow_stack.set_visible_child_name("page0")
         return True
 
@@ -207,6 +222,7 @@ class pyvenv_manager(Gtk.Application):
     def _on_newvenv_hide(self, button):
         self.new_venv_dialog.hide()
         return True
+
 
     # Main Window Destroy
     def _on_destroy(self, win):
