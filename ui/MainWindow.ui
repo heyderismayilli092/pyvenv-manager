@@ -125,19 +125,24 @@
                     <property name="homogeneous">True</property>
                     <child>
                       <object class="GtkBox">
-                        <property name="homogeneous">True</property>
                         <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkImage">
                             <property name="icon-name">python</property>
+                            <property name="margin-top">30</property>
                             <property name="pixel-size">70</property>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="environment_about_name"/>
+                          <object class="GtkLabel" id="environment_about_name">
+                            <property name="margin-top">20</property>
+                          </object>
                         </child>
                         <child>
-                          <object class="GtkSeparator"/>
+                          <object class="GtkButton" id="back_mainwindow">
+                            <property name="label">Back main window</property>
+                            <property name="margin-top">20</property>
+                          </object>
                         </child>
                       </object>
                     </child>
@@ -145,13 +150,59 @@
                       <object class="GtkBox">
                         <property name="orientation">vertical</property>
                         <child>
+                          <object class="GtkBox" id="venvinfo_cfg_exists">
+                            <property name="margin-top">4</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <object class="GtkLabel" id="venvinfo_cfg">
+                                <property name="margin-bottom">2</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="venvinfo_implementation">
+                                <property name="margin-bottom">2</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="venvinfo_versioninfo">
+                                <property name="margin-bottom">2</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="venvinfo_virtualenv_version">
+                                <property name="margin-bottom">2</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="venvinfo_baseprefix">
+                                <property name="margin-bottom">2</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="venvinfo_baseexecprefix">
+                                <property name="margin-bottom">2</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSeparator">
+                            <property name="margin-bottom">10</property>
+                            <property name="margin-top">10</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="label">Installed Packages:</property>
+                          </object>
+                        </child>
+                        <child>
                           <object class="GtkScrolledWindow">
                             <child>
                               <object class="GtkViewport">
+                                <property name="vexpand">True</property>
                                 <child>
-                                  <object class="GtkListBox" id="environment_about_listbox">
-                                    <property name="vexpand">True</property>
-                                  </object>
+                                  <object class="GtkListBox"/>
                                 </child>
                               </object>
                             </child>

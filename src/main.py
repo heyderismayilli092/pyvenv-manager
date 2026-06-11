@@ -41,6 +41,15 @@ class pyvenv_manager(Gtk.Application):
         self.environments_listbox = builder.get_object("environments_listbox")  # environments listbox
         self.mainwindow_stack = builder.get_object("mainwindow_stack")
         self.environment_about_listbox = builder.get_object("environment_about_listbox")  # listbox to list information about the environment
+        self.back_mainwindow = builder.get_object("back_mainwindow")  # return to home screen button
+        self.environment_about_name = builder.get_object("environment_about_name")  # environment about page label
+        # venv about page labels
+        self.venvinfo_cfg = builder.get_object("venvinfo_cfg")
+        self.venvinfo_implementation = builder.get_object("venvinfo_implementation")
+        self.venvinfo_versioninfo = builder.get_object("venvinfo_versioninfo")
+        self.venvinfo_virtualenv_version = builder.get_object("venvinfo_virtualenv_version")
+        self.venvinfo_baseprefix = builder.get_object("venvinfo_baseprefix")
+        self.venvinfo_baseexecprefix = builder.get_object("venvinfo_baseexecprefix")
 
         # New Environment Window
         self.new_venv_dialog = builder.get_object("new_venv_dialog")
@@ -69,6 +78,7 @@ class pyvenv_manager(Gtk.Application):
         self.item_python2.connect("clicked", self.on_item_python2)
         self.item_python3.connect("clicked", self.on_item_python3)
         self.requirements_file.connect("clicked", self.on_requirements_file_select)
+        self.back_mainwindow.connect("clicked", self.on_back_mainwindow)
 
 
         self.envlist = venv_manager.venv_lists()  # list environments
@@ -100,7 +110,7 @@ class pyvenv_manager(Gtk.Application):
         # BUTTON
         button = Gtk.Button(label=_("About"))
         button.set_valign(Gtk.Align.CENTER)
-        #button.connect("clicked", on_button_clicked)
+        button.connect("clicked", self.on_envabout_clicked, text)
 
         btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         btn_icon = Gtk.Image.new_from_icon_name("help-about-symbolic")
@@ -123,6 +133,7 @@ class pyvenv_manager(Gtk.Application):
         hbox.set_margin_end(6)
         return hbox
 
+
     # create new environment window
     def on_new_environment(self, button):
         self.new_venv_dialog.set_transient_for(self.window)
@@ -132,6 +143,7 @@ class pyvenv_manager(Gtk.Application):
         self.venv_error_msg.hide()
         self.new_venv_dialog.present()
 
+
     # about window
     def on_about(self, button):
         self.about_window.set_transient_for(self.window)
@@ -139,10 +151,12 @@ class pyvenv_manager(Gtk.Application):
         self.about_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
         self.about_window.present()
 
+
     # hide window
     def _on_second_close_request(self, win):
         win.hide()
         return True
+
 
     # -Python version select buttons-
     def on_item_python2(self, button):
@@ -157,6 +171,7 @@ class pyvenv_manager(Gtk.Application):
         print(self.python_version)
         return True
     # ------------------------------
+
 
     # select requirements file
     def on_requirements_file_select(self, button):
@@ -176,6 +191,7 @@ class pyvenv_manager(Gtk.Application):
             if file:
                 self.requirements_file = file.get_path()
         dialog.destroy()
+
 
     # create new environment
     def _on_create_venv(self, button):
@@ -221,6 +237,22 @@ class pyvenv_manager(Gtk.Application):
             self.environments_listbox.append(child)
         self.mainwindow_stack.set_visible_child_name("page0")
         return True
+
+
+    # environment about window
+    def on_envabout_clicked(self, button, pyvenv):
+        self.environment_about_name.set_label(pyvenv)  # environment name write
+        venvinfo = venv_manager.venv_about(pyvenv)  # retrieve environment about
+
+        self.mainwindow_stack.set_visible_child_name("page2")
+        return True
+
+
+    # back main window
+    def on_back_mainwindow(self, button):
+        self.mainwindow_stack.set_visible_child_name("page0")
+        return True
+
 
     # close environment window
     def _on_newvenv_hide(self, button):
