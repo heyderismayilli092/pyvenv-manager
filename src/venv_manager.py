@@ -152,3 +152,68 @@ def venv_lists():
           environments.append(vnv)
     return environments
 
+
+# environment about
+def venv_about(venv_name):
+    venv_path = pyvenv_path / venv_name  # environment full path
+    if not os.path.exists(venv_path):
+        return False
+
+    p = Path(venv_path).expanduser().resolve()
+    out: Dict[str, Any] = {"env_path": str(p), "pyvenv_cfg_exists": False, "raw": {}, "include_system_site_packages": None, "hints": {}, "packages": {}}  # list to be returned at the end of the process
+
+    cfg = p / "pyvenv.cfg"
+    if not cfg.exists():
+        out["pyvenv_cfg_exists"] = False
+        # still provide some hints (common layout on Linux)
+        out["hints"]["has_bin_python"] = (p / "bin" / "python").exists()
+        out["hints"]["site_packages_paths"] = []
+        # try to guess site-packages location under /lib
+        lib_dir = p / "lib"
+        if lib_dir.exists():
+            for child in lib_dir.iterdir():
+                if child.name.startswith("python"):
+                    sp = child / "site-packages"
+                    if sp.exists():
+                        out["hints"]["site_packages_paths"].append(str(sp))
+        return out
+
+    out["pyvenv_cfg_exists"] = True
+    try:
+        with cfg.open("r", encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "=" in line:
+                    k, v = line.split("=", 1)
+                    k = k.strip()
+                    v = v.strip()
+                    out["raw"][k] = v
+    except Exception as e:
+        out["error"] = f"failed reading pyvenv.cfg: {e}"
+        return out
+
+    # parse include-system-site-packages if present
+    val = out["raw"].get("include-system-site-packages")
+    if val is not None:
+        vlow = val.strip().lower()
+        out["include_system_site_packages"] = (vlow == "true")
+
+    # helpful hints: check actual site-packages dir(s) under env
+    site_paths = []
+    lib_dir = p / "lib"
+    if lib_dir.exists():
+        for child in lib_dir.iterdir():
+            if child.name.startswith("python"):
+                sp = child / "site-packages"
+                if sp.exists():
+                    site_paths.append(str(sp))
+    out["hints"]["site_packages_paths"] = site_paths
+    out["hints"]["has_bin_python"] = (p / "bin" / "python").exists()
+
+    out["packages"] = list_packages(venv_name)
+
+    return out
+
+
