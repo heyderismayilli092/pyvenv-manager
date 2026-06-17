@@ -280,7 +280,7 @@ class pyvenv_manager(Gtk.Application):
         except KeyError:
             pass
         # --------------------------------------
-        return True
+        return False
 
 
     # back main window
