@@ -8,6 +8,7 @@ from gi.repository import Gtk, Gio, GLib #Adw
 
 import locale
 import os
+import json
 import threading
 import venv_manager
 from locale import gettext as _
@@ -246,16 +247,16 @@ class pyvenv_manager(Gtk.Application):
     def on_envabout_clicked(self, button, pyvenv):
         self.progress_status_label.set_label(_("Retrieve environment about informations..."))
         self.mainwindow_stack.set_visible_child_name("page1")
-        self.environment_about_name.set_label(pyvenv)  # environment name write
         venvabout_thread = threading.Thread(target=self.on_envabout_retrieve, args=(pyvenv,), daemon=True)
         venvabout_thread.start()
 
     def on_envabout_retrieve(self, pyvenv):
         venvinfo = venv_manager.venv_about(pyvenv)  # retrieve environment about
-        GLib.idle_add(self.on_envabout_show, venvinfo)
+        GLib.idle_add(self.on_envabout_show, pyvenv, venvinfo)
 
-    def on_envabout_show(self, venvinfo):
+    def on_envabout_show(self, pyvenv, venvinfo):
         self.mainwindow_stack.set_visible_child_name("page2")
+        self.environment_about_name.set_label(pyvenv)  # environment name write
         # information about the environment is being written
         # IMPORTANT NOTE: Environments built with Python 2 and Python 3 may display different information. Therefore, KeyError handlers have been added below. The information shown for Python 2 may not be shown for Python 3
         self.venvinfo_cfg.set_markup(f"<b>pyvenv_cfg_exists:</b> {venvinfo['pyvenv_cfg_exists']}")
@@ -280,7 +281,41 @@ class pyvenv_manager(Gtk.Application):
         except KeyError:
             pass
         # --------------------------------------
+        self.env_packlist = json.loads(venv_manager.list_packages(pyvenv))  # the installed packages in the selected environment are listed (output is reloaded in JSON format)
+        for packlst in self.env_packlist:  # the newly received list is being writed
+            child = self.create_envabout_line(packlst["name"])  # only the name portion is extracted from the output and added to the list
+            self.installed_packages_list.append(child)
         return False
+
+    # function that creates rows to add to the listbox so that each installed package is displayed
+    def create_envabout_line(self, text, icon_size=32):
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        # LABEL
+        label = Gtk.Label(label=text, xalign=0)
+        label.set_hexpand(True)
+        label.set_halign(Gtk.Align.START)
+
+        # BUTTON
+        button = Gtk.Button(label=_("About"))
+        button.set_valign(Gtk.Align.CENTER)
+        #button.connect("clicked", self.on_packabout_clicked, text)
+
+        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+
+        btn_label = Gtk.Label(label=_("About"))
+        btn_box.append(btn_label)
+
+        button.set_child(btn_box)
+        label.set_selectable(False)
+
+        hbox.append(label)
+        hbox.append(button)
+
+        hbox.set_margin_top(6)
+        hbox.set_margin_bottom(6)
+        hbox.set_margin_start(6)
+        hbox.set_margin_end(6)
+        return hbox
 
 
     # back main window
