@@ -109,9 +109,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkLabel">
-                        <property name="label">Creating virtual environment...</property>
-                      </object>
+                      <object class="GtkLabel" id="progress_status_label"/>
                     </child>
                   </object>
                 </property>
@@ -202,7 +200,7 @@
                               <object class="GtkViewport">
                                 <property name="vexpand">True</property>
                                 <child>
-                                  <object class="GtkListBox"/>
+                                  <object class="GtkListBox" id="installed_packages_list"/>
                                 </child>
                               </object>
                             </child>

@@ -43,6 +43,8 @@ class pyvenv_manager(Gtk.Application):
         self.environment_about_listbox = builder.get_object("environment_about_listbox")  # listbox to list information about the environment
         self.back_mainwindow = builder.get_object("back_mainwindow")  # return to home screen button
         self.environment_about_name = builder.get_object("environment_about_name")  # environment about page label
+        self.installed_packages_list = builder.get_object("installed_packages_list")  # installed packages listbox
+        self.progress_status_label = builder.get_object("progress_status_label")  # progress status label
         # venv about page labels
         self.venvinfo_cfg = builder.get_object("venvinfo_cfg")
         self.venvinfo_implementation = builder.get_object("venvinfo_implementation")
@@ -213,6 +215,7 @@ class pyvenv_manager(Gtk.Application):
             self.venv_error_msg.set_label(_("Select a Python version !"))
             return False
 
+        self.progress_status_label.set_label(_("Creating virtual environment..."))
         self.mainwindow_stack.set_visible_child_name("page1")
         self.new_venv_dialog.hide()
         print("Venv name: ", venvname)
