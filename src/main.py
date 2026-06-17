@@ -244,8 +244,18 @@ class pyvenv_manager(Gtk.Application):
 
     # environment about window
     def on_envabout_clicked(self, button, pyvenv):
+        self.progress_status_label.set_label(_("Retrieve environment about informations..."))
+        self.mainwindow_stack.set_visible_child_name("page1")
         self.environment_about_name.set_label(pyvenv)  # environment name write
+        venvabout_thread = threading.Thread(target=self.on_envabout_retrieve, args=(pyvenv,), daemon=True)
+        venvabout_thread.start()
+
+    def on_envabout_retrieve(self, pyvenv):
         venvinfo = venv_manager.venv_about(pyvenv)  # retrieve environment about
+        GLib.idle_add(self.on_envabout_show, venvinfo)
+
+    def on_envabout_show(self, venvinfo):
+        self.mainwindow_stack.set_visible_child_name("page2")
         # information about the environment is being written
         # IMPORTANT NOTE: Environments built with Python 2 and Python 3 may display different information. Therefore, KeyError handlers have been added below. The information shown for Python 2 may not be shown for Python 3
         self.venvinfo_cfg.set_markup(f"<b>pyvenv_cfg_exists:</b> {venvinfo['pyvenv_cfg_exists']}")
@@ -270,7 +280,6 @@ class pyvenv_manager(Gtk.Application):
         except KeyError:
             pass
         # --------------------------------------
-        self.mainwindow_stack.set_visible_child_name("page2")
         return True
 
 
