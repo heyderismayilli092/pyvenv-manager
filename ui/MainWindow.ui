@@ -50,7 +50,7 @@
                     <child>
                       <object class="GtkBox" id="buttons">
                         <property name="margin-bottom">8</property>
-                        <property name="margin-end">-1</property>
+                        <property name="margin-end">0</property>
                         <property name="margin-start">7</property>
                         <property name="margin-top">8</property>
                         <child>
@@ -65,11 +65,25 @@
                             <property name="width-request">0</property>
                           </object>
                         </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="label">Connect Python File</property>
+                            <property name="margin-start">5</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="label">Connect Python App</property>
+                            <property name="margin-start">5</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child>
                       <object class="GtkLabel">
                         <property name="label">Environments list:</property>
+                        <property name="margin-bottom">5</property>
+                        <property name="margin-top">10</property>
                       </object>
                     </child>
                     <child>
@@ -142,6 +156,12 @@
                             <property name="margin-top">20</property>
                           </object>
                         </child>
+                        <child>
+                          <object class="GtkButton" id="install_new_package">
+                            <property name="label">Install new package</property>
+                            <property name="margin-top">5</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child>
@@ -192,6 +212,7 @@
                         <child>
                           <object class="GtkLabel">
                             <property name="label">Installed Packages:</property>
+                            <property name="margin-bottom">3</property>
                           </object>
                         </child>
                         <child>
@@ -294,7 +315,7 @@
                               <object class="GtkImage">
                                 <property name="icon-name">python</property>
                                 <property name="margin-end">3</property>
-                                <property name="margin-start">-1</property>
+                                <property name="margin-start">0</property>
                               </object>
                             </child>
                             <child>
@@ -340,7 +361,7 @@
         <child>
           <object class="GtkSeparator" id="requirements_chooser">
             <property name="margin-bottom">10</property>
-            <property name="margin-start">-1</property>
+            <property name="margin-start">0</property>
             <property name="margin-top">10</property>
           </object>
         </child>
