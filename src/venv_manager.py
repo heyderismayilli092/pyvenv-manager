@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Tuple
 import os
 import subprocess
 import venv
@@ -215,5 +216,32 @@ def venv_about(venv_name):
     out["packages"] = list_packages(venv_name)
 
     return out
+
+
+# it helps to remove a packet from a medium
+def uninstall_package(venv_name, package, timeout = 300):
+    venv_path = pyvenv_path / venv_name  # environment full path
+    if not os.path.exists(venv_path):
+        return False
+
+    cmd = [str(venv_path / "bin" / "pip"), "uninstall", "-y", package]  # package removing
+
+    proc = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True
+    )
+    # when the process is completed within the specified time, the relevant results are obtained
+    try:
+        stdout, stderr = proc.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        stdout, stderr = proc.communicate()
+        #return proc.returncode or 1, stdout, stderr + "\nProcess killed due to timeout"
+        return False
+
+    if proc.returncode == 0 or stdout.lower() in "successfully":
+        return True
 
 
