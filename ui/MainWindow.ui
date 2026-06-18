@@ -279,21 +279,6 @@
                             <property name="orientation">vertical</property>
                             <child>
                               <object class="GtkBox">
-                                <property name="homogeneous">True</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Name:</property>
-                                    <property name="xalign">0.0</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="packinfo_name"/>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="homogeneous">True</property>
                                 <property name="margin-top">2</property>
                                 <child>
                                   <object class="GtkLabel">
@@ -302,13 +287,14 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="packinfo_version"/>
+                                  <object class="GtkLabel" id="packinfo_version">
+                                    <property name="margin-start">5</property>
+                                  </object>
                                 </child>
                               </object>
                             </child>
                             <child>
                               <object class="GtkBox">
-                                <property name="homogeneous">True</property>
                                 <property name="margin-top">2</property>
                                 <child>
                                   <object class="GtkLabel">
@@ -317,13 +303,14 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="packinfo_summary"/>
+                                  <object class="GtkLabel" id="packinfo_summary">
+                                    <property name="margin-start">5</property>
+                                  </object>
                                 </child>
                               </object>
                             </child>
                             <child>
                               <object class="GtkBox">
-                                <property name="homogeneous">True</property>
                                 <property name="margin-top">2</property>
                                 <child>
                                   <object class="GtkLabel">
@@ -340,7 +327,6 @@
                             </child>
                             <child>
                               <object class="GtkBox">
-                                <property name="homogeneous">True</property>
                                 <property name="margin-top">2</property>
                                 <child>
                                   <object class="GtkLabel">
@@ -349,13 +335,14 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="packinfo_author"/>
+                                  <object class="GtkLabel" id="packinfo_author">
+                                    <property name="margin-start">5</property>
+                                  </object>
                                 </child>
                               </object>
                             </child>
                             <child>
                               <object class="GtkBox">
-                                <property name="homogeneous">True</property>
                                 <property name="margin-top">2</property>
                                 <child>
                                   <object class="GtkLabel">
@@ -364,13 +351,14 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="packinfo_authormail"/>
+                                  <object class="GtkLabel" id="packinfo_authormail">
+                                    <property name="margin-start">5</property>
+                                  </object>
                                 </child>
                               </object>
                             </child>
                             <child>
                               <object class="GtkBox">
-                                <property name="homogeneous">True</property>
                                 <property name="margin-top">2</property>
                                 <child>
                                   <object class="GtkLabel">
@@ -379,7 +367,25 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="packinfo_license"/>
+                                  <object class="GtkLabel" id="packinfo_license">
+                                    <property name="margin-start">5</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="margin-top">2</property>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Required by:</property>
+                                    <property name="xalign">0.0</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="packinfo_requiredby">
+                                    <property name="margin-start">5</property>
+                                  </object>
                                 </child>
                               </object>
                             </child>
@@ -392,7 +398,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkLabel">
+                          <object class="GtkLabel" id="requires_label">
                             <property name="label">Requires:</property>
                           </object>
                         </child>

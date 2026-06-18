@@ -53,6 +53,18 @@ class pyvenv_manager(Gtk.Application):
         self.venvinfo_virtualenv_version = builder.get_object("venvinfo_virtualenv_version")
         self.venvinfo_baseprefix = builder.get_object("venvinfo_baseprefix")
         self.venvinfo_baseexecprefix = builder.get_object("venvinfo_baseexecprefix")
+        # venv package about page labels
+        self.packinfo_packname = builder.get_object("packinfo_packname")
+        self.packinfo_name = builder.get_object("packinfo_name")
+        self.packinfo_version = builder.get_object("packinfo_version")
+        self.packinfo_summary = builder.get_object("packinfo_summary")
+        self.packinfo_homepage = builder.get_object("packinfo_homepage")
+        self.packinfo_author = builder.get_object("packinfo_author")
+        self.packinfo_authormail = builder.get_object("packinfo_authormail")
+        self.packinfo_license = builder.get_object("packinfo_license")
+        self.requires_packages_list = builder.get_object("requires_packages_list")
+        self.requires_label = builder.get_object("requires_label")
+        self.packinfo_requiredby = builder.get_object("packinfo_requiredby")
 
         # New Environment Window
         self.new_venv_dialog = builder.get_object("new_venv_dialog")
@@ -283,12 +295,12 @@ class pyvenv_manager(Gtk.Application):
         # --------------------------------------
         self.env_packlist = json.loads(venv_manager.list_packages(pyvenv))  # the installed packages in the selected environment are listed (output is reloaded in JSON format)
         for packlst in self.env_packlist:  # the newly received list is being writed
-            child = self.create_envabout_line(packlst["name"])  # only the name portion is extracted from the output and added to the list
+            child = self.create_envabout_line(pyvenv, packlst["name"])  # only the name portion is extracted from the output and added to the list
             self.installed_packages_list.append(child)
         return False
 
     # function that creates rows to add to the listbox so that each installed package is displayed
-    def create_envabout_line(self, text, icon_size=32):
+    def create_envabout_line(self, pyvenv, text, icon_size=32):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # LABEL
         label = Gtk.Label(label=text, xalign=0)
@@ -298,7 +310,7 @@ class pyvenv_manager(Gtk.Application):
         # BUTTON
         button = Gtk.Button(label=_("About"))
         button.set_valign(Gtk.Align.CENTER)
-        #button.connect("clicked", self.on_packabout_clicked, text)
+        button.connect("clicked", self.on_packabout_clicked, pyvenv, text)
 
         btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
 
@@ -322,6 +334,50 @@ class pyvenv_manager(Gtk.Application):
     def on_back_mainwindow(self, button):
         self.mainwindow_stack.set_visible_child_name("page0")
         return True
+
+
+    # package about screen
+    def on_packabout_clicked(self, button, pyvenv, packname):
+        self.progress_status_label.set_label(_("Retrieve package info..."))
+        self.mainwindow_stack.set_visible_child_name("page1")
+        packabout_thread = threading.Thread(target=self.on_packabout_retrieve, args=(pyvenv,packname,), daemon=True)
+        packabout_thread.start()
+
+    def on_packabout_retrieve(self, pyvenv, package):
+        packinfo = json.loads(venv_manager.pack_info(pyvenv, package))  # retrieve installed in venv package about
+        GLib.idle_add(self.on_packabout_show, package, packinfo)
+
+    def on_packabout_show(self, package, packinfo):
+        self.mainwindow_stack.set_visible_child_name("page3")
+        self.packinfo_packname.set_label(package)  # write package name
+        # collected information is being printed
+        self.packinfo_version.set_label(packinfo["Version"])
+        self.packinfo_summary.set_label(packinfo["Summary"])
+        self.packinfo_homepage.set_label(packinfo["Home-page"])
+
+        if packinfo["Author"] != None:
+          self.packinfo_author.set_label(packinfo["Author"])
+        else:
+          self.packinfo_author.hide()
+
+        self.packinfo_authormail.set_label(packinfo["Author-email"])
+
+        if packinfo["License"] != None:
+          self.packinfo_license.set_label(packinfo["License"])
+        else:
+          self.packinfo_license.set_label("Not Found")
+
+        if packinfo["Requires"] != None:
+          self.requires_packages_list.set_label(packinfo["Requires"])
+        else:
+          self.requires_packages_list.hide()
+          self.requires_label.hide()
+
+        if packinfo["Required-by"] != None:
+          self.packinfo_requiredby.set_label(packinfo["Required-by"])
+        else:
+          self.packinfo_requiredby.set_label("Not Found")
+        return False
 
 
     # close environment window
