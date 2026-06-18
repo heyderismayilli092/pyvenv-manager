@@ -96,7 +96,6 @@ class pyvenv_manager(Gtk.Application):
         self.item_python3.connect("clicked", self.on_item_python3)
         self.requirements_file.connect("clicked", self.on_requirements_file_select)
         self.back_mainwindow.connect("clicked", self.on_back_mainwindow)
-        self.back_mainwindow_2.connect("clicked", self.on_back_mainwindow)
 
 
         self.envlist = venv_manager.venv_lists()  # list environments
@@ -348,11 +347,12 @@ class pyvenv_manager(Gtk.Application):
 
     def on_packabout_retrieve(self, pyvenv, package):
         packinfo = json.loads(venv_manager.pack_info(pyvenv, package))  # retrieve installed in venv package about
-        GLib.idle_add(self.on_packabout_show, package, packinfo)
+        GLib.idle_add(self.on_packabout_show, pyvenv, package, packinfo)
 
-    def on_packabout_show(self, package, packinfo):
+    def on_packabout_show(self, pyvenv, package, packinfo):
         self.mainwindow_stack.set_visible_child_name("page3")
         self.packinfo_packname.set_label(package)  # write package name
+        self.back_mainwindow_2.connect("clicked", self.on_envabout_clicked, pyvenv)
         # collected information is being printed
         self.packinfo_version.set_label(packinfo["Version"])
         self.packinfo_summary.set_label(packinfo["Summary"])
