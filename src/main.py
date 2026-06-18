@@ -67,6 +67,7 @@ class pyvenv_manager(Gtk.Application):
         self.packinfo_license = builder.get_object("packinfo_license")
         self.requires_label = builder.get_object("requires_label")
         self.packinfo_requiredby = builder.get_object("packinfo_requiredby")
+        self.packinfo_venvname = builder.get_object("packinfo_venvname")
 
         # New Environment Window
         self.new_venv_dialog = builder.get_object("new_venv_dialog")
@@ -296,6 +297,9 @@ class pyvenv_manager(Gtk.Application):
             pass
         # --------------------------------------
         self.env_packlist = json.loads(venv_manager.list_packages(pyvenv))  # the installed packages in the selected environment are listed (output is reloaded in JSON format)
+        for row in list(self.installed_packages_list):  # package list is being cleaned up for rewriting
+            self.installed_packages_list.remove(row)
+
         for packlst in self.env_packlist:  # the newly received list is being writed
             child = self.create_envabout_line(pyvenv, packlst["name"])  # only the name portion is extracted from the output and added to the list
             self.installed_packages_list.append(child)
@@ -352,6 +356,7 @@ class pyvenv_manager(Gtk.Application):
     def on_packabout_show(self, pyvenv, package, packinfo):
         self.mainwindow_stack.set_visible_child_name("page3")
         self.packinfo_packname.set_label(package)  # write package name
+        self.packinfo_venvname.set_label(pyvenv)  # write package name
         self.back_mainwindow_2.connect("clicked", self.on_envabout_clicked, pyvenv)
         # collected information is being printed
         self.packinfo_version.set_label(packinfo["Version"])
