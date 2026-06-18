@@ -354,6 +354,7 @@ class pyvenv_manager(Gtk.Application):
         self.packinfo_version.set_label(packinfo["Version"])
         self.packinfo_summary.set_label(packinfo["Summary"])
         self.packinfo_homepage.set_label(packinfo["Home-page"])
+        self.packinfo_homepage.set_uri(packinfo["Home-page"])
 
         if packinfo["Author"] != None:
           self.packinfo_author.set_label(packinfo["Author"])
@@ -368,7 +369,9 @@ class pyvenv_manager(Gtk.Application):
           self.packinfo_license.set_label("Not Found")
 
         if packinfo["Requires"] != None:
-          self.requires_packages_list.set_label(packinfo["Requires"])
+          for packlst in packinfo["Requires"]:
+            child = self.create_packreq_line(packlst)
+            self.requires_packages_list.append(child)
         else:
           self.requires_packages_list.hide()
           self.requires_label.hide()
@@ -378,6 +381,23 @@ class pyvenv_manager(Gtk.Application):
         else:
           self.packinfo_requiredby.set_label("Not Found")
         return False
+
+    # if the selected package has requirements, it will create rows to add those requirements to the listbox
+    def create_packreq_line(self, text, icon_size=32):
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        # LABEL
+        label = Gtk.Label(label=text, xalign=0)
+        label.set_hexpand(True)
+        label.set_halign(Gtk.Align.START)
+        label.set_selectable(False)
+
+        hbox.append(label)
+
+        hbox.set_margin_top(6)
+        hbox.set_margin_bottom(6)
+        hbox.set_margin_start(6)
+        hbox.set_margin_end(6)
+        return hbox
 
 
     # close environment window
