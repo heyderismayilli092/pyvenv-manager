@@ -252,8 +252,18 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="packinfo_packname">
-                            <property name="margin-top">20</property>
+                          <object class="GtkBox">
+                            <property name="homogeneous">True</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <object class="GtkLabel" id="packinfo_packname"/>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="packinfo_venvname">
+                                <property name="margin-start">5</property>
+                                <property name="margin-top">10</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>
@@ -449,12 +459,9 @@
     <property name="version">0.0.1</property>
     <property name="website">https://github.com/heyderismayilli092/pyvenv-manager</property>
   </object>
-  <object class="GtkDialog" id="new_venv_dialog">
-    <property name="default-height">250</property>
-    <property name="default-width">550</property>
-    <property name="height-request">5</property>
-    <property name="hexpand">True</property>
-    <property name="hexpand-set">True</property>
+  <object class="GtkWindow" id="new_venv_dialog">
+    <property name="default-height">400</property>
+    <property name="default-width">400</property>
     <property name="title">Create New Environment</property>
     <property name="titlebar">
       <object class="GtkHeaderBar">
@@ -465,109 +472,119 @@
         </property>
       </object>
     </property>
-    <property name="vexpand">True</property>
-    <property name="vexpand-set">True</property>
-    <property name="width-request">5</property>
-    <child internal-child="action_area">
-      <object class="GtkBox" id="venv_create_button">
-        <child>
-          <object class="GtkButton" id="cancel_btn">
-            <property name="label">Cancel</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkButton" id="create_venv">
-            <property name="label">Create</property>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child internal-child="content_area">
+    <child>
       <object class="GtkBox">
-        <property name="margin-top">5</property>
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkLabel" id="enter_environmentname">
-            <property name="label">Enter Environment Name:</property>
-            <property name="margin-bottom">3</property>
-            <property name="margin-top">10</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkEntry" id="environment_name">
-            <property name="margin-bottom">5</property>
-            <property name="placeholder-text">Environment Name:</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkMenuButton" id="python_verselect">
-            <property name="label">Select Python Version</property>
-            <property name="margin-top">3</property>
-            <property name="popover">
-              <object class="GtkPopover" id="popover_menu">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkButton" id="item_python2">
-                        <property name="child">
-                          <object class="GtkBox">
-                            <child>
-                              <object class="GtkImage">
-                                <property name="icon-name">python</property>
-                                <property name="margin-end">3</property>
-                                <property name="margin-start">0</property>
+          <object class="GtkBox">
+            <property name="margin-top">5</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="label">Enter Environment Name:</property>
+                <property name="margin-bottom">3</property>
+                <property name="margin-top">10</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkEntry" id="environment_name">
+                <property name="margin-bottom">5</property>
+                <property name="placeholder-text">Environment Name:</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuButton" id="python_verselect">
+                <property name="label">Select Python Version</property>
+                <property name="margin-top">3</property>
+                <property name="popover">
+                  <object class="GtkPopover" id="popover_menu">
+                    <property name="child">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkButton" id="item_python2">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">python</property>
+                                    <property name="margin-end">3</property>
+                                    <property name="margin-start">0</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Python 2</property>
+                                  </object>
+                                </child>
                               </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="label">Python 2</property>
-                              </object>
-                            </child>
+                            </property>
                           </object>
-                        </property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="item_python3">
-                        <property name="child">
-                          <object class="GtkBox">
-                            <child>
-                              <object class="GtkImage">
-                                <property name="icon-name">python</property>
-                                <property name="margin-end">3</property>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="item_python3">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">python</property>
+                                    <property name="margin-end">3</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Python 3</property>
+                                  </object>
+                                </child>
                               </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="label">Python 3</property>
-                              </object>
-                            </child>
+                            </property>
                           </object>
-                        </property>
+                        </child>
                       </object>
-                    </child>
+                    </property>
                   </object>
                 </property>
               </object>
-            </property>
+            </child>
+            <child>
+              <object class="GtkButton" id="requirements_file">
+                <property name="label">Requirements file choose (optionial)</property>
+                <property name="margin-top">10</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparator" id="requirements_chooser_2">
+                <property name="margin-bottom">10</property>
+                <property name="margin-start">0</property>
+                <property name="margin-top">10</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="venv_error_msg">
+                <property name="ellipsize">middle</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>
-          <object class="GtkButton" id="requirements_file">
-            <property name="label">Requirements file choose (optionial)</property>
-            <property name="margin-top">10</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkSeparator" id="requirements_chooser">
+          <object class="GtkSeparator">
             <property name="margin-bottom">10</property>
-            <property name="margin-start">0</property>
             <property name="margin-top">10</property>
           </object>
         </child>
         <child>
-          <object class="GtkLabel" id="venv_error_msg">
-            <property name="ellipsize">middle</property>
+          <object class="GtkBox">
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkButton" id="cancel_btn">
+                <property name="label">Cancel</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="create_venv">
+                <property name="label">Create</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
