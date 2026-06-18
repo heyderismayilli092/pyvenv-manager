@@ -274,117 +274,129 @@
                       <object class="GtkBox">
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkBox">
-                            <property name="margin-top">10</property>
-                            <property name="orientation">vertical</property>
+                          <object class="GtkScrolledWindow" id="packinfo_area">
+                            <property name="margin-top">5</property>
                             <child>
-                              <object class="GtkBox">
-                                <property name="margin-top">2</property>
+                              <object class="GtkViewport">
                                 <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Version:</property>
-                                    <property name="xalign">0.0</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="packinfo_version">
-                                    <property name="margin-start">5</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="margin-top">2</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Summary:</property>
-                                    <property name="xalign">0.0</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="packinfo_summary">
-                                    <property name="margin-start">5</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="margin-top">2</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Home Page:</property>
-                                    <property name="xalign">0.0</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLinkButton" id="packinfo_homepage">
-                                    <property name="label">Open</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="margin-top">2</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Author:</property>
-                                    <property name="xalign">0.0</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="packinfo_author">
-                                    <property name="margin-start">5</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="margin-top">2</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Author Email:</property>
-                                    <property name="xalign">0.0</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="packinfo_authormail">
-                                    <property name="margin-start">5</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="margin-top">2</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">License:</property>
-                                    <property name="xalign">0.0</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="packinfo_license">
-                                    <property name="margin-start">5</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="margin-top">2</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Required by:</property>
-                                    <property name="xalign">0.0</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="packinfo_requiredby">
-                                    <property name="margin-start">5</property>
+                                  <object class="GtkBox">
+                                    <property name="margin-top">10</property>
+                                    <property name="orientation">vertical</property>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="margin-bottom">5</property>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label">Version:</property>
+                                            <property name="xalign">0.0</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="packinfo_version">
+                                            <property name="margin-start">5</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="hexpand">True</property>
+                                        <property name="vexpand">True</property>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label">Summary:</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="packinfo_summary">
+                                            <property name="margin-start">5</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="margin-top">2</property>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label">Home Page:</property>
+                                            <property name="xalign">0.0</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLinkButton" id="packinfo_homepage">
+                                            <property name="label">Open</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="margin-bottom">5</property>
+                                        <property name="margin-top">2</property>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label">Author:</property>
+                                            <property name="xalign">0.0</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="packinfo_author">
+                                            <property name="margin-start">5</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="margin-bottom">5</property>
+                                        <property name="margin-top">2</property>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label">Author Email:</property>
+                                            <property name="xalign">0.0</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="packinfo_authormail">
+                                            <property name="margin-start">5</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="margin-bottom">5</property>
+                                        <property name="margin-top">2</property>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label">License:</property>
+                                            <property name="xalign">0.0</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="packinfo_license">
+                                            <property name="margin-start">5</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="margin-top">2</property>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label">Required by:</property>
+                                            <property name="xalign">0.0</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="packinfo_requiredby">
+                                            <property name="margin-start">5</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
                               </object>
@@ -403,7 +415,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkScrolledWindow">
+                          <object class="GtkScrolledWindow" id="requires_area">
                             <child>
                               <object class="GtkViewport">
                                 <property name="vexpand">True</property>

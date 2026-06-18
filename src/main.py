@@ -43,8 +43,11 @@ class pyvenv_manager(Gtk.Application):
         self.mainwindow_stack = builder.get_object("mainwindow_stack")
         self.environment_about_listbox = builder.get_object("environment_about_listbox")  # listbox to list information about the environment
         self.back_mainwindow = builder.get_object("back_mainwindow")  # return to home screen button
+        self.back_mainwindow_2 = builder.get_object("back_mainwindow_2")  # return to home screen button
+        self.remove_package = builder.get_object("remove_package")  # remove the packet from the selected environment
         self.environment_about_name = builder.get_object("environment_about_name")  # environment about page label
         self.installed_packages_list = builder.get_object("installed_packages_list")  # installed packages listbox
+        self.requires_packages_list = builder.get_object("requires_packages_list")  # lists the requirements of a package
         self.progress_status_label = builder.get_object("progress_status_label")  # progress status label
         # venv about page labels
         self.venvinfo_cfg = builder.get_object("venvinfo_cfg")
@@ -62,7 +65,6 @@ class pyvenv_manager(Gtk.Application):
         self.packinfo_author = builder.get_object("packinfo_author")
         self.packinfo_authormail = builder.get_object("packinfo_authormail")
         self.packinfo_license = builder.get_object("packinfo_license")
-        self.requires_packages_list = builder.get_object("requires_packages_list")
         self.requires_label = builder.get_object("requires_label")
         self.packinfo_requiredby = builder.get_object("packinfo_requiredby")
 
@@ -94,6 +96,7 @@ class pyvenv_manager(Gtk.Application):
         self.item_python3.connect("clicked", self.on_item_python3)
         self.requirements_file.connect("clicked", self.on_requirements_file_select)
         self.back_mainwindow.connect("clicked", self.on_back_mainwindow)
+        self.back_mainwindow_2.connect("clicked", self.on_back_mainwindow)
 
 
         self.envlist = venv_manager.venv_lists()  # list environments
@@ -353,20 +356,31 @@ class pyvenv_manager(Gtk.Application):
         # collected information is being printed
         self.packinfo_version.set_label(packinfo["Version"])
         self.packinfo_summary.set_label(packinfo["Summary"])
-        self.packinfo_homepage.set_label(packinfo["Home-page"])
-        self.packinfo_homepage.set_uri(packinfo["Home-page"])
+
+        if packinfo["Home-page"] != None:
+          self.packinfo_homepage.set_label(packinfo["Home-page"])
+          self.packinfo_homepage.set_uri(packinfo["Home-page"])
+        else:
+          self.packinfo_homepage.set_label(_("Not Found"))
+          self.packinfo_homepage.set_sensitive(False)
 
         if packinfo["Author"] != None:
           self.packinfo_author.set_label(packinfo["Author"])
         else:
-          self.packinfo_author.hide()
+          self.packinfo_author.set_label(_("Not Found"))
 
-        self.packinfo_authormail.set_label(packinfo["Author-email"])
-
-        if packinfo["License"] != None:
-          self.packinfo_license.set_label(packinfo["License"])
+        if packinfo["Author-email"] != None:
+          self.packinfo_authormail.set_label(packinfo["Author-email"])
         else:
-          self.packinfo_license.set_label("Not Found")
+          self.packinfo_authormail.set_label(_("Not Found"))
+
+        try:
+          if packinfo["License"] != None:
+            self.packinfo_license.set_label(packinfo["License"])
+          else:
+            self.packinfo_license.set_label(_("Not Found"))
+        except KeyError:
+            self.packinfo_license.set_label(_("Not Found"))
 
         if packinfo["Requires"] != None:
           for packlst in packinfo["Requires"]:
