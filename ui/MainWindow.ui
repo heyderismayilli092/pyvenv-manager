@@ -621,16 +621,27 @@
           </object>
         </child>
         <child>
-          <object class="GtkStack">
+          <object class="GtkStack" id="installpack_window_stack">
             <child>
               <object class="GtkStackPage" id="newpack_page0">
                 <property name="child">
                   <object class="GtkBox" id="install_area">
-                    <property name="margin-end">5</property>
+                    <property name="margin-bottom">5</property>
                     <property name="margin-top">5</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkEntry" id="new_pack_name"/>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="new_package_insbutton">
+                        <property name="label">Install</property>
+                        <property name="margin-top">15</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="new_package_msg">
+                        <property name="margin-top">10</property>
+                      </object>
                     </child>
                   </object>
                 </property>
@@ -665,6 +676,8 @@
         <child>
           <object class="GtkTextView" id="install_process_stream">
             <property name="editable">False</property>
+            <property name="margin-bottom">5</property>
+            <property name="margin-top">5</property>
           </object>
         </child>
       </object>

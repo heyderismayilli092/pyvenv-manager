@@ -88,8 +88,13 @@ class pyvenv_manager(Gtk.Application):
 
         # Install New Package Window
         self.install_new_package_window = builder.get_object("install_new_package_window")
+        self.installpack_window_stack = builder.get_object("installpack_window_stack")
         self.new_package_venvname = builder.get_object("new_package_venvname")
         self.install_process_stream = builder.get_object("install_process_stream")
+        self.buffer = self.install_process_stream.get_buffer()
+        self.new_package_insbutton = builder.get_object("new_package_insbutton")
+        self.new_package_msg = builder.get_object("new_package_msg")
+        self.new_pack_name = builder.get_object("new_pack_name")
 
         # About Window
         self.about_window = builder.get_object("about_window")
@@ -426,9 +431,30 @@ class pyvenv_manager(Gtk.Application):
         self.install_new_package_window.set_transient_for(self.window)
         self.install_new_package_window.set_application(self)
         self.install_new_package_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
+        self.new_package_insbutton.connect("clicked", self.on_new_package_ins, pyvenv)  # when you click the button to install a new package, you will be redirected to the relevant window with the environment name
 
-        self.new_package_venvname.set_label(pyvenv)  # environment name is also displayed on the screen
+        self.new_package_venvname.set_label(_("Environment: ") + pyvenv)  # environment name is also displayed on the screen
         self.install_new_package_window.present()
+
+    def on_new_package_ins(self, button, pyvenv):
+        newpack = self.new_pack_name.get_text()
+        if len(newpack) == 0:  # checking if the package name has been entered
+          self.new_package_msg.set_label(_("Enter a package name!"))
+          return False
+        self.installpack_window_stack.set_visible_child_name("newpack_page1")
+
+        for line in venv_manager.pack_install(pyvenv, newpack):
+            # add each line with 'append_text' in the main loop
+            GLib.idle_add(self.append_text, line)
+        # status message when the process is complete
+        GLib.idle_add(self.append_text, f"\n[Process finished]\n")
+
+    def append_text(self, text):
+        end_iter = self.buffer.get_end_iter()
+        self.buffer.insert(end_iter, text)
+        self.install_process_stream.scroll_to_iter(self.buffer.get_end_iter(), 0.0, False, 0.0, 1.0)  # automatic scroll
+        self.installpack_window_stack.set_visible_child_name("newpack_page0")  # return main page
+        return False
 
 
     # hide window
