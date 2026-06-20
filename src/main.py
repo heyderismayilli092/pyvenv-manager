@@ -226,7 +226,7 @@ class pyvenv_manager(Gtk.Application):
             return False
 
         # it is checked whether a Python version has been selected
-        if len(self.python_version) == 0:
+        if self.python_version == None:
             self.venv_error_msg.show()
             self.venv_error_msg.set_label(_("Select a Python version !"))
             return False
