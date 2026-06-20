@@ -137,12 +137,16 @@ def pack_install(venv_name, package):
     venv_path = pyvenv_path / venv_name  # environment full path
     if not os.path.exists(venv_path):
         return False
-    try:
-      output = subprocess.run([str(venv_path / "bin" / "pip"), "install", package])  # install package
-    except subprocess.CalledProcessError as e:
-        return False
 
-    return True
+    cmd = [str(venv_path / "bin" / "pip"), "install", package]  # install package
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    # using 'yield', the results are returned in parts for printing on the main screen
+    try:
+        for line in proc.stdout:
+            yield line
+    finally:
+        proc.stdout.close()
+        proc.wait()
 
 
 # environments list
