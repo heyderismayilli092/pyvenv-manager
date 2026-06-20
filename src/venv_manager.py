@@ -4,6 +4,7 @@ import os
 import subprocess
 import venv
 import json
+import requests
 
 homefolder = Path.home()
 pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing the created Python environments
@@ -244,4 +245,13 @@ def uninstall_package(venv_name, package, timeout = 300):
     if proc.returncode == 0 or stdout.lower() in "successfully":
         return True
 
+
+# checks if a package with the given name exists
+def package_exists_check(name):
+    url = f"https://pypi.org/pypi/{name}/json"
+    try:
+        resp = requests.head(url, timeout=5.0, allow_redirects=True)  # speed test with 'head': 200 -> package avaliable, 404 -> not found
+        return resp.status_code == 200
+    except requests.RequestException:
+        return False  # returning False in case of network error
 
