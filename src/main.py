@@ -44,6 +44,7 @@ class pyvenv_manager(Gtk.Application):
         self.environment_about_listbox = builder.get_object("environment_about_listbox")  # listbox to list information about the environment
         self.back_mainwindow = builder.get_object("back_mainwindow")  # return to home screen button
         self.back_mainwindow_2 = builder.get_object("back_mainwindow_2")  # return to home screen button
+        self.install_new_package = builder.get_object("install_new_package")  # button that opens the relevant window to install the new package
         self.remove_package = builder.get_object("remove_package")  # remove the packet from the selected environment
         self.environment_about_name = builder.get_object("environment_about_name")  # environment about page label
         self.installed_packages_list = builder.get_object("installed_packages_list")  # installed packages listbox
@@ -84,6 +85,11 @@ class pyvenv_manager(Gtk.Application):
 
         # File Chooser Dialog
         self.filechooser_dialog = builder.get_object("filechooser_dialog")
+
+        # Install New Package Window
+        self.install_new_package_window = builder.get_object("install_new_package_window")
+        self.new_package_venvname = builder.get_object("new_package_venvname")
+        self.install_process_stream = builder.get_object("install_process_stream")
 
         # About Window
         self.about_window = builder.get_object("about_window")
@@ -168,12 +174,6 @@ class pyvenv_manager(Gtk.Application):
         self.about_window.set_application(self)
         self.about_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
         self.about_window.present()
-
-
-    # hide window
-    def _on_second_close_request(self, win):
-        win.hide()
-        return True
 
 
     # -Python version select buttons-
@@ -272,6 +272,8 @@ class pyvenv_manager(Gtk.Application):
     def on_envabout_show(self, pyvenv, venvinfo):
         self.mainwindow_stack.set_visible_child_name("page2")
         self.environment_about_name.set_label(pyvenv)  # environment name write
+        self.install_new_package.connect("clicked", self.on_install_new_package_window, pyvenv)
+
         # information about the environment is being written
         # IMPORTANT NOTE: Environments built with Python 2 and Python 3 may display different information. Therefore, KeyError handlers have been added below. The information shown for Python 2 may not be shown for Python 3
         self.venvinfo_cfg.set_markup(f"<b>pyvenv_cfg_exists:</b> {venvinfo['pyvenv_cfg_exists']}")
@@ -417,6 +419,22 @@ class pyvenv_manager(Gtk.Application):
         hbox.set_margin_start(6)
         hbox.set_margin_end(6)
         return hbox
+
+
+    # ---------- Install New Package Window ----------
+    def on_install_new_package_window(self, button, pyvenv):
+        self.install_new_package_window.set_transient_for(self.window)
+        self.install_new_package_window.set_application(self)
+        self.install_new_package_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
+
+        self.new_package_venvname.set_label(pyvenv)  # environment name is also displayed on the screen
+        self.install_new_package_window.present()
+
+
+    # hide window
+    def _on_second_close_request(self, win):
+        win.hide()
+        return True
 
 
     # close environment window

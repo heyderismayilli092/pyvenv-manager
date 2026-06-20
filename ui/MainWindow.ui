@@ -590,4 +590,84 @@
       </object>
     </child>
   </object>
+  <object class="GtkWindow" id="install_new_package_window">
+    <property name="default-height">300</property>
+    <property name="default-width">700</property>
+    <property name="titlebar">
+      <object class="GtkHeaderBar">
+        <property name="title-widget">
+          <object class="GtkLabel">
+            <property name="label">Install New Package</property>
+          </object>
+        </property>
+      </object>
+    </property>
+    <child>
+      <object class="GtkBox">
+        <property name="homogeneous">True</property>
+        <child>
+          <object class="GtkBox">
+            <property name="homogeneous">True</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkImage">
+                <property name="icon-name">python</property>
+                <property name="pixel-size">68</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="new_package_venvname"/>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStack">
+            <child>
+              <object class="GtkStackPage" id="newpack_page0">
+                <property name="child">
+                  <object class="GtkBox" id="install_area">
+                    <property name="margin-end">5</property>
+                    <property name="margin-top">5</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkEntry" id="new_pack_name"/>
+                    </child>
+                  </object>
+                </property>
+                <property name="name">newpack_page0</property>
+                <property name="title">newpack_page0</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage" id="newpack_page1">
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="homogeneous">True</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkSpinner">
+                        <property name="spinning">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Installing package...</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+                <property name="name">newpack_page1</property>
+                <property name="title">newpack_page1</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkTextView" id="install_process_stream">
+            <property name="editable">False</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
 </interface>
