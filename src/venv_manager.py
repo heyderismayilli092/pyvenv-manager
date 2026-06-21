@@ -276,3 +276,28 @@ def packinstall_check(venv_name, package):
     except Exception:
         return False
 
+
+# lists the requirements of the package
+def pack_requires(venv_name, package):
+    venv_path = pyvenv_path / venv_name
+    if not venv_path.exists():
+        return None
+
+    result = subprocess.run(
+        [str(venv_path / "bin" / "pip"), "show", package],
+        capture_output=True,
+        text=True
+    )
+
+    for line in result.stdout.splitlines():  # find the "Requires:" line by traversing each line
+        if line.startswith("Requires:"):
+            # remove the part after "Requires:", clean up the spaces with the strip
+            requires_part = line[len("Requires:"):].strip()
+            if not requires_part:
+                return None
+            # clear and rotate comma-separated lists
+            return [pkg.strip() for pkg in requires_part.split(",") if pkg.strip()]
+
+    return None  # return None if the Requires line does not exist
+
+
