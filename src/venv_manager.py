@@ -259,3 +259,20 @@ def package_exists_check(name):
     except requests.RequestException:
         return False  # returning False in case of network error
 
+
+# package is checked to see if it is installed in the specified environment
+def packinstall_check(venv_name, package):
+    venv_path = pyvenv_path / venv_name  # environment full path
+    if not os.path.exists(venv_path):
+        return False
+    try:
+        output = subprocess.run(
+            [str(venv_path / "bin" / "pip"), "show", package],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False
+        )
+        return output.returncode == 0
+    except Exception:
+        return False
+
