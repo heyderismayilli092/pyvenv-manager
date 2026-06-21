@@ -96,6 +96,15 @@ class pyvenv_manager(Gtk.Application):
         self.new_package_msg = builder.get_object("new_package_msg")
         self.new_pack_name = builder.get_object("new_pack_name")
 
+        # Remove Package Window
+        self.remove_package_window = builder.get_object("remove_package_window")
+        self.removepack_venvname = builder.get_object("removepack_venvname")
+        self.removepack_packname = builder.get_object("removepack_packname")
+        self.removepack_requires = builder.get_object("removepack_requires")
+        self.removepack_removebtn = builder.get_object("removepack_removebtn")
+        self.removepack_cancelbtn = builder.get_object("removepack_cancelbtn")
+        self.removepack_window_stack = builder.get_object("removepack_window_stack")
+
         # About Window
         self.about_window = builder.get_object("about_window")
 
@@ -358,13 +367,15 @@ class pyvenv_manager(Gtk.Application):
 
     def on_packabout_retrieve(self, pyvenv, package):
         packinfo = json.loads(venv_manager.pack_info(pyvenv, package))  # retrieve installed in venv package about
-        GLib.idle_add(self.on_packabout_show, pyvenv, package, packinfo)
+        packreq = venv_manager.pack_requires(pyvenv, package)  # package requirements are also being retrieved (so they can be displayed on the package removal screen)
+        GLib.idle_add(self.on_packabout_show, pyvenv, package, packinfo, packreq)
 
-    def on_packabout_show(self, pyvenv, package, packinfo):
+    def on_packabout_show(self, pyvenv, packname, packinfo, packreq):
         self.mainwindow_stack.set_visible_child_name("page3")
-        self.packinfo_packname.set_label(package)  # write package name
+        self.packinfo_packname.set_label(packname)  # write package name
         self.packinfo_venvname.set_label(pyvenv)  # write package name
         self.back_mainwindow_2.connect("clicked", self.on_envabout_clicked, pyvenv)
+        self.remove_package.connect("clicked", self.on_remove_package_window, pyvenv, packname, packreq)
         # collected information is being printed
         self.packinfo_version.set_label(packinfo["Version"])
         self.packinfo_summary.set_label(packinfo["Summary"])
@@ -488,6 +499,36 @@ class pyvenv_manager(Gtk.Application):
         self.installpack_window_stack.set_visible_child_name("newpack_page0")  # return main page
         return False
     # -----------------------------------------------
+
+
+    # ---------- Remove Package Window ----------
+    def on_remove_package_window(self, button, pyvenv, packname, packreq):
+        self.removepack_window_stack.set_visible_child_name("removepack_page0")
+        self.remove_package_window.set_transient_for(self.window)
+        self.remove_package_window.set_application(self)
+        self.removepack_removebtn.connect("clicked", self.on_remove_package, pyvenv, packname)
+        self.remove_package_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
+
+        # relevant information is being printed
+        self.removepack_venvname.set_label(_("Environment:\n") + pyvenv)
+        self.removepack_packname.set_label(_("Package:\n") + packname)
+        self.removepack_requires.set_label(_("Requirements:\n") + str(packreq))
+        self.remove_package_window.present()
+
+    def on_remove_package(self, button, pyvenv, packname):
+        self.removepack_window_stack.set_visible_child_name("removepack_page1")
+        packrm_thread = threading.Thread(target=self.packrm_process, args=(pyvenv, packname), daemon=True)
+        packrm_thread.start()
+
+    def packrm_process(self, pyvenv, packname):
+        venv_manager.uninstall_package(pyvenv, packname)  # packing remove
+        GLib.idle_add(self.on_removeprc_show)
+
+    def on_removeprc_show(self):
+        self.removepack_window_stack.set_visible_child_name("removepack_page2")
+        return False
+    # -------------------------------------------
+
 
     # hide window
     def _on_second_close_request(self, win):

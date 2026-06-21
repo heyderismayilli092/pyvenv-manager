@@ -696,7 +696,7 @@
       </object>
     </property>
     <child>
-      <object class="GtkStack">
+      <object class="GtkStack" id="removepack_window_stack">
         <child>
           <object class="GtkStackPage" id="removepack_page0">
             <property name="child">
@@ -709,8 +709,18 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="removepack_venv_pack">
+                  <object class="GtkBox">
+                    <property name="homogeneous">True</property>
                     <property name="margin-top">5</property>
+                    <child>
+                      <object class="GtkLabel" id="removepack_venvname"/>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="removepack_packname"/>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="removepack_requires"/>
+                    </child>
                   </object>
                 </child>
                 <child>
