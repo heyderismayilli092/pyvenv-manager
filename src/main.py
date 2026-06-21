@@ -258,18 +258,18 @@ class pyvenv_manager(Gtk.Application):
             venv_manager.venv_create(venvname, python_version)  # create virtual environment
         else:
             venv_manager.venv_create(venvname, python_version, self.reqrm_file)  # create virtual environment and install selected requirements
+        envlist = venv_manager.venv_lists()  # list environments
         print("Environment created")
-        GLib.idle_add(self.on_result_ready)
+        GLib.idle_add(self.on_result_ready, envlist)
 
-    def on_result_ready(self):
+    def on_result_ready(self, envlist):
         for row in list(self.environments_listbox):  # the list of environments is being cleared to be written again
             self.environments_listbox.remove(row)
-        self.envlist = venv_manager.venv_lists()  # list environments
-        for envlst in self.envlist:  # the newly received list is being writed
+        for envlst in envlist:  # the newly received list is being writed
             child = self.create_row_box(envlst)
             self.environments_listbox.append(child)
         self.mainwindow_stack.set_visible_child_name("page0")
-        return True
+        return False
 
 
     # environment about window
