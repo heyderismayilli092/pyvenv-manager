@@ -432,9 +432,30 @@ class pyvenv_manager(Gtk.Application):
         self.install_new_package_window.set_application(self)
         self.install_new_package_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
         self.new_package_insbutton.connect("clicked", self.on_new_package_ins, pyvenv)  # when you click the button to install a new package, you will be redirected to the relevant window with the environment name
+        self.new_pack_name.connect("changed", self.on_entry_changed)  # as each package name is entered, the relevant function is called to check if the package exists
+        self._debounce_source_id = None
 
         self.new_package_venvname.set_label(_("Environment: ") + pyvenv)  # environment name is also displayed on the screen
         self.install_new_package_window.present()
+
+    def on_entry_changed(self, entry):
+        if self._debounce_source_id:  # cancel the previous timer if it exists
+            GLib.source_remove(self._debounce_source_id)
+            self._debounce_source_id = None
+        self._debounce_source_id = GLib.timeout_add(300, self._on_debounce_timeout, self.new_pack_name.get_text())  # start a new timer; it will only run once
+
+    def _on_debounce_timeout(self, packname):
+        self._debounce_source_id = None  # source id should be reset after the timer runs
+        output = venv_manager.package_exists_check(packname)  # package is being checked for avaliable
+
+        if output:
+            self.new_package_msg.set_markup("<span foreground='green'>"+_("Package is avaliable")+"</span>")
+            self.new_package_insbutton.set_sensitive(True)
+        else:
+            self.new_package_msg.set_markup("<span foreground='red'>"+_("Package not found")+"</span>")
+            self.new_package_insbutton.set_sensitive(False)
+        return False  # returns False for a one-time operation
+
 
     # package install process
     def on_new_package_ins(self, button, pyvenv):
