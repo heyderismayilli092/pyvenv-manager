@@ -674,10 +674,12 @@
           </object>
         </child>
         <child>
-          <object class="GtkTextView" id="install_process_stream">
-            <property name="editable">False</property>
-            <property name="margin-bottom">5</property>
+          <object class="GtkScrolledWindow">
+            <property name="margin-end">5</property>
             <property name="margin-top">5</property>
+            <child>
+              <object class="GtkTextView" id="install_process_stream"/>
+            </child>
           </object>
         </child>
       </object>

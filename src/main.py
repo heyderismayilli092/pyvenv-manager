@@ -436,13 +436,18 @@ class pyvenv_manager(Gtk.Application):
         self.new_package_venvname.set_label(_("Environment: ") + pyvenv)  # environment name is also displayed on the screen
         self.install_new_package_window.present()
 
+    # package install process
     def on_new_package_ins(self, button, pyvenv):
         newpack = self.new_pack_name.get_text()
         if len(newpack) == 0:  # checking if the package name has been entered
           self.new_package_msg.set_label(_("Enter a package name!"))
           return False
-        self.installpack_window_stack.set_visible_child_name("newpack_page1")
 
+        self.installpack_window_stack.set_visible_child_name("newpack_page1")
+        packins_thread = threading.Thread(target=self.packins_process, args=(pyvenv, newpack), daemon=True)
+        packins_thread.start()
+
+    def packins_process(self, pyvenv, newpack):
         for line in venv_manager.pack_install(pyvenv, newpack):
             # add each line with 'append_text' in the main loop
             GLib.idle_add(self.append_text, line)
@@ -455,7 +460,7 @@ class pyvenv_manager(Gtk.Application):
         self.install_process_stream.scroll_to_iter(self.buffer.get_end_iter(), 0.0, False, 0.0, 1.0)  # automatic scroll
         self.installpack_window_stack.set_visible_child_name("newpack_page0")  # return main page
         return False
-
+    # -----------------------------------------------
 
     # hide window
     def _on_second_close_request(self, win):
