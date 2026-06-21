@@ -378,7 +378,10 @@ class pyvenv_manager(Gtk.Application):
         self.remove_package.connect("clicked", self.on_remove_package_window, pyvenv, packname, packreq)
         # collected information is being printed
         self.packinfo_version.set_label(packinfo["Version"])
-        self.packinfo_summary.set_label(packinfo["Summary"])
+        if packinfo["Summary"] != None:
+          self.packinfo_summary.set_label(packinfo["Summary"])
+        else:
+          self.packinfo_summary.set_label(_("Not Found"))
 
         if packinfo["Home-page"] != None:
           self.packinfo_homepage.set_label(packinfo["Home-page"])
@@ -511,7 +514,8 @@ class pyvenv_manager(Gtk.Application):
         self.removepack_window_stack.set_visible_child_name("removepack_page0")
         self.remove_package_window.set_transient_for(self.window)
         self.remove_package_window.set_application(self)
-        self.removepack_removebtn.connect("clicked", self.on_remove_package, pyvenv, packname)
+        self.removepack_cancelbtn.connect("clicked", self.on_removepack_win_hide)
+        self.removepack_removebtn.connect("clicked", self.on_remove_package)
         self.remove_package_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
 
         # relevant information is being printed
@@ -532,6 +536,10 @@ class pyvenv_manager(Gtk.Application):
     def on_removeprc_show(self):
         self.removepack_window_stack.set_visible_child_name("removepack_page2")
         return False
+
+    def on_removepack_win_hide(self, button):
+        self.remove_package_window.hide()
+        return True
     # -------------------------------------------
 
 
