@@ -685,4 +685,107 @@
       </object>
     </child>
   </object>
+  <object class="GtkWindow" id="remove_package_window">
+    <property name="titlebar">
+      <object class="GtkHeaderBar">
+        <property name="title-widget">
+          <object class="GtkLabel">
+            <property name="label">Remove Package</property>
+          </object>
+        </property>
+      </object>
+    </property>
+    <child>
+      <object class="GtkStack">
+        <child>
+          <object class="GtkStackPage" id="removepack_page0">
+            <property name="child">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon-name">dialog-question</property>
+                    <property name="pixel-size">64</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="removepack_venv_pack">
+                    <property name="margin-top">5</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Are you sure you want to remove the package?</property>
+                    <property name="margin-top">15</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="homogeneous">True</property>
+                    <property name="margin-top">10</property>
+                    <child>
+                      <object class="GtkButton" id="removepack_cancelbtn">
+                        <property name="label">Cancel</property>
+                        <property name="margin-end">5</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="removepack_removebtn">
+                        <property name="label">Remove</property>
+                        <property name="margin-start">6</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="name">removepack_page0</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStackPage" id="removepack_page1">
+            <property name="child">
+              <object class="GtkBox">
+                <property name="homogeneous">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkSpinner">
+                    <property name="spinning">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Package is being removed from the relevant environment...</property>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="name">removepack_page1</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStackPage" id="removepack_page2">
+            <property name="child">
+              <object class="GtkBox">
+                <property name="homogeneous">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon-name">emblem-success</property>
+                    <property name="pixel-size">64</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Package removed successfully</property>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="name">removepack_page2</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
 </interface>
