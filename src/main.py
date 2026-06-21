@@ -432,23 +432,29 @@ class pyvenv_manager(Gtk.Application):
         self.install_new_package_window.set_application(self)
         self.install_new_package_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
         self.new_package_insbutton.connect("clicked", self.on_new_package_ins, pyvenv)  # when you click the button to install a new package, you will be redirected to the relevant window with the environment name
-        self.new_pack_name.connect("changed", self.on_entry_changed)  # as each package name is entered, the relevant function is called to check if the package exists
+        self.new_pack_name.connect("changed", self.on_entry_changed, pyvenv)  # as each package name is entered, the relevant function is called to check if the package exists
         self._debounce_source_id = None
 
         self.new_package_venvname.set_label(_("Environment: ") + pyvenv)  # environment name is also displayed on the screen
         self.install_new_package_window.present()
 
-    def on_entry_changed(self, entry):
+    def on_entry_changed(self, entry, pyvenv):
         if self._debounce_source_id:  # cancel the previous timer if it exists
             GLib.source_remove(self._debounce_source_id)
             self._debounce_source_id = None
-        self._debounce_source_id = GLib.timeout_add(300, self._on_debounce_timeout, self.new_pack_name.get_text())  # start a new timer; it will only run once
+        self._debounce_source_id = GLib.timeout_add(300, self._on_debounce_timeout, pyvenv, self.new_pack_name.get_text())  # start a new timer; it will only run once
 
-    def _on_debounce_timeout(self, packname):
+    def _on_debounce_timeout(self, pyvenv, packname):
         self._debounce_source_id = None  # source id should be reset after the timer runs
-        output = venv_manager.package_exists_check(packname)  # package is being checked for avaliable
+        packavaliable = venv_manager.package_exists_check(packname)  # package is being checked for avaliable
+        packins_check = venv_manager.packinstall_check(pyvenv, packname)  # determined whether the package is installed in the relevant environment
 
-        if output:
+        if packins_check:
+            self.new_package_msg.set_markup("<span foreground='green'>"+_("Package installed")+"</span>")
+            self.new_package_insbutton.set_sensitive(False)
+            return False
+
+        if packavaliable:
             self.new_package_msg.set_markup("<span foreground='green'>"+_("Package is avaliable")+"</span>")
             self.new_package_insbutton.set_sensitive(True)
         else:
