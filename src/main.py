@@ -69,6 +69,9 @@ class pyvenv_manager(Gtk.Application):
         self.requires_label = builder.get_object("requires_label")
         self.packinfo_requiredby = builder.get_object("packinfo_requiredby")
         self.packinfo_venvname = builder.get_object("packinfo_venvname")
+        # variables that will hold information about repeatedly connected signals
+        self.back_handler1 = None
+        self.back_handler2 = None
 
         # New Environment Window
         self.new_venv_dialog = builder.get_object("new_venv_dialog")
@@ -374,8 +377,21 @@ class pyvenv_manager(Gtk.Application):
         self.mainwindow_stack.set_visible_child_name("page3")
         self.packinfo_packname.set_label(packname)  # write package name
         self.packinfo_venvname.set_label(pyvenv)  # write package name
-        self.back_mainwindow_2.connect("clicked", self.on_envabout_clicked, pyvenv)
-        self.remove_package.connect("clicked", self.on_remove_package_window, pyvenv, packname, packreq)
+
+        # In the following configuration, previously bound buttons are disabled and then rebound.
+        # This prevents data collisions and signal accumulation that can occur when returning to the relevant GtkStack pages each time they are called.
+        if self.back_handler1:
+            self.back_mainwindow_2.disconnect(self.back_handler1)
+            self.back_handler1 = None
+        print("Added signal: ", pyvenv)
+        self.back_handler1 = self.back_mainwindow_2.connect("clicked", self.on_envabout_clicked, pyvenv)
+
+        if self.back_handler2:
+             self.remove_package.disconnect(self.back_handler2)
+             self.back_handler2 = None
+        print("Added signal: ", pyvenv, "---", packname)
+        self.back_handler2 = self.remove_package.connect("clicked", self.on_remove_package_window, pyvenv, packname, packreq)
+
         # collected information is being printed
         self.packinfo_version.set_label(packinfo["Version"])
         if packinfo["Summary"] != None:
