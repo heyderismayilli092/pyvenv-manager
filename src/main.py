@@ -406,7 +406,12 @@ class pyvenv_manager(Gtk.Application):
             self.packinfo_license.set_label(_("Not Found"))
 
         if packinfo["Requires"] != None:
-          for packlst in packinfo["Requires"]:
+          self.requires_label.show()
+          self.requires_packages_list.show()  # if there are requirements, the list showing them is activated
+          for row in list(self.requires_packages_list):  # package list is being cleaned up for rewriting
+            self.requires_packages_list.remove(row)
+
+          for packlst in packinfo["Requires"]:  # writing requires
             child = self.create_packreq_line(packlst)
             self.requires_packages_list.append(child)
         else:
