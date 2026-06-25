@@ -11,6 +11,7 @@ import os
 import json
 import threading
 import venv_manager
+import mimetypes
 from locale import gettext as _
 from pathlib import Path
 
@@ -26,9 +27,6 @@ class pyvenv_manager(Gtk.Application):
     def do_activate(self):
         builder = Gtk.Builder()
         builder.add_from_file(GLADE_FILE)  # ui path
-
-        self.python_version = None  # it saves the selected Python version
-        self.reqrm_file = None  # if a requirements file is selected, its path will be writed here
 
         homefolder = Path.home()
         self.pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing the created Python environments
@@ -74,6 +72,9 @@ class pyvenv_manager(Gtk.Application):
         self.back_handler1 = None
         self.back_handler2 = None
         self.installed_packages_num = 0
+        self.requirements_filedir = False
+        self.python_version = None  # it saves the selected Python version
+        self.reqrm_file = None  # if a requirements file is selected, its path will be writed here
 
         # New Environment Window
         self.new_venv_dialog = builder.get_object("new_venv_dialog")
@@ -227,7 +228,8 @@ class pyvenv_manager(Gtk.Application):
         if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
             if file:
-                self.requirements_file = file.get_path()
+                self.requirements_filedir = file.get_path()
+                print("Selected requirements file: ", self.requirements_filedir)
         dialog.destroy()
 
 
@@ -251,6 +253,15 @@ class pyvenv_manager(Gtk.Application):
             self.venv_error_msg.set_label(_("Select a Python version !"))
             return False
 
+        if self.requirements_filedir:
+            mimetype, i = mimetypes.guess_type(self.requirements_filedir)
+            if mimetype != 'text/plain':
+                self.venv_error_msg.show()
+                self.venv_error_msg.set_label(_("The file you selected may not be the\ncorrect one containing the necessary libraries !"))
+                return False
+            else:
+                self.reqrm_file = self.requirements_filedir
+
         self.progress_status_label.set_label(_("Creating virtual environment..."))
         self.mainwindow_stack.set_visible_child_name("page1")
         self.new_venv_dialog.hide()
@@ -260,12 +271,9 @@ class pyvenv_manager(Gtk.Application):
         thread.start()
 
     def venv_creating(self, venvname, python_version):
-        if self.reqrm_file == None:
-            venv_manager.venv_create(venvname, python_version)  # create virtual environment
-        else:
-            venv_manager.venv_create(venvname, python_version, self.reqrm_file)  # create virtual environment and install selected requirements
+        venv_manager.venv_create(venvname, python_version)  # create virtual environment
+
         envlist = venv_manager.venv_lists()  # list environments
-        print("Environment created")
         GLib.idle_add(self.on_result_ready, envlist)
 
     def on_result_ready(self, envlist):
@@ -275,6 +283,7 @@ class pyvenv_manager(Gtk.Application):
             child = self.create_row_box(envlst)
             self.environments_listbox.append(child)
         self.mainwindow_stack.set_visible_child_name("page0")
+        print("Environment created")
         return False
 
 

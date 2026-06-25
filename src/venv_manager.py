@@ -11,7 +11,7 @@ pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing 
 
 
 # a function that creates a new Python environment
-def venv_create(venv_name, python_version, req_file=None):
+def venv_create(venv_name, python_version):
     venv_path = pyvenv_path / venv_name  # environment full path
     if os.path.exists(venv_path):
         return False
@@ -45,16 +45,6 @@ def venv_create(venv_name, python_version, req_file=None):
         except subprocess.CalledProcessError as e:
            return e
 
-        # if a list of dependencies is provided when the environment is created, then the list is read and the dependencies are installed into the environment
-        if req_file != None:
-            requirements_file = open(req_file, "r")
-            reqlist = requirements_file.read()
-            for pack in reqlist.splitlines():
-              print("Install -- ", pack)
-              if not pack_install(venv_name, pack):
-                  continue
-        return True
-
     # create environment for python3 version
     elif python_version == "python3":
         print(f"'{venv_path}' creating...")
@@ -62,14 +52,6 @@ def venv_create(venv_name, python_version, req_file=None):
             env_dir=venv_path,
             with_pip=True
         )
-        # if a list of dependencies is provided when the environment is created, then the list is read and the dependencies are installed into the environment
-        if req_file != None:
-            requirements_file = open(req_file, "r")
-            reqlist = requirements_file.read()
-            for pack in reqlist.splitlines():
-              print("Install -- ", pack)
-              if not pack_install(venv_name, pack):
-                  continue
         return True
 
 
@@ -299,5 +281,4 @@ def pack_requires(venv_name, package):
             return [pkg.strip() for pkg in requires_part.split(",") if pkg.strip()]
 
     return None  # return None if the Requires line does not exist
-
 
