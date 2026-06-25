@@ -210,8 +210,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkLabel">
-                            <property name="label">Installed Packages:</property>
+                          <object class="GtkLabel" id="installed_packages_total">
                             <property name="margin-bottom">3</property>
                           </object>
                         </child>

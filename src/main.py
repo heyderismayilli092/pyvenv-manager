@@ -48,6 +48,7 @@ class pyvenv_manager(Gtk.Application):
         self.remove_package = builder.get_object("remove_package")  # remove the packet from the selected environment
         self.environment_about_name = builder.get_object("environment_about_name")  # environment about page label
         self.installed_packages_list = builder.get_object("installed_packages_list")  # installed packages listbox
+        self.installed_packages_total = builder.get_object("installed_packages_total")  # installed packages total number
         self.requires_packages_list = builder.get_object("requires_packages_list")  # lists the requirements of a package
         self.progress_status_label = builder.get_object("progress_status_label")  # progress status label
         # venv about page labels
@@ -72,6 +73,7 @@ class pyvenv_manager(Gtk.Application):
         # variables that will hold information about repeatedly connected signals
         self.back_handler1 = None
         self.back_handler2 = None
+        self.installed_packages_num = 0
 
         # New Environment Window
         self.new_venv_dialog = builder.get_object("new_venv_dialog")
@@ -275,7 +277,7 @@ class pyvenv_manager(Gtk.Application):
         return False
 
 
-    # environment about window
+    # ---------- Environment About Window ----------
     def on_envabout_clicked(self, button, pyvenv):
         self.progress_status_label.set_label(_("Retrieve environment about informations..."))
         self.mainwindow_stack.set_visible_child_name("page1")
@@ -322,6 +324,10 @@ class pyvenv_manager(Gtk.Application):
         for packlst in self.env_packlist:  # the newly received list is being writed
             child = self.create_envabout_line(pyvenv, packlst["name"])  # only the name portion is extracted from the output and added to the list
             self.installed_packages_list.append(child)
+            self.installed_packages_num += 1
+        print(pyvenv, "----", _("Installed packages (total {} packages):").format(self.installed_packages_num))
+        self.installed_packages_total.set_label(_("Installed packages (total {} packages):").format(self.installed_packages_num))
+        self.installed_packages_num = 0  # after the total number of packets is printed, the variable holding the numerical data is reset to zero
         return False
 
     # function that creates rows to add to the listbox so that each installed package is displayed
@@ -359,9 +365,10 @@ class pyvenv_manager(Gtk.Application):
     def on_back_mainwindow(self, button):
         self.mainwindow_stack.set_visible_child_name("page0")
         return True
+    # -----------------------------------------------
 
 
-    # package about screen
+    # ---------- Package About Screen ----------
     def on_packabout_clicked(self, button, pyvenv, packname):
         self.progress_status_label.set_label(_("Retrieve package info..."))
         self.mainwindow_stack.set_visible_child_name("page1")
@@ -444,6 +451,7 @@ class pyvenv_manager(Gtk.Application):
         else:
           self.packinfo_requiredby.set_label("Not Found")
         return False
+    # -----------------------------------------------
 
     # if the selected package has requirements, it will create rows to add those requirements to the listbox
     def create_packreq_line(self, text, icon_size=32):
