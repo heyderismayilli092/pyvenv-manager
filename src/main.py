@@ -100,6 +100,7 @@ class pyvenv_manager(Gtk.Application):
         self.new_package_insbutton = builder.get_object("new_package_insbutton")
         self.new_package_msg = builder.get_object("new_package_msg")
         self.new_pack_name = builder.get_object("new_pack_name")
+        self.packins_process_finish = False  # this variable becomes True after the new package installation is complete and the relevant outputs are printed to the screen
 
         # Remove Package Window
         self.remove_package_window = builder.get_object("remove_package_window")
@@ -525,12 +526,16 @@ class pyvenv_manager(Gtk.Application):
             GLib.idle_add(self.append_text, line)
         # status message when the process is complete
         GLib.idle_add(self.append_text, f"\n[Process finished]\n")
+        self.packins_process_finish = True
 
     def append_text(self, text):
         end_iter = self.buffer.get_end_iter()
         self.buffer.insert(end_iter, text)
         self.install_process_stream.scroll_to_iter(self.buffer.get_end_iter(), 0.0, False, 0.0, 1.0)  # automatic scroll
-        self.installpack_window_stack.set_visible_child_name("newpack_page0")  # return main page
+        # after the installation outputs are displayed and the process is complete, the waiting page is changed
+        if self.packins_process_finish:
+            self.installpack_window_stack.set_visible_child_name("newpack_page0")  # return main page
+            self.packins_process_finish = False
         return False
     # -----------------------------------------------
 
