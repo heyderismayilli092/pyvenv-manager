@@ -115,7 +115,7 @@ class pyvenv_manager(Gtk.Application):
         self.remove_package_window = builder.get_object("remove_package_window")
         self.removepack_venvname = builder.get_object("removepack_venvname")
         self.removepack_packname = builder.get_object("removepack_packname")
-        self.removepack_requires = builder.get_object("removepack_requires")
+        self.removepack_reqlist = builder.get_object("removepack_reqlist")
         self.removepack_removebtn = builder.get_object("removepack_removebtn")
         self.removepack_cancelbtn = builder.get_object("removepack_cancelbtn")
         self.removepack_window_stack = builder.get_object("removepack_window_stack")
@@ -667,8 +667,27 @@ class pyvenv_manager(Gtk.Application):
         # relevant information is being printed
         self.removepack_venvname.set_label(_("Environment:\n") + pyvenv)
         self.removepack_packname.set_label(_("Package:\n") + packname)
-        self.removepack_requires.set_label(_("Requirements:\n") + str(packreq))
+        if self.removepack_reqlist:
+            for row in list(self.removepack_reqlist):  # package list is being cleaned up for rewriting
+                self.removepack_reqlist.remove(row)
+        if packreq:
+            print("requirements are being listed...")
+            for reqlist in packreq:
+                self.removepack_reqlist.append(self.create_reqlist(reqlist))
         self.remove_package_window.present()
+
+    def create_reqlist(self, req):
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        # LABEL
+        label1 = Gtk.Label(label=req, xalign=0)
+        label1.set_hexpand(True)
+        label1.set_halign(Gtk.Align.START)
+        hbox.append(label1)
+        hbox.set_margin_top(6)
+        hbox.set_margin_bottom(6)
+        hbox.set_margin_start(6)
+        hbox.set_margin_end(6)
+        return hbox
 
     def on_remove_package(self, button, pyvenv, packname):
         self.removepack_window_stack.set_visible_child_name("removepack_page1")

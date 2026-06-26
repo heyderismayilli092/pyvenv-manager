@@ -811,7 +811,21 @@
                       <object class="GtkLabel" id="removepack_packname"/>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="removepack_requires"/>
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="label">Requirements:</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow">
+                            <child>
+                              <object class="GtkListBox" id="removepack_reqlist"/>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
                     </child>
                   </object>
                 </child>
