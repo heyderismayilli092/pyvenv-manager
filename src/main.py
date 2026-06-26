@@ -104,6 +104,8 @@ class pyvenv_manager(Gtk.Application):
         self.new_pack_name = builder.get_object("new_pack_name")
         self.processpage_label = builder.get_object("processpage_label")
         self.new_venv_stack = builder.get_object("new_venv_stack")
+        self.reqinfo_list = builder.get_object("reqinfo_list")
+        self.next_installbtn = builder.get_object("next_installbtn")
         self.packins_process_finish = False  # this variable becomes True after the new package installation is complete and the relevant outputs are printed to the screen
 
         # Remove Package Window
@@ -257,12 +259,76 @@ class pyvenv_manager(Gtk.Application):
             return False
 
         if self.requirements_filedir:
+            self.processpage_stream.show()  # it will be shown if it was previously hidden
             mimetype, i = mimetypes.guess_type(self.requirements_filedir)
             if mimetype != 'text/plain':
                 self.venv_error_msg.show()
                 self.venv_error_msg.set_label(_("The file you selected may not be the\ncorrect one containing the necessary libraries !"))
                 return False
+            # relevant page will be displayed to show information about the requirements
+            self.processpage_label.set_label(_("Status of the packages to be installed is listed..."))
+            self.new_venv_stack.set_visible_child_name("process_page")
+            self.next_installbtn.connect("clicked", self.venv_creating_resume, venvname)
+            # process is being initiated to obtain the status of the packages
+            reqinfo_list_thread = threading.Thread(target=self.retrieve_reqinfo, daemon=True)
+            reqinfo_list_thread.start()
+            return False
+        else:
+            self.processpage_stream.hide()
 
+        self.processpage_label.set_label(_("Creating virtual environment..."))
+        self.new_venv_stack.set_visible_child_name("process_page")
+        print("Venv name: ", venvname)
+        print(self.python_version)
+        thread = threading.Thread(target=self.venv_creating, args=(venvname, self.python_version), daemon=True)
+        thread.start()
+
+    def retrieve_reqinfo(self):
+        reqfile_infolist = []
+        with open(self.requirements_filedir, "r") as reqfile:
+            for pack in reqfile.read().splitlines():
+                output = venv_manager.package_exists_check(pack)
+                reqfile_infolist.append({"pack": pack, "status": output})
+        GLib.idle_add(self.create_reqinfo_list, reqfile_infolist)
+
+    def create_reqinfo_list(self, reqlist):
+        for row in list(self.reqinfo_list):  # package list is being cleaned up for rewriting
+            self.reqinfo_list.remove(row)
+
+        for lst in reqlist:  # the newly received list is being writed
+            child = self.create_reqinfo_line(lst["pack"], lst["status"])
+            self.reqinfo_list.append(child)
+        self.new_venv_stack.set_visible_child_name("reqinfo_page")
+        return False
+
+
+    def create_reqinfo_line(self, packname, info):
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        # LABEL
+        label1 = Gtk.Label(label=packname, xalign=0)
+        label1.set_hexpand(True)
+        label1.set_halign(Gtk.Align.START)
+        # LABEL
+        label2 = Gtk.Label()
+        if info:
+            label2.set_markup("<span foreground='green'>"+_("Package can be installed")+"</span>")
+        else:
+            label2.set_markup("<span foreground='red'>"+_("Package cannot be installed")+"</span>")
+        label2.set_xalign(1.0)  # text should be right-aligned within itself.
+        label2.set_hexpand(False)
+        label2.set_halign(Gtk.Align.END)  # let it be aligned to the right as a widget
+
+        hbox.append(label1)
+        hbox.append(label2)
+        hbox.set_margin_top(6)
+        hbox.set_margin_bottom(6)
+        hbox.set_margin_start(6)
+        hbox.set_margin_end(6)
+        return hbox
+
+    # If the user has also selected the requirements file to be installed in the environment creation window,
+    # the availability of the requirements is first shown to the user, and then when the user clicks the "Next" button, the process continues from where it left off with this function
+    def venv_creating_resume(self, button, venvname):
         self.processpage_label.set_label(_("Creating virtual environment..."))
         self.new_venv_stack.set_visible_child_name("process_page")
         print("Venv name: ", venvname)
