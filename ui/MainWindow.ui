@@ -162,6 +162,96 @@
                             <property name="margin-top">5</property>
                           </object>
                         </child>
+                        <child>
+                          <object class="GtkSeparator">
+                            <property name="margin-bottom">3</property>
+                            <property name="margin-top">3</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkStack" id="connected_pages">
+                            <child>
+                              <object class="GtkStackPage" id="connected_fileslist">
+                                <property name="child">
+                                  <object class="GtkBox">
+                                    <property name="margin-top">3</property>
+                                    <property name="orientation">vertical</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="label">Connected Files:</property>
+                                        <property name="lines">-2</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkScrolledWindow">
+                                        <child>
+                                          <object class="GtkListBox" id="list_connfiles">
+                                            <property name="vexpand">True</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </property>
+                                <property name="name">connected_fileslist</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkStackPage" id="connected_not_page">
+                                <property name="child">
+                                  <object class="GtkBox">
+                                    <property name="homogeneous">True</property>
+                                    <property name="orientation">vertical</property>
+                                    <child>
+                                      <object class="GtkImage">
+                                        <property name="icon-name">dialog-error-symbolic</property>
+                                        <property name="pixel-size">32</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="label">No files were found linked to this environment!</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </property>
+                                <property name="name">connected_not_page</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkStackPage" id="connected_appslist">
+                                <property name="child">
+                                  <object class="GtkBox">
+                                    <property name="margin-top">3</property>
+                                    <property name="orientation">vertical</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="label">Connected Apps:</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkScrolledWindow">
+                                        <child>
+                                          <object class="GtkListBox" id="list_connapps">
+                                            <property name="vexpand">True</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </property>
+                                <property name="name">connected_appslist</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="change_connpage">
+                            <property name="label">Change</property>
+                            <property name="margin-bottom">2</property>
+                            <property name="margin-top">3</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child>
