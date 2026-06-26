@@ -74,7 +74,6 @@ class pyvenv_manager(Gtk.Application):
         self.installed_packages_num = 0
         self.requirements_filedir = False
         self.python_version = None  # it saves the selected Python version
-        self.reqrm_file = None  # if a requirements file is selected, its path will be writed here
 
         # New Environment Window
         self.new_venv_dialog = builder.get_object("new_venv_dialog")
@@ -88,6 +87,8 @@ class pyvenv_manager(Gtk.Application):
         self.requirements_file = builder.get_object("requirements_file")  # requirements file select button
         self.cancel_btn = builder.get_object("cancel_btn")  # cancel button
         self.create_venv = builder.get_object("create_venv")  # create button
+        self.processpage_stream = builder.get_object("processpage_stream")
+        self.processpage_stream_buffer = self.processpage_stream.get_buffer()
 
         # File Chooser Dialog
         self.filechooser_dialog = builder.get_object("filechooser_dialog")
@@ -97,10 +98,12 @@ class pyvenv_manager(Gtk.Application):
         self.installpack_window_stack = builder.get_object("installpack_window_stack")
         self.new_package_venvname = builder.get_object("new_package_venvname")
         self.install_process_stream = builder.get_object("install_process_stream")
-        self.buffer = self.install_process_stream.get_buffer()
+        self.install_process_buffer = self.install_process_stream.get_buffer()
         self.new_package_insbutton = builder.get_object("new_package_insbutton")
         self.new_package_msg = builder.get_object("new_package_msg")
         self.new_pack_name = builder.get_object("new_pack_name")
+        self.processpage_label = builder.get_object("processpage_label")
+        self.new_venv_stack = builder.get_object("new_venv_stack")
         self.packins_process_finish = False  # this variable becomes True after the new package installation is complete and the relevant outputs are printed to the screen
 
         # Remove Package Window
@@ -233,7 +236,7 @@ class pyvenv_manager(Gtk.Application):
         dialog.destroy()
 
 
-    # create new environment
+    # ---------- Create New Environment ----------
     def _on_create_venv(self, button):
         venvname = self.environment_name.get_text()
         # it checks if a environment name has been entered
@@ -259,12 +262,9 @@ class pyvenv_manager(Gtk.Application):
                 self.venv_error_msg.show()
                 self.venv_error_msg.set_label(_("The file you selected may not be the\ncorrect one containing the necessary libraries !"))
                 return False
-            else:
-                self.reqrm_file = self.requirements_filedir
 
-        self.progress_status_label.set_label(_("Creating virtual environment..."))
-        self.mainwindow_stack.set_visible_child_name("page1")
-        self.new_venv_dialog.hide()
+        self.processpage_label.set_label(_("Creating virtual environment..."))
+        self.new_venv_stack.set_visible_child_name("process_page")
         print("Venv name: ", venvname)
         print(self.python_version)
         thread = threading.Thread(target=self.venv_creating, args=(venvname, self.python_version), daemon=True)
@@ -272,9 +272,20 @@ class pyvenv_manager(Gtk.Application):
 
     def venv_creating(self, venvname, python_version):
         venv_manager.venv_create(venvname, python_version)  # create virtual environment
+        if self.requirements_filedir:
+            with open(self.requirements_filedir) as reqtxt:
+                for pack in reqtxt.read().splitlines():
+                    print("install package ->", venvname, "->", pack)
+                    for insprocess in venv_manager.pack_install(venvname, pack):
+                        GLib.idle_add(self.packins_append_text, insprocess)
 
         envlist = venv_manager.venv_lists()  # list environments
         GLib.idle_add(self.on_result_ready, envlist)
+
+    def packins_append_text(self, text):
+        end_iter = self.processpage_stream_buffer.get_end_iter()
+        self.processpage_stream_buffer.insert(end_iter, text)
+        self.processpage_stream.scroll_to_iter(self.processpage_stream_buffer.get_end_iter(), 0.0, False, 0.0, 1.0)  # automatic scroll
 
     def on_result_ready(self, envlist):
         for row in list(self.environments_listbox):  # the list of environments is being cleared to be written again
@@ -282,7 +293,7 @@ class pyvenv_manager(Gtk.Application):
         for envlst in envlist:  # the newly received list is being writed
             child = self.create_row_box(envlst)
             self.environments_listbox.append(child)
-        self.mainwindow_stack.set_visible_child_name("page0")
+        self.new_venv_stack.set_visible_child_name("createvenv_success")
         print("Environment created")
         return False
 
@@ -538,9 +549,9 @@ class pyvenv_manager(Gtk.Application):
         self.packins_process_finish = True
 
     def append_text(self, text):
-        end_iter = self.buffer.get_end_iter()
-        self.buffer.insert(end_iter, text)
-        self.install_process_stream.scroll_to_iter(self.buffer.get_end_iter(), 0.0, False, 0.0, 1.0)  # automatic scroll
+        end_iter = self.install_process_buffer.get_end_iter()
+        self.install_process_buffer.insert(end_iter, text)
+        self.install_process_stream.scroll_to_iter(self.install_process_buffer.get_end_iter(), 0.0, False, 0.0, 1.0)  # automatic scroll
         # after the installation outputs are displayed and the process is complete, the waiting page is changed
         if self.packins_process_finish:
             self.installpack_window_stack.set_visible_child_name("newpack_page0")  # return main page
