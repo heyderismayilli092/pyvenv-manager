@@ -35,7 +35,7 @@ class pyvenv_manager(Gtk.Application):
         # -------Widget references-------
         # Main Window
         self.window = builder.get_object("main_window")
-        self.new_environment_btn = builder.get_object("new_environment")  # create new environment button
+        self.new_environment = builder.get_object("new_environment")  # create new environment button
         self.about_btn = builder.get_object("about_button")
         self.environments_listbox = builder.get_object("environments_listbox")  # environments listbox
         self.mainwindow_stack = builder.get_object("mainwindow_stack")
@@ -125,7 +125,7 @@ class pyvenv_manager(Gtk.Application):
         self.about_window = builder.get_object("about_window")
 
         # ----Signals----
-        self.new_environment_btn.connect("clicked", self.on_new_environment)
+        self.new_environment.connect("clicked", self.on_new_environment)
         self.about_btn.connect("clicked", self.on_about)
         self.cancel_btn.connect("clicked", self._on_newvenv_hide)
         self.create_venv.connect("clicked", self._on_create_venv)
@@ -195,6 +195,8 @@ class pyvenv_manager(Gtk.Application):
         self.new_venv_dialog.set_application(self)
         self.new_venv_dialog.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
 
+        self.new_venv_stack.set_visible_child_name("packins_page")  # returning to the first page
+        self.environment_name.set_text("")  # being cleaned
         self.venv_error_msg.hide()
         self.new_venv_dialog.present()
 
@@ -245,7 +247,6 @@ class pyvenv_manager(Gtk.Application):
 
     # ---------- Create New Environment ----------
     def _on_create_venv(self, button):
-        self.new_venv_stack.set_visible_child_name("packins_page")
         venvname = self.environment_name.get_text()
         # it checks if a environment name has been entered
         if len(venvname) == 0:
