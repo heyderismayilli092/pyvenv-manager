@@ -303,29 +303,33 @@ def connfiles_list(pyvenv):
     connected_list = []
 
     with open(connfile, "r") as connjson:
-        data = connjson.read()
+        data = json.load(connjson)
     connected = data["connected_files"]
     if connected:
-        for lst in connected:
-            if connected[1] == pyvenv:
-                connected_list.append(connected)
-        return connected_list
+        if pyvenv in connected:
+            for lst in connected[pyvenv]:
+                connected_list.append(lst)
+            return connected_list
+        else:
+            return False
     else:
         return False
 
 
 # returns apps attached to any environment
-def connfiles_apps(pyvenv):
+def connapps_list(pyvenv):
     connected_apps = []
 
-    with open(connfile, "r") as connjson:
-        data = connjson.read()
+    with open(connfile, "r") as  connjson:
+        data = json.load(connjson)
     connected = data["connected_apps"]
     if connected:
-        for lst in connected:
-            if connected[1] == pyvenv:
-                connected_list.append(connected)
-        return connected_list
+        if pyvenv in connected:
+            for lst in connected[pyvenv]:
+                connected_apps.append(lst)
+            return connected_apps
+        else:
+            return False
     else:
         return False
 
