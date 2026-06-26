@@ -30,7 +30,18 @@ class pyvenv_manager(Gtk.Application):
 
         homefolder = Path.home()
         self.pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing the created Python environments
+        self.connfile = self.pyvenv_path / "connections.json"  # connectedions info file
 
+        # checking json file
+        if not os.path.exists(self.connfile):
+            json_content = """{
+  "connected_files": {},
+  "connected_apps": {}
+}"""
+            # a JSON file containing connection information is being created
+            connfile = open(self.connfile, "w")
+            connfile.write(json_content)
+            connfile.close()
 
         # -------Widget references-------
         # Main Window
@@ -49,6 +60,10 @@ class pyvenv_manager(Gtk.Application):
         self.installed_packages_total = builder.get_object("installed_packages_total")  # installed packages total number
         self.requires_packages_list = builder.get_object("requires_packages_list")  # lists the requirements of a package
         self.progress_status_label = builder.get_object("progress_status_label")  # progress status label
+        self.connected_pages = builder.get_object("connected_pages")
+        self.change_connpage = builder.get_object("change_connpage")
+        self.list_connfiles = builder.get_object("list_connfiles")
+        self.list_connapps = builder.get_object("list_connapps")
         # venv about page labels
         self.venvinfo_cfg = builder.get_object("venvinfo_cfg")
         self.venvinfo_implementation = builder.get_object("venvinfo_implementation")
@@ -394,9 +409,11 @@ class pyvenv_manager(Gtk.Application):
 
     def on_envabout_retrieve(self, pyvenv):
         venvinfo = venv_manager.venv_about(pyvenv)  # retrieve environment about
-        GLib.idle_add(self.on_envabout_show, pyvenv, venvinfo)
+        connfiles = venv_manager.connfiles_list(pyvenv)  # retrieve connected files
+        connapps = venv_manager.connapps_list(pyvenv)  # retrieve connected apps
+        GLib.idle_add(self.on_envabout_show, pyvenv, venvinfo, connfiles, connapps)
 
-    def on_envabout_show(self, pyvenv, venvinfo):
+    def on_envabout_show(self, pyvenv, venvinfo, connfiles, connapps):
         self.mainwindow_stack.set_visible_child_name("page2")
         self.environment_about_name.set_label(pyvenv)  # environment name write
         if self.back_handler3:
@@ -440,6 +457,15 @@ class pyvenv_manager(Gtk.Application):
         print(pyvenv, "----", _("Installed packages (total {} packages):").format(self.installed_packages_num))
         self.installed_packages_total.set_label(_("Installed packages (total {} packages):").format(self.installed_packages_num))
         self.installed_packages_num = 0  # after the total number of packets is printed, the variable holding the numerical data is reset to zero
+
+        self.change_connpage.set_sensitive(True)
+        if connfiles == False and connapps == False:
+            self.connected_pages.set_visible_child_name("connected_notfound")
+            self.change_connpage.set_sensitive(False)
+        elif connfiles:
+            self.connected_pages.set_visible_child_name("connected_fileslist")
+        elif connapps:
+            self.connected_pages.set_visible_child_name("connected_appslist")
         return False
 
     # function that creates rows to add to the listbox so that each installed package is displayed
