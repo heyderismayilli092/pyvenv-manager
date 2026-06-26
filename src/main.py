@@ -197,6 +197,7 @@ class pyvenv_manager(Gtk.Application):
 
         self.new_venv_stack.set_visible_child_name("packins_page")  # returning to the first page
         self.environment_name.set_text("")  # being cleaned
+        self.processpage_stream_buffer.set_text("")  # previously written data is being cleared
         self.venv_error_msg.hide()
         self.new_venv_dialog.present()
 
@@ -268,9 +269,15 @@ class pyvenv_manager(Gtk.Application):
         if self.requirements_filedir:
             self.processpage_stream.show()  # it will be shown if it was previously hidden
             mimetype, i = mimetypes.guess_type(self.requirements_filedir)
+            # checking the selected file type
             if mimetype != 'text/plain':
                 self.venv_error_msg.show()
                 self.venv_error_msg.set_label(_("The file you selected may not be the\ncorrect one containing the necessary libraries !"))
+                return False
+            # checking internet
+            if not venv_manager.intcheck():
+                self.venv_error_msg.show()
+                self.venv_error_msg.set_label(_("For requirements to install,\nthe computer must be connected to the internet !"))
                 return False
             # relevant page will be displayed to show information about the requirements
             self.processpage_label.set_label(_("Status of the packages to be installed is listed..."))
@@ -292,7 +299,6 @@ class pyvenv_manager(Gtk.Application):
         print("Requirements file not selected")
         print("Venv name: ", venvname)
         print(self.python_version)
-        self.install_process_buffer.set_text("")    # previously written data is being cleared
         thread = threading.Thread(target=self.venv_creating, args=(venvname, self.python_version), daemon=True)
         thread.start()
 

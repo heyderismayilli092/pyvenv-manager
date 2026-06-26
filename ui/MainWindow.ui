@@ -778,6 +778,8 @@
     </child>
   </object>
   <object class="GtkWindow" id="remove_package_window">
+    <property name="default-height">300</property>
+    <property name="default-width">500</property>
     <property name="titlebar">
       <object class="GtkHeaderBar">
         <property name="title-widget">

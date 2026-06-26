@@ -5,6 +5,7 @@ import subprocess
 import venv
 import json
 import requests
+import socket
 
 homefolder = Path.home()
 pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing the created Python environments
@@ -281,4 +282,17 @@ def pack_requires(venv_name, package):
             return [pkg.strip() for pkg in requires_part.split(",") if pkg.strip()]
 
     return None  # return None if the Requires line does not exist
+
+
+# check internet
+def intcheck():
+    test_hosts = [("8.8.8.8", 53), ("1.1.1.1", 53)]  # DNS server IPs
+    # for better control, 2 DNS server IP addresses are being tested
+    for host, port in test_hosts:
+        try:
+            with socket.create_connection((host, port), timeout=2.0):
+                return True
+        except OSError:
+            continue
+    return False
 
