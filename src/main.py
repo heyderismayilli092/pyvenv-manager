@@ -497,6 +497,9 @@ class pyvenv_manager(Gtk.Application):
         self.remove_package.set_sensitive(True)
         self.packinfo_packname.set_label(packname)  # write package name
         self.packinfo_venvname.set_label(pyvenv)  # write package name
+        # if the user has selected the 'pip' packet, the packet removal button is disabled
+        if packname == "pip":
+            self.remove_package.set_sensitive(False)
 
         # In the following configuration, previously bound buttons are disabled and then rebound.
         # This prevents data collisions and signal accumulation that can occur when returning to the relevant GtkStack pages each time they are called.
@@ -596,6 +599,7 @@ class pyvenv_manager(Gtk.Application):
         self.back_handler4 = self.new_package_insbutton.connect("clicked", self.on_new_package_ins, pyvenv)  # when you click the button to install a new package, you will be redirected to the relevant window with the environment name
         self.new_pack_name.connect("changed", self.on_entry_changed, pyvenv)  # as each package name is entered, the relevant function is called to check if the package exists
         self.install_process_buffer.set_text("")  # previously written data is being cleared
+        self.new_pack_name.set_text("")  # being cleaned
         self._debounce_source_id = None
 
         self.new_package_venvname.set_label(_("Environment: ") + pyvenv)  # environment name is also displayed on the screen
@@ -604,6 +608,7 @@ class pyvenv_manager(Gtk.Application):
     def on_entry_changed(self, entry, pyvenv):
         if self._debounce_source_id:  # cancel the previous timer if it exists
             GLib.source_remove(self._debounce_source_id)
+            self.new_package_msg.set_text("")  # being cleaned (this object is being cleaned here so that GTK doesn't give a memory warning)
             self._debounce_source_id = None
         self._debounce_source_id = GLib.timeout_add(300, self._on_debounce_timeout, pyvenv, self.new_pack_name.get_text())  # start a new timer; it will only run once
 
@@ -611,6 +616,10 @@ class pyvenv_manager(Gtk.Application):
         self._debounce_source_id = None  # source id should be reset after the timer runs
         packavaliable = venv_manager.package_exists_check(packname)  # package is being checked for avaliable
         packins_check = venv_manager.packinstall_check(pyvenv, packname)  # determined whether the package is installed in the relevant environment
+
+        if len(packname) == 0:
+            self.new_package_msg.set_text("")
+            return False
 
         if packins_check:
             self.new_package_msg.set_markup("<span foreground='green'>"+_("Package installed")+"</span>")
