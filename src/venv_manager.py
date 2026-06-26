@@ -9,6 +9,7 @@ import socket
 
 homefolder = Path.home()
 pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing the created Python environments
+connfile = pyvenv_path / "connections.json"  # connectedions info file
 
 
 # a function that creates a new Python environment
@@ -295,4 +296,36 @@ def intcheck():
         except OSError:
             continue
     return False
+
+
+# returns files attached to any environment
+def connfiles_list(pyvenv):
+    connected_list = []
+
+    with open(connfile, "r") as connjson:
+        data = connjson.read()
+    connected = data["connected_files"]
+    if connected:
+        for lst in connected:
+            if connected[1] == pyvenv:
+                connected_list.append(connected)
+        return connected_list
+    else:
+        return False
+
+
+# returns apps attached to any environment
+def connfiles_apps(pyvenv):
+    connected_apps = []
+
+    with open(connfile, "r") as connjson:
+        data = connjson.read()
+    connected = data["connected_apps"]
+    if connected:
+        for lst in connected:
+            if connected[1] == pyvenv:
+                connected_list.append(connected)
+        return connected_list
+    else:
+        return False
 
