@@ -71,6 +71,7 @@ class pyvenv_manager(Gtk.Application):
         # variables that will hold information about repeatedly connected signals
         self.back_handler1 = None
         self.back_handler2 = None
+        self.back_handler3 = None
         self.installed_packages_num = 0
         self.requirements_filedir = False
         self.python_version = None  # it saves the selected Python version
@@ -89,6 +90,7 @@ class pyvenv_manager(Gtk.Application):
         self.create_venv = builder.get_object("create_venv")  # create button
         self.processpage_stream = builder.get_object("processpage_stream")
         self.processpage_stream_buffer = self.processpage_stream.get_buffer()
+        self.back_handler6 = None
 
         # File Chooser Dialog
         self.filechooser_dialog = builder.get_object("filechooser_dialog")
@@ -107,6 +109,7 @@ class pyvenv_manager(Gtk.Application):
         self.reqinfo_list = builder.get_object("reqinfo_list")
         self.next_installbtn = builder.get_object("next_installbtn")
         self.packins_process_finish = False  # this variable becomes True after the new package installation is complete and the relevant outputs are printed to the screen
+        self.back_handler4 = None
 
         # Remove Package Window
         self.remove_package_window = builder.get_object("remove_package_window")
@@ -116,6 +119,7 @@ class pyvenv_manager(Gtk.Application):
         self.removepack_removebtn = builder.get_object("removepack_removebtn")
         self.removepack_cancelbtn = builder.get_object("removepack_cancelbtn")
         self.removepack_window_stack = builder.get_object("removepack_window_stack")
+        self.back_handler5 = None
 
         # About Window
         self.about_window = builder.get_object("about_window")
@@ -129,6 +133,7 @@ class pyvenv_manager(Gtk.Application):
         self.item_python3.connect("clicked", self.on_item_python3)
         self.requirements_file.connect("clicked", self.on_requirements_file_select)
         self.back_mainwindow.connect("clicked", self.on_back_mainwindow)
+        self.removepack_cancelbtn.connect("clicked", self.on_removepack_win_hide)
 
 
         self.envlist = venv_manager.venv_lists()  # list environments
@@ -240,6 +245,7 @@ class pyvenv_manager(Gtk.Application):
 
     # ---------- Create New Environment ----------
     def _on_create_venv(self, button):
+        self.new_venv_stack.set_visible_child_name("packins_page")
         venvname = self.environment_name.get_text()
         # it checks if a environment name has been entered
         if len(venvname) == 0:
@@ -268,7 +274,11 @@ class pyvenv_manager(Gtk.Application):
             # relevant page will be displayed to show information about the requirements
             self.processpage_label.set_label(_("Status of the packages to be installed is listed..."))
             self.new_venv_stack.set_visible_child_name("process_page")
-            self.next_installbtn.connect("clicked", self.venv_creating_resume, venvname)
+            if self.back_handler6:
+                self.next_installbtn.disconnect(self.back_handler6)
+                self.back_handler6 = None
+            print("Added signal: ", venvname)
+            self.back_handler6 = self.next_installbtn.connect("clicked", self.venv_creating_resume, venvname)
             # process is being initiated to obtain the status of the packages
             reqinfo_list_thread = threading.Thread(target=self.retrieve_reqinfo, daemon=True)
             reqinfo_list_thread.start()
@@ -278,8 +288,10 @@ class pyvenv_manager(Gtk.Application):
 
         self.processpage_label.set_label(_("Creating virtual environment..."))
         self.new_venv_stack.set_visible_child_name("process_page")
+        print("Requirements file not selected")
         print("Venv name: ", venvname)
         print(self.python_version)
+        self.install_process_buffer.set_text("")    # previously written data is being cleared
         thread = threading.Thread(target=self.venv_creating, args=(venvname, self.python_version), daemon=True)
         thread.start()
 
@@ -331,8 +343,10 @@ class pyvenv_manager(Gtk.Application):
     def venv_creating_resume(self, button, venvname):
         self.processpage_label.set_label(_("Creating virtual environment..."))
         self.new_venv_stack.set_visible_child_name("process_page")
+        print("The requirements file has been selected. Installation will continue after the user confirms")
         print("Venv name: ", venvname)
         print(self.python_version)
+        self.install_process_buffer.set_text("")    # previously written data is being cleared
         thread = threading.Thread(target=self.venv_creating, args=(venvname, self.python_version), daemon=True)
         thread.start()
 
@@ -378,7 +392,11 @@ class pyvenv_manager(Gtk.Application):
     def on_envabout_show(self, pyvenv, venvinfo):
         self.mainwindow_stack.set_visible_child_name("page2")
         self.environment_about_name.set_label(pyvenv)  # environment name write
-        self.install_new_package.connect("clicked", self.on_install_new_package_window, pyvenv)
+        if self.back_handler3:
+            self.install_new_package.disconnect(self.back_handler3)
+            self.back_handler3 = None
+        print("Added signal: ", pyvenv)
+        self.back_handler3 = self.install_new_package.connect("clicked", self.on_install_new_package_window, pyvenv)
 
         # information about the environment is being written
         # IMPORTANT NOTE: Environments built with Python 2 and Python 3 may display different information. Therefore, KeyError handlers have been added below. The information shown for Python 2 may not be shown for Python 3
@@ -563,8 +581,14 @@ class pyvenv_manager(Gtk.Application):
         self.install_new_package_window.set_transient_for(self.window)
         self.install_new_package_window.set_application(self)
         self.install_new_package_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
-        self.new_package_insbutton.connect("clicked", self.on_new_package_ins, pyvenv)  # when you click the button to install a new package, you will be redirected to the relevant window with the environment name
+        # if an old connection exists, it will be removed and a new one will be created
+        if self.back_handler4:
+            self.new_package_insbutton.disconnect(self.back_handler4)
+            self.back_handler4 = None
+        print("Added signal: ", pyvenv)
+        self.back_handler4 = self.new_package_insbutton.connect("clicked", self.on_new_package_ins, pyvenv)  # when you click the button to install a new package, you will be redirected to the relevant window with the environment name
         self.new_pack_name.connect("changed", self.on_entry_changed, pyvenv)  # as each package name is entered, the relevant function is called to check if the package exists
+        self.install_process_buffer.set_text("")  # previously written data is being cleared
         self._debounce_source_id = None
 
         self.new_package_venvname.set_label(_("Environment: ") + pyvenv)  # environment name is also displayed on the screen
@@ -602,6 +626,7 @@ class pyvenv_manager(Gtk.Application):
           self.new_package_msg.set_label(_("Enter a package name!"))
           return False
 
+        self.install_process_buffer.set_text("")    # previously written data is being cleared
         self.installpack_window_stack.set_visible_child_name("newpack_page1")
         packins_thread = threading.Thread(target=self.packins_process, args=(pyvenv, newpack), daemon=True)
         packins_thread.start()
@@ -631,8 +656,12 @@ class pyvenv_manager(Gtk.Application):
         self.removepack_window_stack.set_visible_child_name("removepack_page0")
         self.remove_package_window.set_transient_for(self.window)
         self.remove_package_window.set_application(self)
-        self.removepack_cancelbtn.connect("clicked", self.on_removepack_win_hide)
-        self.removepack_removebtn.connect("clicked", self.on_remove_package, pyvenv, packname)
+        # if an old connection exists, it will be removed and a new one will be created
+        if self.back_handler5:
+            self.removepack_removebtn.disconnect(self.back_handler5)
+            self.back_handler5 = None
+        print("Added signal: ", pyvenv)
+        self.back_handler5 = self.removepack_removebtn.connect("clicked", self.on_remove_package, pyvenv, packname)
         self.remove_package_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
 
         # relevant information is being printed
