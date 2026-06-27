@@ -478,12 +478,22 @@ class pyvenv_manager(Gtk.Application):
             self.change_connpage.set_sensitive(False)
         elif connfiles:
             self.connected_pages.set_visible_child_name("connected_fileslist")
+            for row in list(self.list_connfiles):
+                self.list_connfiles.remove(row)
+            # scripts are being listing...
+            for lst in connfiles:
+                self.list_connfiles.append(self.create_connected_line(lst))
         elif connapps:
             self.connected_pages.set_visible_child_name("connected_appslist")
+            for row in list(self.list_connapps):
+                self.list_connapps.remove(row)
+            # apps are being listing...
+            for lst in connapps:
+                self.list_connapps.append(self.create_connected_line(lst))
         return False
 
     # function that creates rows to add to the listbox so that each installed package is displayed
-    def create_envabout_line(self, pyvenv, text, icon_size=32):
+    def create_envabout_line(self, pyvenv, text):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # LABEL
         label = Gtk.Label(label=text, xalign=0)
@@ -505,6 +515,23 @@ class pyvenv_manager(Gtk.Application):
 
         hbox.append(label)
         hbox.append(button)
+
+        hbox.set_margin_top(6)
+        hbox.set_margin_bottom(6)
+        hbox.set_margin_start(6)
+        hbox.set_margin_end(6)
+        return hbox
+
+    # function that generates rows for a list box that displays environment-dependent Python scripts or applications
+    def create_connected_line(self, text):
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        # LABEL
+        label = Gtk.Label(label=text, xalign=0)
+        label.set_hexpand(True)
+        label.set_halign(Gtk.Align.START)
+        label.set_selectable(False)
+
+        hbox.append(label)
 
         hbox.set_margin_top(6)
         hbox.set_margin_bottom(6)
@@ -857,7 +884,7 @@ class pyvenv_manager(Gtk.Application):
     def connectedpy_success(self, output):
         self.mainwindow_stack.set_visible_child_name("page4")
         print("connected successfully")
-        return True
+        return False
     # -------------------------------------------
 
 
