@@ -1154,7 +1154,7 @@
       </object>
     </property>
     <child>
-      <object class="GtkStack">
+      <object class="GtkStack" id="disconn_stack">
         <child>
           <object class="GtkStackPage" id="disconn_dialogpage">
             <property name="child">
@@ -1214,7 +1214,7 @@
           </object>
         </child>
         <child>
-          <object class="GtkStackPage">
+          <object class="GtkStackPage" id="disconn_success">
             <property name="child">
               <object class="GtkBox">
                 <property name="homogeneous">True</property>
@@ -1232,6 +1232,7 @@
                 </child>
               </object>
             </property>
+            <property name="name">disconn_success</property>
           </object>
         </child>
       </object>
