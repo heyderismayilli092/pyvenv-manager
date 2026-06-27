@@ -66,13 +66,13 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkButton" id="connect_pyfile">
                             <property name="label">Connect Python File</property>
                             <property name="margin-start">5</property>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkButton" id="connect_pyapp">
                             <property name="label">Connect Python App</property>
                             <property name="margin-start">5</property>
                           </object>
@@ -576,8 +576,12 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkLabel" id="selected_pyfile_label"/>
+                    </child>
+                    <child>
                       <object class="GtkBox">
                         <property name="margin-bottom">5</property>
+                        <property name="margin-top">10</property>
                         <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel">
@@ -598,6 +602,8 @@
                     <child>
                       <object class="GtkButton" id="back_main_window1">
                         <property name="label">Back Main Window</property>
+                        <property name="margin-bottom">5</property>
+                        <property name="margin-top">2</property>
                       </object>
                     </child>
                   </object>
