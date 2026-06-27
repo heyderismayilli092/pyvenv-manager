@@ -197,28 +197,6 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkStackPage" id="connected_not_page">
-                                <property name="child">
-                                  <object class="GtkBox">
-                                    <property name="homogeneous">True</property>
-                                    <property name="orientation">vertical</property>
-                                    <child>
-                                      <object class="GtkImage">
-                                        <property name="icon-name">dialog-error-symbolic</property>
-                                        <property name="pixel-size">32</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel">
-                                        <property name="label">No files were found linked to this environment!</property>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </property>
-                                <property name="name">connected_not_page</property>
-                              </object>
-                            </child>
-                            <child>
                               <object class="GtkStackPage" id="connected_appslist">
                                 <property name="child">
                                   <object class="GtkBox">
@@ -241,6 +219,28 @@
                                   </object>
                                 </property>
                                 <property name="name">connected_appslist</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkStackPage" id="connected_notfound">
+                                <property name="child">
+                                  <object class="GtkBox">
+                                    <property name="homogeneous">True</property>
+                                    <property name="orientation">vertical</property>
+                                    <child>
+                                      <object class="GtkImage">
+                                        <property name="icon-name">dialog-error-symbolic</property>
+                                        <property name="pixel-size">32</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="label">No files were found linked to this environment!</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </property>
+                                <property name="name">connected_notfound</property>
                               </object>
                             </child>
                           </object>
@@ -531,6 +531,135 @@
                 </property>
                 <property name="name">page3</property>
                 <property name="title">page3</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage" id="page4">
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Connect Python file to Environment</property>
+                        <property name="margin-bottom">5</property>
+                        <property name="margin-top">10</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="select_pyfile">
+                        <property name="child">
+                          <object class="GtkBox">
+                            <property name="margin-start">10</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">add-files-to-archive-symbolic</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label">Select Python project file</property>
+                                <property name="margin-start">10</property>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                        <property name="margin-bottom">5</property>
+                        <property name="margin-end">10</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-top">5</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparator">
+                        <property name="margin-bottom">10</property>
+                        <property name="margin-top">10</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="margin-bottom">5</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="label">Select Environment:</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow">
+                            <child>
+                              <object class="GtkListBox" id="selectenv_list1">
+                                <property name="vexpand">True</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+                <property name="name">page4</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage" id="page5">
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Connect Python app to Environment</property>
+                        <property name="margin-bottom">5</property>
+                        <property name="margin-top">10</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="label">Select App:</property>
+                            <property name="margin-top">10</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow">
+                            <child>
+                              <object class="GtkListBox" id="select_app">
+                                <property name="vexpand">True</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparator">
+                        <property name="margin-bottom">10</property>
+                        <property name="margin-top">10</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="label">Select Environment:</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow">
+                            <child>
+                              <object class="GtkListBox" id="selectenv_list2">
+                                <property name="vexpand">True</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+                <property name="name">page5</property>
               </object>
             </child>
           </object>
