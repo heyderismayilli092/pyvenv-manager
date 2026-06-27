@@ -60,10 +60,19 @@ class pyvenv_manager(Gtk.Application):
         self.installed_packages_total = builder.get_object("installed_packages_total")  # installed packages total number
         self.requires_packages_list = builder.get_object("requires_packages_list")  # lists the requirements of a package
         self.progress_status_label = builder.get_object("progress_status_label")  # progress status label
+        self.connect_pyfile = builder.get_object("connect_pyfile")  # connect python file button
+        self.connect_pyapp = builder.get_object("connect_pyapp")  # connect python app button
         self.connected_pages = builder.get_object("connected_pages")
         self.change_connpage = builder.get_object("change_connpage")
         self.list_connfiles = builder.get_object("list_connfiles")
         self.list_connapps = builder.get_object("list_connapps")
+        self.select_pyfile = builder.get_object("select_pyfile")  # button to select the Python file to link to
+        self.selectenv_list1 = builder.get_object("selectenv_list1")
+        self.selectenv_list2 = builder.get_object("selectenv_list2")
+        self.back_main_window1 = builder.get_object("back_main_window1")  # back main window
+        self.back_main_window2 = builder.get_object("back_main_window2")  # back main window
+        self.selected_pyfile_label = builder.get_object("selected_pyfile_label")  # selected connection python file show label
+        self.select_app = builder.get_object("select_app")
         # venv about page labels
         self.venvinfo_cfg = builder.get_object("venvinfo_cfg")
         self.venvinfo_implementation = builder.get_object("venvinfo_implementation")
@@ -90,6 +99,7 @@ class pyvenv_manager(Gtk.Application):
         self.installed_packages_num = 0
         self.requirements_filedir = False
         self.python_version = None  # it saves the selected Python version
+        self.selected_connpy_file = None
 
         # New Environment Window
         self.new_venv_dialog = builder.get_object("new_venv_dialog")
@@ -149,13 +159,17 @@ class pyvenv_manager(Gtk.Application):
         self.requirements_file.connect("clicked", self.on_requirements_file_select)
         self.back_mainwindow.connect("clicked", self.on_back_mainwindow)
         self.removepack_cancelbtn.connect("clicked", self.on_removepack_win_hide)
+        self.connect_pyfile.connect("clicked", self.on_conn_pythonfile)
+        self.select_pyfile.connect("clicked", self.on_select_pythonfile)
+        self.back_main_window1.connect("clicked", self.on_back_mainwindow)
+        self.back_main_window2.connect("clicked", self.on_back_mainwindow)
 
 
         self.envlist = venv_manager.venv_lists()  # list environments
         for envlst in self.envlist:
             row = Gtk.ListBoxRow()
-            row.set_child(self.create_row_box(envlst))
-            print("child id:", id(row), "type:", type(row))
+            row.set_child(self.create_envlist(envlst))
+            print("environment: ", "child id:", id(row), "type:", type(row))
             row.set_activatable(True)
             self.environments_listbox.append(row)
 
@@ -166,7 +180,7 @@ class pyvenv_manager(Gtk.Application):
 
 
     # the created environments are listed
-    def create_row_box(self, text, icon_name="python", icon_size=32):
+    def create_envlist(self, text, icon_name="python", icon_size=32):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # ICON
         icon = Gtk.Image.new_from_icon_name(icon_name)
@@ -393,7 +407,7 @@ class pyvenv_manager(Gtk.Application):
         for row in list(self.environments_listbox):  # the list of environments is being cleared to be written again
             self.environments_listbox.remove(row)
         for envlst in envlist:  # the newly received list is being writed
-            child = self.create_row_box(envlst)
+            child = self.create_envlist(envlst)
             self.environments_listbox.append(child)
         self.new_venv_stack.set_visible_child_name("createvenv_success")
         print("Environment created")
@@ -497,12 +511,6 @@ class pyvenv_manager(Gtk.Application):
         hbox.set_margin_start(6)
         hbox.set_margin_end(6)
         return hbox
-
-
-    # back main window
-    def on_back_mainwindow(self, button):
-        self.mainwindow_stack.set_visible_child_name("page0")
-        return True
     # -----------------------------------------------
 
 
@@ -751,17 +759,122 @@ class pyvenv_manager(Gtk.Application):
     # -------------------------------------------
 
 
+    # ---------- Connect Python File Window ----------
+    def on_conn_pythonfile(self, button):
+        self.mainwindow_stack.set_visible_child_name("page4")
+        self.selected_pyfile_label.hide()
+        self.selected_connpy_file = None
+        if self.selectenv_list1:
+            for envlst in list(self.selectenv_list1):
+                self.selectenv_list1.remove(envlst)
+
+        self.envlist = venv_manager.venv_lists()  # list environments
+        for envlst in self.envlist:
+            row = Gtk.ListBoxRow()
+            row.set_child(self.create_conn_envlist(envlst))
+            print("selectable enviroment: ", "child id:", id(row), "type:", type(row))
+            row.set_activatable(True)
+            self.selectenv_list1.append(row)
+
+    # the created environments are listed
+    def create_conn_envlist(self, pyvenv, icon_name="python", icon_size=32):
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        # ICON
+        icon = Gtk.Image.new_from_icon_name(icon_name)
+        icon.set_pixel_size(icon_size)
+
+        # LABEL
+        label = Gtk.Label(label=pyvenv, xalign=0)
+        label.set_hexpand(True)
+        label.set_halign(Gtk.Align.START)
+
+        # BUTTON
+        button = Gtk.Button()
+        button.set_valign(Gtk.Align.CENTER)
+        button.connect("clicked", self.on_envconn_clicked, pyvenv)
+
+        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        btn_icon = Gtk.Image.new_from_icon_name("help-about-symbolic")
+        btn_icon.set_pixel_size(20)
+
+        btn_label = Gtk.Label(label=_("Connect"))
+        btn_box.append(btn_icon)
+        btn_box.append(btn_label)
+
+        button.set_child(btn_box)
+        label.set_selectable(False)
+
+        hbox.append(icon)
+        hbox.append(label)
+        hbox.append(button)
+
+        hbox.set_margin_top(6)
+        hbox.set_margin_bottom(6)
+        hbox.set_margin_start(6)
+        hbox.set_margin_end(6)
+        return hbox
+
+    # select python script file on computer
+    def on_select_pythonfile(self, button):
+        dialog = Gtk.FileChooserNative(
+            title=_("Choose Python Script"),
+            transient_for=self.window,
+            action=Gtk.FileChooserAction.OPEN,
+            accept_label=_("Open"),
+            cancel_label=_("Cancel")
+        )
+        dialog.connect("response", self.on_connpy_response)
+        dialog.show()
+
+    def on_connpy_response(self, dialog, response):
+        if response == Gtk.ResponseType.ACCEPT:
+            file = dialog.get_file()
+            if file:
+                self.selected_connpy_file = file.get_path()
+                print("Selected Python script file: ", self.selected_connpy_file)
+                self.selected_pyfile_label.show()
+                self.selected_pyfile_label.set_label(_("Selected script: ")+self.selected_connpy_file)
+        dialog.destroy()
+
+    # connect python file to environment
+    def on_envconn_clicked(self, button, pyvenv):
+        mimetype, i = mimetypes.guess_type(self.selected_connpy_file)
+        # checking the selected file type
+        if mimetype != 'text/x-python':
+            self.selected_pyfile_label.show()
+            self.selected_pyfile_label.set_label(_("No valid Python file was selected!"))
+            return False
+        print("selected python file: ", self.selected_connpy_file)
+        self.progress_status_label.set_label(_("The Python file is connecting to the selected environment..."))
+        self.mainwindow_stack.set_visible_child_name("page1")
+        venvconn_thread = threading.Thread(target=self.selectedpy_connect, args=(pyvenv,), daemon=True)
+        venvconn_thread.start()
+
+    def selectedpy_connect(self, pyvenv):
+        output = venv_manager.connect_environment_file(pyvenv, self.selected_connpy_file)
+        GLib.idle_add(self.connectedpy_success, str(output))
+
+    def connectedpy_success(self, output):
+        self.mainwindow_stack.set_visible_child_name("page4")
+        print("connected successfully")
+        return True
+    # -------------------------------------------
+
+
     # hide window
     def _on_second_close_request(self, win):
         win.hide()
         return True
 
+    # back main window
+    def on_back_mainwindow(self, button):
+        self.mainwindow_stack.set_visible_child_name("page0")
+        return True
 
     # close environment window
     def _on_newvenv_hide(self, button):
         self.new_venv_dialog.hide()
         return True
-
 
     # Main Window Destroy
     def _on_destroy(self, win):
