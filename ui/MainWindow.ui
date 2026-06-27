@@ -595,6 +595,11 @@
                         </child>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkButton" id="back_main_window1">
+                        <property name="label">Back Main Window</property>
+                      </object>
+                    </child>
                   </object>
                 </property>
                 <property name="name">page4</property>
@@ -655,6 +660,11 @@
                             </child>
                           </object>
                         </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="back_main_window2">
+                        <property name="label">Back Main Window</property>
                       </object>
                     </child>
                   </object>
@@ -989,7 +999,9 @@
             <property name="margin-end">5</property>
             <property name="margin-top">5</property>
             <child>
-              <object class="GtkTextView" id="install_process_stream"/>
+              <object class="GtkTextView" id="install_process_stream">
+                <property name="editable">False</property>
+              </object>
             </child>
           </object>
         </child>
