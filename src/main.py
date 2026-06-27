@@ -146,6 +146,16 @@ class pyvenv_manager(Gtk.Application):
         self.removepack_window_stack = builder.get_object("removepack_window_stack")
         self.back_handler5 = None
 
+        # Disconnect Window
+        self.disconnect_conn_window = builder.get_object("disconnect_conn_window")
+        self.disconnect_window_title = builder.get_object("disconnect_window_title")
+        self.disconnect_label = builder.get_object("disconnect_label")
+        self.conn_removebtn = builder.get_object("conn_removebtn")
+        self.connremove_cancel = builder.get_object("connremove_cancel")
+        self.disconn_stack = builder.get_object("disconn_stack")
+        self.disconnect_process_label = builder.get_object("disconnect_process_label")
+        self.back_handler6 = None
+
         # About Window
         self.about_window = builder.get_object("about_window")
 
@@ -163,6 +173,7 @@ class pyvenv_manager(Gtk.Application):
         self.select_pyfile.connect("clicked", self.on_select_pythonfile)
         self.back_main_window1.connect("clicked", self.on_back_mainwindow)
         self.back_main_window2.connect("clicked", self.on_back_mainwindow)
+        self.connremove_cancel.connect("clicked", self.on_disconn_win_hide)
 
 
         self.envlist = venv_manager.venv_lists()  # list environments
@@ -482,14 +493,14 @@ class pyvenv_manager(Gtk.Application):
                 self.list_connfiles.remove(row)
             # scripts are being listing...
             for lst in connfiles:
-                self.list_connfiles.append(self.create_connected_line(lst))
+                self.list_connfiles.append(self.create_connected_line(pyvenv, lst, "pyfile"))
         elif connapps:
             self.connected_pages.set_visible_child_name("connected_appslist")
             for row in list(self.list_connapps):
                 self.list_connapps.remove(row)
             # apps are being listing...
             for lst in connapps:
-                self.list_connapps.append(self.create_connected_line(lst))
+                self.list_connapps.append(self.create_connected_line(pyvenv, lst, "appfile"))
         return False
 
     # function that creates rows to add to the listbox so that each installed package is displayed
@@ -523,20 +534,27 @@ class pyvenv_manager(Gtk.Application):
         return hbox
 
     # function that generates rows for a list box that displays environment-dependent Python scripts or applications
-    def create_connected_line(self, text):
+    def create_connected_line(self, pyvenv, selected, typ):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # LABEL
-        label = Gtk.Label(label=text, xalign=0)
+        label = Gtk.Label(label=os.path.basename(selected), xalign=0)
         label.set_hexpand(True)
         label.set_halign(Gtk.Align.START)
         label.set_selectable(False)
 
+        # BUTTON
+        button = Gtk.Button(label=_("Disconnect"))
+        button.set_valign(Gtk.Align.CENTER)
+        button.connect("clicked", self.on_disconn, pyvenv, selected, typ)
+
         hbox.append(label)
+        hbox.append(button)
 
         hbox.set_margin_top(6)
         hbox.set_margin_bottom(6)
         hbox.set_margin_start(6)
         hbox.set_margin_end(6)
+        hbox.set_tooltip_text(_("Full path: ")+selected)
         return hbox
     # -----------------------------------------------
 
@@ -885,6 +903,51 @@ class pyvenv_manager(Gtk.Application):
         self.mainwindow_stack.set_visible_child_name("page4")
         print("connected successfully")
         return False
+    # -------------------------------------------
+
+
+    # ---------- Disconnect Python File ----------
+    def on_disconn(self, button, pyvenv, selected, typ):
+        self.disconn_stack.set_visible_child_name("disconn_dialogpage")
+        if typ == "pyfile":
+            self.disconnect_window_title.set_label(_("Disconnect Python script"))
+            self.disconnect_label.set_label(_("Are you sure you want to remove the Python file you selected from the '{}' environment?").format(pyvenv))
+        elif typ == "appfile":
+            self.disconnect_window_title.set_label(_("Disconnect Python app"))
+            self.disconnect_label.set_label(_("Are you sure you want to remove the Python app you selected from the '{}' environment?").format(pyvenv))
+        self.disconnect_conn_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
+
+        # if an old connection exists, it will be removed and a new one will be created
+        if self.back_handler6:
+            self.conn_removebtn.disconnect(self.back_handler6)
+            self.back_handler6 = None
+        print("Added signal: ", pyvenv)
+        self.back_handler6 = self.conn_removebtn.connect("clicked", self.selected_disconn, pyvenv, selected, typ)
+        self.disconnect_conn_window.present()
+
+    def selected_disconn(self, button, pyvenv, selected, typ):
+        if typ == "pyfile":
+            self.disconnect_process_label.set_label(_("Connection between file and virtual environment is being severed..."))
+        elif typ == "appfile":
+            self.disconnect_process_label.set_label(_("Connection between app and virtual environment is being severed..."))
+        self.disconn_stack.set_visible_child_name("disconn_processpage")
+        disconn_thread = threading.Thread(target=self.disconn_process, args=(pyvenv, selected, typ), daemon=True)
+        disconn_thread.start()
+
+    def disconn_process(self, pyvenv, selected, typ):
+        if typ == "pyfile":
+            venv_manager.disconnect_environment_file(pyvenv, selected)
+        #elif typ == "appfile":
+            #venv_manager.disconnect_environment_app(pyvenv, selected)
+        GLib.idle_add(self.disconn_success)
+
+    def disconn_success(self):
+        self.disconn_stack.set_visible_child_name("disconn_success")
+        return False
+
+    def on_disconn_win_hide(self, button):
+        self.disconnect_conn_window.hide()
+        return True
     # -------------------------------------------
 
 
