@@ -361,6 +361,33 @@ def connect_environment_file(venv_name, selectedpy):
     ])
     with open(connfile, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
+
     return True
 
+
+# this function disconnects the Python script from its environment and returns it to its normal state
+def disconnect_environment_file(venv_name, selectedpy):
+    venv_path = pyvenv_path / venv_name
+    if not os.path.exists(venv_path):
+        return None
+
+    # reading json metadata
+    with open(connfile, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # shebang is being removed from the file
+    with open(selectedpy, "r", encoding="utf-8") as pyfile:
+        lines = pyfile.readlines()
+    with open(selectedpy, "w", encoding="utf-8") as pyfile:
+        pyfile.writelines(lines[1:])
+
+    if venv_name in data["connected_files"]:
+        data["connected_files"][venv_name].remove(selectedpy)  # name of the Python file to be extracted from the environment is being removed
+        # if the list is empty, also delete the key that exists in the environment name
+        if not data["connected_files"][venv_name]:
+            del data["connected_files"][venv_name]
+    with open(connfile, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+    return True
 
