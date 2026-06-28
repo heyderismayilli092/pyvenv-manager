@@ -173,7 +173,6 @@ class pyvenv_manager(Gtk.Application):
         self.select_pyfile.connect("clicked", self.on_select_pythonfile)
         self.back_main_window1.connect("clicked", self.on_back_mainwindow)
         self.back_main_window2.connect("clicked", self.on_back_mainwindow)
-        self.connremove_cancel.connect("clicked", self.on_disconn_win_hide)
 
 
         self.envlist = venv_manager.venv_lists()  # list environments
@@ -883,6 +882,11 @@ class pyvenv_manager(Gtk.Application):
 
     # connect python file to environment
     def on_envconn_clicked(self, button, pyvenv):
+        # checking the selected file type
+        if not self.selected_connpy_file:
+            self.selected_pyfile_label.show()
+            self.selected_pyfile_label.set_label(_("Choose a Python file!"))
+            return False
         mimetype, i = mimetypes.guess_type(self.selected_connpy_file)
         # checking the selected file type
         if mimetype != 'text/x-python':
@@ -915,7 +919,7 @@ class pyvenv_manager(Gtk.Application):
         elif typ == "appfile":
             self.disconnect_window_title.set_label(_("Disconnect Python app"))
             self.disconnect_label.set_label(_("Are you sure you want to remove the Python app you selected from the '{}' environment?").format(pyvenv))
-        self.disconnect_conn_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
+        self.disconnect_conn_window.connect("close-request", self.on_disconn_win_hide, pyvenv)  # pressing the Close (X) key will change "hide" to "destroy"
 
         # if an old connection exists, it will be removed and a new one will be created
         if self.back_handler6:
@@ -943,10 +947,12 @@ class pyvenv_manager(Gtk.Application):
 
     def disconn_success(self):
         self.disconn_stack.set_visible_child_name("disconn_success")
+        print("disconnected successfully")
         return False
 
-    def on_disconn_win_hide(self, button):
+    def on_disconn_win_hide(self, button, pyvenv):
         self.disconnect_conn_window.hide()
+        GLib.idle_add(self.on_envabout_clicked, button, pyvenv)  # this was added to refresh the "Environment About" page after the disconnect page is closed
         return True
     # -------------------------------------------
 
@@ -962,7 +968,7 @@ class pyvenv_manager(Gtk.Application):
         return True
 
     # close environment window
-    def _on_newvenv_hide(self, button):
+    def _on_newvenv_hide(self, button, pyvenv):
         self.new_venv_dialog.hide()
         return True
 
