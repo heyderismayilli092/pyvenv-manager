@@ -914,6 +914,13 @@ class pyvenv_manager(Gtk.Application):
                 return False
         except KeyError:
             pass
+
+        # checking if the selected Python file is connected to another environment
+        for envlst in self.connected_files:
+            if self.selected_connpy_file in self.connected_files[envlst]:
+                self.selected_pyfile_label.show()
+                self.selected_pyfile_label.set_label(_("The file you want to link is linked to the '{}' environment.").format(envlst))
+                return False
         print("selected python file: ", self.selected_connpy_file)
         self.progress_status_label.set_label(_("The Python file is connecting to the selected environment..."))
         self.mainwindow_stack.set_visible_child_name("page1")
