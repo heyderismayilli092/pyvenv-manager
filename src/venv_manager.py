@@ -348,11 +348,29 @@ def connect_environment_file(venv_name, selectedpy):
     startpy_file =  venv_path / "bin" / "python3"
     start_shebang = "#!" + str(startpy_file)
 
+    # Additional interpreter control and redirection code lines are added to allow the Python file to be executed from the linked environment
+    exec_comm = f"""import os
+import sys
+VENV_PYTHON = "{start_shebang[2:]}"
+if os.path.realpath(sys.executable) != os.path.realpath(VENV_PYTHON):
+    # environment variables are being updated
+    env = os.environ.copy()
+    env["VIRTUAL_ENV"] = VENV_PYTHON
+    env["PATH"] = os.path.join(VENV_PYTHON, "bin") + ":" + env["PATH"]
+    os.execve(VENV_PYTHON, [VENV_PYTHON] + sys.argv, env)"""
+
     # the new shebang is printed to the first line of the Python file
     with open(selectedpy, "r", encoding="utf-8") as pyfile:
         tmpcontent = pyfile.read()
+
     with open(selectedpy, "w", encoding="utf-8") as pyfile:
-        pyfile.write(start_shebang + "\n" + tmpcontent)
+        pyfile.write(start_shebang+"\n")
+        pyfile.write("# '{}' environment was connected to by 'pyvenv-manager'\n".format(venv_name))
+        pyfile.write("# Generated automatically by 'pyvenv-manager'\n# Do not edit manually.\n")
+        pyfile.write(exec_comm+"\n")  # interpreter routing codes are being written
+        pyfile.write("#--------------------------------------\n")  # separator line
+        pyfile.write("\n")  # extra line
+        pyfile.write(tmpcontent)  # main code is being written
 
     # connection is saved to a JSON metadata file
     data["connected_files"].setdefault(venv_name, [])
@@ -379,7 +397,7 @@ def disconnect_environment_file(venv_name, selectedpy):
     with open(selectedpy, "r", encoding="utf-8") as pyfile:
         lines = pyfile.readlines()
     with open(selectedpy, "w", encoding="utf-8") as pyfile:
-        pyfile.writelines(lines[1:])
+        pyfile.writelines(lines[15:])
 
     if venv_name in data["connected_files"]:
         data["connected_files"][venv_name].remove(selectedpy)  # name of the Python file to be extracted from the environment is being removed
