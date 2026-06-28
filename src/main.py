@@ -161,6 +161,7 @@ class pyvenv_manager(Gtk.Application):
         self.disconn_stack = builder.get_object("disconn_stack")
         self.disconnect_process_label = builder.get_object("disconnect_process_label")
         self.back_handler6 = None
+        self.back_handler7 = None
 
         # About Window
         self.about_window = builder.get_object("about_window")
@@ -978,7 +979,11 @@ class pyvenv_manager(Gtk.Application):
         elif typ == "appfile":
             self.disconnect_window_title.set_label(_("Disconnect Python app"))
             self.disconnect_label.set_label(_("Are you sure you want to remove the Python app you selected from the '{}' environment?").format(pyvenv))
-        self.disconnect_conn_window.connect("close-request", self.on_disconn_win_hide, pyvenv)  # pressing the Close (X) key will change "hide" to "destroy"
+        if self.back_handler7:
+            self.disconnect_conn_window.disconnect(self.back_handler7)
+            self.back_handler7 = None
+        print("Added signal: ", pyvenv)
+        self.back_handler7 = self.disconnect_conn_window.connect("close-request", self.on_disconn_win_hide, pyvenv)  # pressing the Close (X) key will change "hide" to "destroy"
 
         # if an old connection exists, it will be removed and a new one will be created
         if self.back_handler6:
@@ -1010,6 +1015,7 @@ class pyvenv_manager(Gtk.Application):
         return False
 
     def on_disconn_win_hide(self, button, pyvenv):
+        print("Next ->", pyvenv)
         GLib.idle_add(self.on_envabout_clicked, button, pyvenv)  # this was added to refresh the "Environment About" page after the disconnect page is closed
         self.disconnect_conn_window.hide()
         return True
