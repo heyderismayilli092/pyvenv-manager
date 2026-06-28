@@ -119,6 +119,7 @@ class pyvenv_manager(Gtk.Application):
         self.processpage_stream = builder.get_object("processpage_stream")
         self.processpage_stream_buffer = self.processpage_stream.get_buffer()
         self.back_handler6 = None
+        self.packversion = None
 
         # File Chooser Dialog
         self.filechooser_dialog = builder.get_object("filechooser_dialog")
@@ -373,7 +374,12 @@ class pyvenv_manager(Gtk.Application):
     def create_reqinfo_line(self, packname, info):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # LABEL
-        label1 = Gtk.Label(label=packname, xalign=0)
+        label1 = Gtk.Label(xalign=0)
+        if "==" in packname:
+            packname, packversion = packname.split("==", 1)
+            label1.set_label(packname + " - (" + _("Version: ")+packversion+")")
+        else:
+            label1.set_label(packname)
         label1.set_hexpand(True)
         label1.set_halign(Gtk.Align.START)
         # LABEL

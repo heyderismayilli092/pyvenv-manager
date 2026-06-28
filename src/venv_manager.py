@@ -235,10 +235,15 @@ def uninstall_package(venv_name, package, timeout = 300):
 
 
 # checks if a package with the given name exists
-def package_exists_check(name):
-    url = f"https://pypi.org/pypi/{name}/json"
+def package_exists_check(packname):
+    if "==" in packname:  # if the package is provided with version information, it will be checked whether that version is available
+        name, version = packname.split("==", 1)
+        url = f"https://pypi.org/pypi/{name}/{version}/json"
+    else:
+        url = f"https://pypi.org/pypi/{packname}/json"
+
     try:
-        resp = requests.head(url, timeout=5.0, allow_redirects=True)  # speed test with 'head': 200 -> package avaliable, 404 -> not found
+        resp = requests.head(url, timeout=4.0, allow_redirects=True)  # speed test with 'head': 200 -> package avaliable, 404 -> not found
         return resp.status_code == 200
     except requests.RequestException:
         return False  # returning False in case of network error
