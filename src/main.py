@@ -178,6 +178,7 @@ class pyvenv_manager(Gtk.Application):
         self.back_main_window1.connect("clicked", self.on_back_mainwindow)
         self.back_main_window2.connect("clicked", self.on_back_mainwindow)
         self.back_main_window3.connect("clicked", self.on_back_mainwindow)
+        self.connremove_cancel.connect("clicked", self.on_disconn_cancel_win_hide)
 
 
         self.envlist = venv_manager.venv_lists()  # list environments
@@ -995,9 +996,14 @@ class pyvenv_manager(Gtk.Application):
         return False
 
     def on_disconn_win_hide(self, button, pyvenv):
-        self.disconnect_conn_window.hide()
         GLib.idle_add(self.on_envabout_clicked, button, pyvenv)  # this was added to refresh the "Environment About" page after the disconnect page is closed
-        return False
+        self.disconnect_conn_window.hide()
+        return True
+
+    # for cancel button
+    def on_disconn_cancel_win_hide(self, button):
+        self.disconnect_conn_window.hide()
+        return True
     # -------------------------------------------
 
 
