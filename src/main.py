@@ -43,12 +43,6 @@ class pyvenv_manager(Gtk.Application):
             connfile.write(json_content)
             connfile.close()
 
-        # connect JSON metadata
-        with open(self.connfile, "r") as connjson:
-            data = json.load(connjson)
-        self.connected_files = data["connected_files"]
-        self.connected_apps = data["connected_apps"]
-
         # -------Widget references-------
         # Main Window
         self.window = builder.get_object("main_window")
@@ -193,10 +187,16 @@ class pyvenv_manager(Gtk.Application):
             row.set_activatable(True)
             self.environments_listbox.append(row)
 
-
         self.window.set_application(self)
         self.window.connect("close-request", self._on_destroy)
         self.window.present()
+
+
+    # load JSON metadata
+    def loadmetadata(self):
+        with open(self.connfile, "r") as connjson:
+            data = json.load(connjson)
+        return data
 
 
     # the created environments are listed
@@ -906,11 +906,14 @@ class pyvenv_manager(Gtk.Application):
             return False
 
         # this file is being checked to see if it is linked to this environment
-        if self.selected_connpy_file in self.connected_files[pyvenv]:
-            self.selected_pyfile_label.show()
-            self.selected_pyfile_label.set_label(_("This file is already attached to this environment"))
-            return False
-
+        try:
+            self.connected_files = self.loadmetadata().get("connected_files")  # load json metadata
+            if self.selected_connpy_file in self.connected_files[pyvenv]:
+                self.selected_pyfile_label.show()
+                self.selected_pyfile_label.set_label(_("This file is already attached to this environment"))
+                return False
+        except KeyError:
+            pass
         print("selected python file: ", self.selected_connpy_file)
         self.progress_status_label.set_label(_("The Python file is connecting to the selected environment..."))
         self.mainwindow_stack.set_visible_child_name("page1")
