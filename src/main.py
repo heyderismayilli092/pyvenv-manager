@@ -43,6 +43,12 @@ class pyvenv_manager(Gtk.Application):
             connfile.write(json_content)
             connfile.close()
 
+        # connect JSON metadata
+        with open(self.connfile, "r") as connjson:
+            data = json.load(connjson)
+        self.connected_files = data["connected_files"]
+        self.connected_apps = data["connected_apps"]
+
         # -------Widget references-------
         # Main Window
         self.window = builder.get_object("main_window")
@@ -892,11 +898,19 @@ class pyvenv_manager(Gtk.Application):
             self.selected_pyfile_label.set_label(_("Choose a Python file!"))
             return False
         mimetype, i = mimetypes.guess_type(self.selected_connpy_file)
+
         # checking the selected file type
         if mimetype != 'text/x-python':
             self.selected_pyfile_label.show()
             self.selected_pyfile_label.set_label(_("No valid Python file was selected!"))
             return False
+
+        # this file is being checked to see if it is linked to this environment
+        if self.selected_connpy_file in self.connected_files[pyvenv]:
+            self.selected_pyfile_label.show()
+            self.selected_pyfile_label.set_label(_("This file is already attached to this environment"))
+            return False
+
         print("selected python file: ", self.selected_connpy_file)
         self.progress_status_label.set_label(_("The Python file is connecting to the selected environment..."))
         self.mainwindow_stack.set_visible_child_name("page1")
@@ -967,7 +981,7 @@ class pyvenv_manager(Gtk.Application):
     def on_disconn_win_hide(self, button, pyvenv):
         self.disconnect_conn_window.hide()
         GLib.idle_add(self.on_envabout_clicked, button, pyvenv)  # this was added to refresh the "Environment About" page after the disconnect page is closed
-        return True
+        return False
     # -------------------------------------------
 
 
