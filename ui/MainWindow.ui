@@ -721,6 +721,33 @@
                 <property name="name">page6</property>
               </object>
             </child>
+            <child>
+              <object class="GtkStackPage" id="page7">
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkImage" id="main_successimg">
+                        <property name="margin-top">10</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="main_successfully_msg">
+                        <property name="margin-bottom">10</property>
+                        <property name="margin-top">40</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="back_main_window3">
+                        <property name="label">Back Main Window</property>
+                        <property name="margin-top">10</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+                <property name="name">page7</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>

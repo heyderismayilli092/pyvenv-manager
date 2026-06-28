@@ -71,8 +71,11 @@ class pyvenv_manager(Gtk.Application):
         self.selectenv_list2 = builder.get_object("selectenv_list2")
         self.back_main_window1 = builder.get_object("back_main_window1")  # back main window
         self.back_main_window2 = builder.get_object("back_main_window2")  # back main window
+        self.back_main_window3 = builder.get_object("back_main_window3")  # back main window
         self.selected_pyfile_label = builder.get_object("selected_pyfile_label")  # selected connection python file show label
         self.select_app = builder.get_object("select_app")
+        self.main_successfully_msg = builder.get_object("main_successfully_msg")
+        self.main_successimg = builder.get_object("main_successimg")
         # venv about page labels
         self.venvinfo_cfg = builder.get_object("venvinfo_cfg")
         self.venvinfo_implementation = builder.get_object("venvinfo_implementation")
@@ -173,6 +176,7 @@ class pyvenv_manager(Gtk.Application):
         self.select_pyfile.connect("clicked", self.on_select_pythonfile)
         self.back_main_window1.connect("clicked", self.on_back_mainwindow)
         self.back_main_window2.connect("clicked", self.on_back_mainwindow)
+        self.back_main_window3.connect("clicked", self.on_back_mainwindow)
 
 
         self.envlist = venv_manager.venv_lists()  # list environments
@@ -901,11 +905,21 @@ class pyvenv_manager(Gtk.Application):
 
     def selectedpy_connect(self, pyvenv):
         output = venv_manager.connect_environment_file(pyvenv, self.selected_connpy_file)
-        GLib.idle_add(self.connectedpy_success, str(output))
+        GLib.idle_add(self.connectedpy_success, str(output), pyvenv)
 
-    def connectedpy_success(self, output):
-        self.mainwindow_stack.set_visible_child_name("page4")
-        print("connected successfully")
+    def connectedpy_success(self, output, pyvenv):
+        if output:
+            self.main_successimg.set_from_icon_name("emblem-success")
+            self.main_successimg.set_pixel_size(128)
+            self.main_successfully_msg.set_label(_("The '{}' file was linked with the '{}' environment").format(os.path.basename(self.selected_connpy_file), pyvenv))
+            self.mainwindow_stack.set_visible_child_name("page7")
+            print("connected successfully")
+        else:
+            self.main_successimg.set_from_icon_name("dialog-error-symbolic")
+            self.main_successimg.set_pixel_size(128)
+            self.main_successfully_msg.set_label(_("The association between the environment and the file failed"))
+            self.mainwindow_stack.set_visible_child_name("page7")
+            print("connected failed")
         return False
     # -------------------------------------------
 
