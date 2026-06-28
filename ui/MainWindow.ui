@@ -856,8 +856,51 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="requirements_file">
-                        <property name="label">Requirements file choose (optionial)</property>
+                        <property name="child">
+                          <object class="GtkBox">
+                            <property name="margin-start">10</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">add-files-to-archive-symbolic</property>
+                                <property name="margin-end">5</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label">Choose Requirement File (optional)</property>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
                         <property name="margin-top">10</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="selected_reqfile_label">
+                        <property name="margin-bottom">3</property>
+                        <property name="margin-top">10</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="unselect_reqbtn">
+                        <property name="child">
+                          <object class="GtkBox">
+                            <property name="margin-start">10</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">gtk-cancel-symbolic</property>
+                                <property name="pixel-size">20</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label">Unselect requirements file</property>
+                                <property name="margin-start">5</property>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                        <property name="margin-top">3</property>
                       </object>
                     </child>
                     <child>

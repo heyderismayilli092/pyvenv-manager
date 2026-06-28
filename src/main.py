@@ -118,6 +118,8 @@ class pyvenv_manager(Gtk.Application):
         self.create_venv = builder.get_object("create_venv")  # create button
         self.processpage_stream = builder.get_object("processpage_stream")
         self.processpage_stream_buffer = self.processpage_stream.get_buffer()
+        self.selected_reqfile_label = builder.get_object("selected_reqfile_label")
+        self.unselect_reqbtn = builder.get_object("unselect_reqbtn")
         self.back_handler6 = None
         self.packversion = None
 
@@ -250,6 +252,8 @@ class pyvenv_manager(Gtk.Application):
         self.environment_name.set_text("")  # being cleaned
         self.processpage_stream_buffer.set_text("")  # previously written data is being cleared
         self.venv_error_msg.hide()
+        self.unselect_reqbtn.hide()
+        self.selected_reqfile_label.hide()
         self.new_venv_dialog.present()
 
 
@@ -294,6 +298,10 @@ class pyvenv_manager(Gtk.Application):
             if file:
                 self.requirements_filedir = file.get_path()
                 print("Selected requirements file: ", self.requirements_filedir)
+                self.selected_reqfile_label.show()
+                self.selected_reqfile_label.set_label(_("Selected requirements file: ")+self.requirements_filedir)
+                self.unselect_reqbtn.show()
+                self.unselect_reqbtn.connect("clicked", self.on_unselect_reqbtn)
         dialog.destroy()
 
 
@@ -371,7 +379,6 @@ class pyvenv_manager(Gtk.Application):
         self.new_venv_stack.set_visible_child_name("reqinfo_page")
         return False
 
-
     def create_reqinfo_line(self, packname, info):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # LABEL
@@ -439,6 +446,13 @@ class pyvenv_manager(Gtk.Application):
         self.new_venv_stack.set_visible_child_name("createvenv_success")
         print("Environment created")
         return False
+
+    def on_unselect_reqbtn(self, button):
+        self.requirements_filedir = None
+        self.selected_reqfile_label.hide()
+        self.unselect_reqbtn.hide()
+        return True
+    # -----------------------------------------------
 
 
     # ---------- Environment About Window ----------
