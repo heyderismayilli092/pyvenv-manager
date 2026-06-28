@@ -4,7 +4,7 @@
 import gi
 gi.require_version("Gtk", "4.0")
 #gi.require_version("Adw", "1")
-from gi.repository import Gtk, Gio, GLib #Adw
+from gi.repository import Gtk, Gdk, Gio, GLib #Adw
 
 import locale
 import os
@@ -204,42 +204,73 @@ class pyvenv_manager(Gtk.Application):
         return data
 
 
-    # the created environments are listed
-    def create_envlist(self, text, icon_name="python", icon_size=32):
+    def create_envlist(self, venv_name, icon_name="python", icon_size=32):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # ICON
         icon = Gtk.Image.new_from_icon_name(icon_name)
         icon.set_pixel_size(icon_size)
 
         # LABEL
-        label = Gtk.Label(label=text, xalign=0)
+        label = Gtk.Label(label=venv_name, xalign=0)
         label.set_hexpand(True)
         label.set_halign(Gtk.Align.START)
-
-        # BUTTON
-        button = Gtk.Button(label=_("About"))
-        button.set_valign(Gtk.Align.CENTER)
-        button.connect("clicked", self.on_envabout_clicked, text)
-
-        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-        btn_icon = Gtk.Image.new_from_icon_name("help-about-symbolic")
-        btn_icon.set_pixel_size(20)
-
-        btn_label = Gtk.Label(label=_("About"))
-        btn_box.append(btn_icon)
-        btn_box.append(btn_label)
-
-        button.set_child(btn_box)
         label.set_selectable(False)
 
+        # ABOUT BUTTON
+        about_button = Gtk.Button()
+        about_button.set_valign(Gtk.Align.CENTER)
+        about_button.connect("clicked", self.on_envabout_clicked, venv_name)
+
+        about_btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        about_btn_icon = Gtk.Image.new_from_icon_name("help-about-symbolic")
+        about_btn_icon.set_pixel_size(20)
+        about_btn_box.append(about_btn_icon)
+        about_button.set_child(about_btn_box)
+
+
+        # REMOVE BUTTON
+        remove_button = Gtk.Button()
+        remove_button.set_valign(Gtk.Align.CENTER)
+        remove_button.set_name("remove-button")  # we're giving the button a name, and we'll apply a custom style to that name using CSS
+        #remove_button.connect("clicked", self.on_envremove_clicked, text)
+
+        remove_btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        remove_icon = Gtk.Image.new_from_icon_name("user-trash-symbolic")
+        remove_icon.set_pixel_size(18)
+        remove_lbl = Gtk.Label(label=_("Remove"))
+        remove_btn_box.append(remove_icon)
+        remove_btn_box.append(remove_lbl)
+        remove_button.set_child(remove_btn_box)
+
+        # childs append
         hbox.append(icon)
         hbox.append(label)
-        hbox.append(button)
+        hbox.append(remove_button)
+        hbox.append(about_button)
 
         hbox.set_margin_top(6)
         hbox.set_margin_bottom(6)
         hbox.set_margin_start(6)
         hbox.set_margin_end(6)
+
+        # CSS: red background and white text for the remove-button widget
+        css = b"""
+    #remove-button {
+        background-image: none;
+        background-color: #e53935;
+        color: white;
+        border-radius: 4px;
+        padding: 6px 10px;
+    }
+    #remove-button:hover {
+        background-color: #d32f2f;
+    }
+        """
+        provider = Gtk.CssProvider()
+        provider.load_from_data(css)
+        display = Gdk.Display.get_default()
+        Gtk.StyleContext.add_provider_for_display(display, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
         return hbox
 
 
