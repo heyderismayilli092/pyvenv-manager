@@ -414,3 +414,32 @@ def disconnect_environment_file(venv_name, selectedpy):
 
     return True
 
+
+# this function removes the given environment from the computer
+def environment_remove(venv_name):
+    venv_path = pyvenv_path / venv_name
+    if not os.path.exists(venv_path):
+        return None
+
+    # reading json metadata
+    with open(connfile, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # files or applications associated with the environment are being removed from the metadata file
+    if venv_name in data["connected_files"]:
+        # environment is disconnected from all files associated with it
+        for connlist in data["connected_files"][venv_name]:
+            disconnect_environment_file(venv_name, connlist)
+        del data["connected_files"][venv_name]
+
+    if venv_name in data["connected_apps"]:
+        #for connlist in data["connected_app"][venv_name]:
+            #disconnect_environment_app(venv_name, connlist)
+        del data["connected_apps"][venv_name]
+    with open(connfile, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+    os.system(f"rm -r {venv_path}")  # remove environment path
+    return True
+
+
