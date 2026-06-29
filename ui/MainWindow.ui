@@ -679,6 +679,12 @@
                             </child>
                           </object>
                         </child>
+                        <child>
+                          <object class="GtkLabel" id="selected_pyapp_label">
+                            <property name="margin-bottom">3</property>
+                            <property name="margin-top">3</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child>
