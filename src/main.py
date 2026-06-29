@@ -12,6 +12,7 @@ import json
 import threading
 import venv_manager
 import mimetypes
+import subprocess
 from locale import gettext as _
 from pathlib import Path
 
@@ -251,7 +252,7 @@ class pyvenv_manager(Gtk.Application):
         # REMOVE BUTTON
         remove_button = Gtk.Button()
         remove_button.set_valign(Gtk.Align.CENTER)
-        remove_button.set_name("remove-button")  # we're giving the button a name, and we'll apply a custom style to that name using CSS
+        remove_button.set_name("remove-button")
         remove_button.connect("clicked", self.on_envremove_clicked, venv_name)
         remove_btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         remove_icon = Gtk.Image.new_from_icon_name("user-trash-symbolic")
@@ -261,10 +262,18 @@ class pyvenv_manager(Gtk.Application):
         remove_btn_box.append(remove_lbl)
         remove_button.set_child(remove_btn_box)
 
-        # childs append
+        # TERMINAL BUTTON
+        terminal_button = Gtk.Button()
+        terminal_button.set_valign(Gtk.Align.CENTER)
+        term_icon = Gtk.Image.new_from_icon_name("utilities-terminal-symbolic")
+        term_icon.set_pixel_size(20)
+        terminal_button.set_child(term_icon)
+        terminal_button.connect("clicked", self.on_envterminal_clicked, venv_name)
+
         hbox.append(icon)
         hbox.append(label)
         hbox.append(remove_button)
+        hbox.append(terminal_button)
         hbox.append(about_button)
 
         hbox.set_margin_top(6)
@@ -274,22 +283,21 @@ class pyvenv_manager(Gtk.Application):
 
         # CSS: red background and white text for the remove-button widget
         css = b"""
-    #remove-button {
-        background-image: none;
-        background-color: #e53935;
-        color: white;
-        border-radius: 4px;
-        padding: 6px 10px;
-    }
-    #remove-button:hover {
-        background-color: #d32f2f;
-    }
-        """
+#remove-button {
+    background-image: none;
+    background-color: #e53935;
+    color: white;
+    border-radius: 4px;
+    padding: 6px 10px;
+}
+#remove-button:hover {
+    background-color: #d32f2f;
+}
+    """
         provider = Gtk.CssProvider()
         provider.load_from_data(css)
         display = Gdk.Display.get_default()
         Gtk.StyleContext.add_provider_for_display(display, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-
         return hbox
 
 
@@ -503,6 +511,18 @@ class pyvenv_manager(Gtk.Application):
     def on_newvenv_hide(self, button):
         self.new_venv_window.hide()
         return True
+    # -----------------------------------------------
+
+
+    # ---------- Environment Open Terminal ----------
+    def on_envterminal_clicked(self, button, venv_name):
+        activate = os.path.join(str(self.pyvenv_path)+"/"+venv_name, "bin", "activate")
+        subprocess.Popen([
+            "x-terminal-emulator",
+            "-e",
+            f"bash -c 'source \"{activate}\" && exec bash'"
+        ])
+        return False
     # -----------------------------------------------
 
 
