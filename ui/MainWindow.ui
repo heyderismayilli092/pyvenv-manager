@@ -763,7 +763,7 @@
     <property name="version">0.0.1</property>
     <property name="website">https://github.com/heyderismayilli092/pyvenv-manager</property>
   </object>
-  <object class="GtkWindow" id="new_venv_dialog">
+  <object class="GtkWindow" id="new_venv_window">
     <property name="default-height">450</property>
     <property name="default-width">600</property>
     <property name="title">Create New Environment</property>
@@ -1346,6 +1346,163 @@
               </object>
             </property>
             <property name="name">disconn_success</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="venv_remove_window">
+    <property name="default-height">270</property>
+    <property name="default-width">500</property>
+    <property name="titlebar">
+      <object class="GtkHeaderBar">
+        <property name="title-widget">
+          <object class="GtkLabel">
+            <property name="label">Environment Remove</property>
+          </object>
+        </property>
+      </object>
+    </property>
+    <child>
+      <object class="GtkStack" id="venvrm_stack">
+        <child>
+          <object class="GtkStackPage" id="venvrm_question">
+            <property name="child">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon-name">dialog-question</property>
+                    <property name="pixel-size">64</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="margin-top">10</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Are you sure you want to delete this environment?</property>
+                    <property name="margin-top">10</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="homogeneous">True</property>
+                    <property name="margin-top">10</property>
+                    <child>
+                      <object class="GtkButton" id="venvrm_cancel">
+                        <property name="label">Cancel</property>
+                        <property name="margin-end">4</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="venvrm_btn">
+                        <property name="label">Remove</property>
+                        <property name="margin-start">5</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="name">venvrm_question</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStackPage" id="venvrm_connections">
+            <property name="child">
+              <object class="GtkBox">
+                <property name="margin-top">5</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Connections:</property>
+                    <property name="margin-bottom">5</property>
+                    <property name="margin-top">10</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <child>
+                      <object class="GtkListBox" id="venvrm_connlist">
+                        <property name="vexpand">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <child>
+                      <object class="GtkImage">
+                        <property name="icon-name">dialog-warning</property>
+                        <property name="margin-start">10</property>
+                        <property name="pixel-size">20</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">The above are currently connected to this environment. These will also be removed.</property>
+                        <property name="margin-bottom">5</property>
+                        <property name="margin-start">3</property>
+                        <property name="margin-top">5</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="venvrm_nextbtn">
+                    <property name="label">Next</property>
+                    <property name="margin-bottom">5</property>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="name">venvrm_connections</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStackPage" id="venvrm_process">
+            <property name="child">
+              <object class="GtkBox">
+                <property name="homogeneous">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkSpinner">
+                    <property name="spinning">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Environment is being deleted from the computer...</property>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="name">venvrm_process</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStackPage" id="venvrm_success">
+            <property name="child">
+              <object class="GtkBox">
+                <property name="homogeneous">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon-name">emblem-success</property>
+                    <property name="pixel-size">64</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Environment Deleted</property>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="name">venvrm_success</property>
           </object>
         </child>
       </object>

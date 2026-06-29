@@ -105,7 +105,7 @@ class pyvenv_manager(Gtk.Application):
         self.selected_connpy_file = None
 
         # New Environment Window
-        self.new_venv_dialog = builder.get_object("new_venv_dialog")
+        self.new_venv_window = builder.get_object("new_venv_window")
         self.venv_error_msg = builder.get_object("venv_error_msg")
         self.python_verselect = builder.get_object("python_verselect")  # python version select menu
         self.pythonver_popover_menu = builder.get_object("popover_menu")  # python version select popover
@@ -162,6 +162,15 @@ class pyvenv_manager(Gtk.Application):
         self.disconnect_process_label = builder.get_object("disconnect_process_label")
         self.back_handler6 = None
         self.back_handler7 = None
+
+        # Environment Remove Window
+        self.venv_remove_window = builder.get_object("venv_remove_window")
+        self.venvrm_stack = builder.get_object("venvrm_stack")
+        self.venvrm_btn = builder.get_object("venvrm_btn")
+        self.venvrm_cancel = builder.get_object("venvrm_cancel")
+        self.venvrm_connlist = builder.get_object("venvrm_connlist")
+        self.venvrm_nextbtn = builder.get_object("venvrm_nextbtn")
+        self.back_handler8 = None
 
         # About Window
         self.about_window = builder.get_object("about_window")
@@ -220,20 +229,17 @@ class pyvenv_manager(Gtk.Application):
         about_button = Gtk.Button()
         about_button.set_valign(Gtk.Align.CENTER)
         about_button.connect("clicked", self.on_envabout_clicked, venv_name)
-
         about_btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         about_btn_icon = Gtk.Image.new_from_icon_name("help-about-symbolic")
         about_btn_icon.set_pixel_size(20)
         about_btn_box.append(about_btn_icon)
         about_button.set_child(about_btn_box)
 
-
         # REMOVE BUTTON
         remove_button = Gtk.Button()
         remove_button.set_valign(Gtk.Align.CENTER)
         remove_button.set_name("remove-button")  # we're giving the button a name, and we'll apply a custom style to that name using CSS
-        #remove_button.connect("clicked", self.on_envremove_clicked, text)
-
+        remove_button.connect("clicked", self.on_envremove_clicked, venv_name)
         remove_btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         remove_icon = Gtk.Image.new_from_icon_name("user-trash-symbolic")
         remove_icon.set_pixel_size(18)
@@ -274,21 +280,6 @@ class pyvenv_manager(Gtk.Application):
         return hbox
 
 
-    # create new environment window
-    def on_new_environment(self, button):
-        self.new_venv_dialog.set_transient_for(self.window)
-        self.new_venv_dialog.set_application(self)
-        self.new_venv_dialog.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
-
-        self.new_venv_stack.set_visible_child_name("packins_page")  # returning to the first page
-        self.environment_name.set_text("")  # being cleaned
-        self.processpage_stream_buffer.set_text("")  # previously written data is being cleared
-        self.venv_error_msg.hide()
-        self.unselect_reqbtn.hide()
-        self.selected_reqfile_label.hide()
-        self.new_venv_dialog.present()
-
-
     # about window
     def on_about(self, button):
         self.about_window.set_transient_for(self.window)
@@ -296,19 +287,6 @@ class pyvenv_manager(Gtk.Application):
         self.about_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
         self.about_window.present()
 
-
-    # -Python version select buttons-
-    def on_item_python2(self, button):
-        self.python_version = "python2"
-        self.pythonver_popover_menu.popdown()
-        print(self.python_version)
-        return True
-
-    def on_item_python3(self, button):
-        self.python_version = "python3"
-        self.pythonver_popover_menu.popdown()
-        print(self.python_version)
-        return True
     # ------------------------------
 
 
@@ -338,6 +316,32 @@ class pyvenv_manager(Gtk.Application):
 
 
     # ---------- Create New Environment ----------
+    def on_new_environment(self, button):
+        self.new_venv_window.set_transient_for(self.window)
+        self.new_venv_window.set_application(self)
+        self.new_venv_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
+
+        self.new_venv_stack.set_visible_child_name("packins_page")  # returning to the first page
+        self.environment_name.set_text("")  # being cleaned
+        self.processpage_stream_buffer.set_text("")  # previously written data is being cleared
+        self.venv_error_msg.hide()
+        self.unselect_reqbtn.hide()
+        self.selected_reqfile_label.hide()
+        self.new_venv_window.present()
+
+    # -Python version select buttons-
+    def on_item_python2(self, button):
+        self.python_version = "python2"
+        self.pythonver_popover_menu.popdown()
+        print(self.python_version)
+        return True
+
+    def on_item_python3(self, button):
+        self.python_version = "python3"
+        self.pythonver_popover_menu.popdown()
+        print(self.python_version)
+        return True
+
     def _on_create_venv(self, button):
         venvname = self.environment_name.get_text()
         # it checks if a environment name has been entered
@@ -485,6 +489,75 @@ class pyvenv_manager(Gtk.Application):
         self.unselect_reqbtn.hide()
         return True
     # -----------------------------------------------
+
+
+    # ---------- Environment Remove Window ----------
+    def on_envremove_clicked(self, button, venvname):
+        self.venv_remove_window.set_transient_for(self.window)
+        self.venv_remove_window.set_application(self)
+        if self.back_handler8:
+            self.venvrm_btn.disconnect(self.back_handler8)
+            self.back_handler8 = None
+        self.back_handler8 = self.venvrm_btn.connect("clicked", self.on_venvrm, venvname)
+        self.venv_remove_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
+        self.venv_remove_window.present()
+
+    def on_venvrm(self, button, venvname):
+        self.venvrm_stack.set_visible_child_name("venvrm_process")
+        self.connected_files = self.loadmetadata().get("connected_files")  # load json metadata - connected files
+        self.connected_apps = self.loadmetadata().get("connected_apps")  # load json metadata - connected apps
+        if (self.connected_files.get(venvname) or self.connected_apps.get(venvname)):  # security control (not generate KeyError)
+            for row in list(self.venvrm_connlist):  # clear connections listbox
+                self.venvrm_connlist.remove(row)
+            self.venvrm_stack.set_visible_child_name("venvrm_connections")
+            # check connected files
+            try:
+                if self.connected_files[venvname]:
+                    for lst in self.connected_files[venvname]:
+                        self.venvrm_connlist.append(self.create_connlist(lst))
+            except KeyError:
+                pass
+
+            # check connected apps
+            try:
+                if self.connected_apps[venvname]:
+                    for lst in self.connected_apps[venvname]:
+                        self.venvrm_connlist.append(self.create_connlist(lst))
+            except KeyError:
+                pass
+            self.venvrm_nextbtn.connect("clicked", self.venvrm_process_resume, venvname)
+            return False
+        else:
+            venvrm_thread = threading.Thread(target=self.venvrm_process, args=(venvname,), daemon=True)
+            venvrm_thread.start()
+
+    def venvrm_process_resume(self, button, venvname):
+        # resume environment remove process
+        self.venvrm_stack.set_visible_child_name("venvrm_process")
+        venvrm_thread = threading.Thread(target=self.venvrm_process, args=(venvname,), daemon=True)
+        venvrm_thread.start()
+
+    def venvrm_process(self, venvname):
+        output = venv_manager.environment_remove(venvname)  # environment removing process
+        GLib.idle_add(self.venvrm_process_success)
+
+    def venvrm_process_success(self):
+        self.venvrm_stack.set_visible_child_name("venvrm_success")
+        return False
+
+    def create_connlist(self, conn_name):
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        # LABEL
+        label1 = Gtk.Label(label=conn_name, xalign=0)
+        label1.set_hexpand(True)
+        label1.set_halign(Gtk.Align.START)
+        hbox.append(label1)
+        hbox.set_margin_top(6)
+        hbox.set_margin_bottom(6)
+        hbox.set_margin_start(6)
+        hbox.set_margin_end(6)
+        return hbox
+    # ----------------------------------------------
 
 
     # ---------- Environment About Window ----------
@@ -1070,7 +1143,7 @@ class pyvenv_manager(Gtk.Application):
 
     # close environment window
     def _on_newvenv_hide(self, button, pyvenv):
-        self.new_venv_dialog.hide()
+        self.new_venv_window.hide()
         return True
 
     # Main Window Destroy
