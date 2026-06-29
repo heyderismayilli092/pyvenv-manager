@@ -6,6 +6,10 @@ import venv
 import json
 import requests
 import socket
+import configparser
+import shlex
+import shutil
+import glob
 
 homefolder = Path.home()
 pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing the created Python environments
@@ -442,4 +446,70 @@ def environment_remove(venv_name):
 
     os.system(f"rm -r {venv_path}")  # remove environment path
     return True
+
+
+#
+def list_python_desktop_files():
+    python_desktops = []
+
+    for desktop in glob.glob("/usr/share/applications/*.desktop"):
+        parser = configparser.ConfigParser(interpolation=None)
+        try:
+            parser.read(desktop, encoding="utf-8")
+        except Exception:
+            continue
+        if not parser.has_section("Desktop Entry"):
+            continue
+
+        exec_line = parser["Desktop Entry"].get("Exec")  # Exec line
+        icon_line = parser["Desktop Entry"].get("Icon")  # Icon line
+        if not exec_line:
+            continue
+        try:
+            args = shlex.split(exec_line)
+        except ValueError:
+            continue
+
+        # remove %U, %F, etc
+        args = [a for a in args if not a.startswith("%")]
+        if not args:
+            continue
+
+        executable = args[0]
+
+        # Find the actual file via PATH
+        if not os.path.isabs(executable):
+            executable = shutil.which(executable)
+
+        if executable is None:
+            continue
+
+        is_python = False
+
+        # exec calls the Python interpreter
+        base = os.path.basename(executable)
+
+        if base.startswith("python"):
+            if len(args) >= 2:
+                script = args[1]
+                if not os.path.isabs(script):
+                    script = os.path.abspath(script)
+                if os.path.exists(script):
+                    is_python = True
+
+        # if the file being executed is a Python script, it finds it
+        else:
+            try:
+                with open(executable, "rb") as f:
+                    first_line = f.readline(200)
+                if first_line.startswith(b"#!") and b"python" in first_line.lower():
+                    is_python = True
+                elif executable.endswith(".py"):
+                    is_python = True
+            except Exception:
+                pass
+
+        if is_python:
+            python_desktops.append({"desktop": desktop, "exec": exec_line, "icon": icon_line, "target": executable})
+    return python_desktops
 
