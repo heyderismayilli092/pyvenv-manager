@@ -510,6 +510,7 @@ class pyvenv_manager(Gtk.Application):
     def on_envremove_clicked(self, button, venvname):
         self.venv_remove_window.set_transient_for(self.window)
         self.venv_remove_window.set_application(self)
+        self.venvrm_stack.set_visible_child_name("venvrm_question")
         if self.back_handler8:
             self.venvrm_btn.disconnect(self.back_handler8)
             self.back_handler8 = None
@@ -649,14 +650,21 @@ class pyvenv_manager(Gtk.Application):
                 self.list_connfiles.remove(row)
             # scripts are being listing...
             for lst in connfiles:
-                self.list_connfiles.append(self.create_connected_line(pyvenv, lst, "pyfile"))
+                if os.path.exists(lst):  # system is checking whether this linked file has been deleted or not
+                    self.list_connfiles.append(self.create_connected_line(pyvenv, lst, "pyfile", "avaliable"))
+                else:
+                    self.list_connfiles.append(self.create_connected_line(pyvenv, lst, "pyfile", "notfound"))
         elif connapps:
             self.connected_pages.set_visible_child_name("connected_appslist")
             for row in list(self.list_connapps):
                 self.list_connapps.remove(row)
             # apps are being listing...
             for lst in connapps:
-                self.list_connapps.append(self.create_connected_line(pyvenv, lst, "appfile"))
+                if not os.path.exists(lst):  # system is checking whether this linked file has been deleted or not
+                    self.list_connapps.append(self.create_connected_line(pyvenv, lst, "appfile", "avaliable"))
+                else:
+                    print(f"{lst} file removed")
+                    self.list_connapps.append(self.create_connected_line(pyvenv, lst, "appfile", "notfound"))
         return False
 
     # function that creates rows to add to the listbox so that each installed package is displayed
@@ -690,10 +698,14 @@ class pyvenv_manager(Gtk.Application):
         return hbox
 
     # function that generates rows for a list box that displays environment-dependent Python scripts or applications
-    def create_connected_line(self, pyvenv, selected, typ):
+    def create_connected_line(self, pyvenv, selected, typ, status):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # LABEL
-        label = Gtk.Label(label=os.path.basename(selected), xalign=0)
+        label = Gtk.Label(xalign=0)
+        if status == "avaliable":
+            label.set_label(os.path.basename(selected))
+        elif status == "notfound":
+            label.set_label(os.path.basename(selected) + " " + _("(Deleted)"))
         label.set_hexpand(True)
         label.set_halign(Gtk.Align.START)
         label.set_selectable(False)
@@ -701,7 +713,7 @@ class pyvenv_manager(Gtk.Application):
         # BUTTON
         button = Gtk.Button(label=_("Disconnect"))
         button.set_valign(Gtk.Align.CENTER)
-        button.connect("clicked", self.on_disconn, pyvenv, selected, typ)
+        button.connect("clicked", self.on_disconn, pyvenv, selected, typ, status)
 
         hbox.append(label)
         hbox.append(button)
@@ -1096,11 +1108,15 @@ class pyvenv_manager(Gtk.Application):
 
 
     # ---------- Disconnect Python File ----------
-    def on_disconn(self, button, pyvenv, selected, typ):
+    def on_disconn(self, button, pyvenv, selected, typ, status):
         self.disconn_stack.set_visible_child_name("disconn_dialogpage")
         if typ == "pyfile":
             self.disconnect_window_title.set_label(_("Disconnect Python script"))
-            self.disconnect_label.set_label(_("Are you sure you want to remove the Python file you selected from the '{}' environment?").format(pyvenv))
+            if status == "avaliable":
+                self.disconnect_label.set_label(_("Are you sure you want to remove the Python file you selected from the '{}' environment?").format(pyvenv))
+            elif status == "notfound":
+                self.disconnect_label.set_label(_("Are you sure you want to remove the Python file you selected from the '{}' environment?\n(This file removed in system)").format(pyvenv))
+
         elif typ == "appfile":
             self.disconnect_window_title.set_label(_("Disconnect Python app"))
             self.disconnect_label.set_label(_("Are you sure you want to remove the Python app you selected from the '{}' environment?").format(pyvenv))

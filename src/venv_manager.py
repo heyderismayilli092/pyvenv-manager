@@ -398,11 +398,12 @@ def disconnect_environment_file(venv_name, selectedpy):
     with open(connfile, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    # shebang is being removed from the file
-    with open(selectedpy, "r", encoding="utf-8") as pyfile:
-        lines = pyfile.readlines()
-    with open(selectedpy, "w", encoding="utf-8") as pyfile:
-        pyfile.writelines(lines[15:])
+    if os.path.exists(selectedpy):  # if the file exists on the computer, the relevant operations will be performed
+        # shebang and other routing codes are being removed from the file.
+        with open(selectedpy, "r", encoding="utf-8") as pyfile:
+            lines = pyfile.readlines()
+        with open(selectedpy, "w", encoding="utf-8") as pyfile:
+            pyfile.writelines(lines[15:])
 
     if venv_name in data["connected_files"]:
         data["connected_files"][venv_name].remove(selectedpy)  # name of the Python file to be extracted from the environment is being removed
@@ -441,5 +442,4 @@ def environment_remove(venv_name):
 
     os.system(f"rm -r {venv_path}")  # remove environment path
     return True
-
 
