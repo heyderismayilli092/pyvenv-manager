@@ -4,7 +4,7 @@
 import gi
 gi.require_version("Gtk", "4.0")
 #gi.require_version("Adw", "1")
-from gi.repository import Gtk, Gdk, Gio, GLib #Adw
+from gi.repository import Gtk, Gdk, Gio, GdkPixbuf, GLib #Adw
 
 import locale
 import os
@@ -75,7 +75,7 @@ class pyvenv_manager(Gtk.Application):
         self.back_main_window2 = builder.get_object("back_main_window2")  # back main window
         self.back_main_window3 = builder.get_object("back_main_window3")  # back main window
         self.selected_pyfile_label = builder.get_object("selected_pyfile_label")  # selected connection python file show label
-        self.select_app = builder.get_object("select_app")
+        self.select_applist = builder.get_object("select_applist")
         self.main_successfully_msg = builder.get_object("main_successfully_msg")
         self.main_successimg = builder.get_object("main_successimg")
         self.environments_stack = builder.get_object("environments_stack")  # environments page stack
@@ -106,6 +106,7 @@ class pyvenv_manager(Gtk.Application):
         self.requirements_filedir = False
         self.python_version = None  # it saves the selected Python version
         self.selected_connpy_file = None
+        self._checks = []
 
         # New Environment Window
         self.new_venv_window = builder.get_object("new_venv_window")
@@ -189,6 +190,7 @@ class pyvenv_manager(Gtk.Application):
         self.back_mainwindow.connect("clicked", self.on_back_mainwindow)
         self.removepack_cancelbtn.connect("clicked", self.on_removepack_win_hide)
         self.connect_pyfile.connect("clicked", self.on_conn_pythonfile)
+        self.connect_pyapp.connect("clicked", self.on_conn_pythonapp)
         self.select_pyfile.connect("clicked", self.on_select_pythonfile)
         self.back_main_window1.connect("clicked", self.on_back_mainwindow)
         self.back_main_window2.connect("clicked", self.on_back_mainwindow)
@@ -1185,6 +1187,90 @@ class pyvenv_manager(Gtk.Application):
     def on_disconn_cancel_win_hide(self, button):
         self.disconnect_conn_window.hide()
         return True
+    # -------------------------------------------
+
+
+    # ---------- Connect Python App Window ----------
+    def on_conn_pythonapp(self, button):
+        self.mainwindow_stack.set_visible_child_name("page1")
+        self.progress_status_label.set_label(_("Python applications and Environments are listed..."))
+        pyapp_thread = threading.Thread(target=self.conn_pythonapp_process, daemon=True)
+        pyapp_thread.start()
+
+    def conn_pythonapp_process(self):
+        launchers_list = venv_manager.list_python_desktop_files()  # list python apps launchers
+        envlist = venv_manager.venv_lists()  # list environments
+        GLib.idle_add(self.conn_pythonapp_success, launchers_list, envlist)
+
+    def conn_pythonapp_success(self, launchers_list, envlist):
+        # listing of launchers
+        for row in list(self.select_applist):
+            self.select_applist.remove(row)
+        for lst in launchers_list:
+            launcher_icon = lst["icon"]
+            launcher_name = os.path.basename(lst["desktop"])
+            self.select_applist.append(self.create_row(launcher_icon, launcher_name))
+
+        # listing of environments
+        for envlst in list(self.selectenv_list2):
+            self.selectenv_list2.remove(envlst)
+        for lst in envlist:
+            row = Gtk.ListBoxRow()
+            row.set_child(self.create_conn_envlist(lst))
+            print("selectable enviroment: ", "child id:", id(row), "type:", type(row))
+            row.set_activatable(True)
+            self.selectenv_list2.append(row)
+        self.mainwindow_stack.set_visible_child_name("page5")
+        return False
+
+    def _on_check_toggled(self, toggled_button):  # if the user has activated one checkbox, deactivate the others
+        if toggled_button.get_active():
+            for cb in self._checks:
+                if cb is not toggled_button:
+                    # signal repetition is prevented by blocking
+                    cb.handler_block_by_func(self._on_check_toggled)
+                    cb.set_active(False)
+                    cb.handler_unblock_by_func(self._on_check_toggled)
+
+    def create_row(self, icon_spec, text):
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=14)
+        hbox.set_margin_top(5)
+        hbox.set_margin_bottom(5)
+        hbox.set_margin_start(12)
+        hbox.set_margin_end(12)
+
+        image = Gtk.Image()
+        if icon_spec:
+            if os.path.exists(icon_spec):
+                try:
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(icon_spec, 32, 32, True)
+                    image.set_from_pixbuf(pixbuf)
+                except Exception:
+                    image.set_from_icon_name("image-missing")
+            else:
+                image.set_from_icon_name(icon_spec)
+        else:
+            image.set_from_icon_name("image-missing")
+        image.set_pixel_size(48)
+
+        label = Gtk.Label(label=text)
+        label.set_xalign(0)
+        label.set_hexpand(True)
+        label.set_halign(Gtk.Align.FILL)
+        label.set_valign(Gtk.Align.CENTER)
+        label.set_wrap(False)
+
+        check = Gtk.CheckButton()
+        check.set_halign(Gtk.Align.END)
+        check.set_valign(Gtk.Align.CENTER)
+        check.set_margin_start(20)
+        check.connect("toggled", self._on_check_toggled)
+
+        self._checks.append(check)
+        hbox.append(image)
+        hbox.append(label)
+        hbox.append(check)
+        return hbox
     # -------------------------------------------
 
 
