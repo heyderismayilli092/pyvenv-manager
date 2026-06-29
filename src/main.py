@@ -48,6 +48,7 @@ class pyvenv_manager(Gtk.Application):
         self.window = builder.get_object("main_window")
         self.new_environment = builder.get_object("new_environment")  # create new environment button
         self.about_btn = builder.get_object("about_button")
+        self.environments_list_label = builder.get_object("environments_list_label")
         self.environments_listbox = builder.get_object("environments_listbox")  # environments listbox
         self.mainwindow_stack = builder.get_object("mainwindow_stack")
         self.environment_about_listbox = builder.get_object("environment_about_listbox")  # listbox to list information about the environment
@@ -76,6 +77,7 @@ class pyvenv_manager(Gtk.Application):
         self.select_app = builder.get_object("select_app")
         self.main_successfully_msg = builder.get_object("main_successfully_msg")
         self.main_successimg = builder.get_object("main_successimg")
+        self.environments_stack = builder.get_object("environments_stack")  # environments page stack
         # venv about page labels
         self.venvinfo_cfg = builder.get_object("venvinfo_cfg")
         self.venvinfo_implementation = builder.get_object("venvinfo_implementation")
@@ -178,7 +180,7 @@ class pyvenv_manager(Gtk.Application):
         # ----Signals----
         self.new_environment.connect("clicked", self.on_new_environment)
         self.about_btn.connect("clicked", self.on_about)
-        self.cancel_btn.connect("clicked", self._on_newvenv_hide)
+        self.cancel_btn.connect("clicked", self.on_newvenv_hide)
         self.create_venv.connect("clicked", self._on_create_venv)
         self.item_python2.connect("clicked", self.on_item_python2)
         self.item_python3.connect("clicked", self.on_item_python3)
@@ -191,19 +193,30 @@ class pyvenv_manager(Gtk.Application):
         self.back_main_window2.connect("clicked", self.on_back_mainwindow)
         self.back_main_window3.connect("clicked", self.on_back_mainwindow)
         self.connremove_cancel.connect("clicked", self.on_disconn_cancel_win_hide)
+        self.venvrm_cancel.connect("clicked", self.on_venvrm_hide)
 
-
-        self.envlist = venv_manager.venv_lists()  # list environments
-        for envlst in self.envlist:
-            row = Gtk.ListBoxRow()
-            row.set_child(self.create_envlist(envlst))
-            print("environment: ", "child id:", id(row), "type:", type(row))
-            row.set_activatable(True)
-            self.environments_listbox.append(row)
-
+        self.list_environment_mainwindow()
         self.window.set_application(self)
         self.window.connect("close-request", self._on_destroy)
         self.window.present()
+
+
+    def list_environment_mainwindow(self):
+        self.envlist = venv_manager.venv_lists()  # list environments
+        if len(self.envlist) == 0:
+            self.environments_list_label.hide()
+            self.environments_stack.set_visible_child_name("environments_notfound")
+        else:
+            self.environments_list_label.show()
+            self.environments_stack.set_visible_child_name("environments_listbox_page")
+            for row in list(self.environments_listbox):
+                self.environments_listbox.remove(row)
+            for envlst in self.envlist:
+                row = Gtk.ListBoxRow()
+                row.set_child(self.create_envlist(envlst))
+                print("environment: ", "child id:", id(row), "type:", type(row))
+                row.set_activatable(True)
+                self.environments_listbox.append(row)
 
 
     # load JSON metadata
@@ -474,11 +487,8 @@ class pyvenv_manager(Gtk.Application):
         self.processpage_stream.scroll_to_iter(self.processpage_stream_buffer.get_end_iter(), 0.0, False, 0.0, 1.0)  # automatic scroll
 
     def on_result_ready(self, envlist):
-        for row in list(self.environments_listbox):  # the list of environments is being cleared to be written again
-            self.environments_listbox.remove(row)
-        for envlst in envlist:  # the newly received list is being writed
-            child = self.create_envlist(envlst)
-            self.environments_listbox.append(child)
+        print("Relist environments...")
+        self.list_environment_mainwindow()
         self.new_venv_stack.set_visible_child_name("createvenv_success")
         print("Environment created")
         return False
@@ -487,6 +497,11 @@ class pyvenv_manager(Gtk.Application):
         self.requirements_filedir = None
         self.selected_reqfile_label.hide()
         self.unselect_reqbtn.hide()
+        return True
+
+    # close environment window
+    def on_newvenv_hide(self, button):
+        self.new_venv_window.hide()
         return True
     # -----------------------------------------------
 
@@ -542,6 +557,8 @@ class pyvenv_manager(Gtk.Application):
         GLib.idle_add(self.venvrm_process_success)
 
     def venvrm_process_success(self):
+        print("Relist environments...")
+        self.list_environment_mainwindow()
         self.venvrm_stack.set_visible_child_name("venvrm_success")
         return False
 
@@ -557,6 +574,10 @@ class pyvenv_manager(Gtk.Application):
         hbox.set_margin_start(6)
         hbox.set_margin_end(6)
         return hbox
+
+    def on_venvrm_hide(self, button):
+        self.venv_remove_window.hide()
+        return True
     # ----------------------------------------------
 
 
@@ -1138,12 +1159,9 @@ class pyvenv_manager(Gtk.Application):
 
     # back main window
     def on_back_mainwindow(self, button):
+        print("Relist environments...")
+        self.list_environment_mainwindow()
         self.mainwindow_stack.set_visible_child_name("page0")
-        return True
-
-    # close environment window
-    def _on_newvenv_hide(self, button, pyvenv):
-        self.new_venv_window.hide()
         return True
 
     # Main Window Destroy

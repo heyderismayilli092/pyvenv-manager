@@ -86,28 +86,60 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkLabel" id="environments_list_label">
                         <property name="label">Environments list:</property>
                         <property name="margin-bottom">5</property>
                         <property name="margin-top">10</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkScrolledWindow">
-                        <property name="child">
-                          <object class="GtkViewport">
-                            <property name="child">
-                              <object class="GtkListBox" id="environments_listbox">
-                                <property name="vexpand">True</property>
-                              </object>
-                            </property>
-                          </object>
-                        </property>
+                      <object class="GtkSeparator">
+                        <property name="margin-top">10</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparator">
-                        <property name="margin-top">10</property>
+                      <object class="GtkStack" id="environments_stack">
+                        <child>
+                          <object class="GtkStackPage" id="environments_listbox_page">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkScrolledWindow">
+                                    <child>
+                                      <object class="GtkListBox" id="environments_listbox">
+                                        <property name="vexpand">True</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                            <property name="name">environments_listbox_page</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkStackPage" id="environments_notfound">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="homogeneous">True</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">edit-none-symbolic</property>
+                                    <property name="pixel-size">100</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">No virtual environment exists yet</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                            <property name="name">environments_notfound</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
