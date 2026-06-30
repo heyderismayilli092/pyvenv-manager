@@ -75,6 +75,7 @@ class pyvenv_manager(Gtk.Application):
         self.back_main_window2 = builder.get_object("back_main_window2")  # back main window
         self.back_main_window3 = builder.get_object("back_main_window3")  # back main window
         self.selected_pyfile_label = builder.get_object("selected_pyfile_label")  # selected connection python file show label
+        self.selected_pyapp_label = builder.get_object("selected_pyapp_label")
         self.select_applist = builder.get_object("select_applist")
         self.main_successfully_msg = builder.get_object("main_successfully_msg")
         self.main_successimg = builder.get_object("main_successimg")
@@ -1006,13 +1007,13 @@ class pyvenv_manager(Gtk.Application):
         self.envlist = venv_manager.venv_lists()  # list environments
         for envlst in self.envlist:
             row = Gtk.ListBoxRow()
-            row.set_child(self.create_conn_envlist(envlst))
+            row.set_child(self.create_fileconn_envlist(envlst))
             print("selectable enviroment: ", "child id:", id(row), "type:", type(row))
             row.set_activatable(True)
             self.selectenv_list1.append(row)
 
     # the created environments are listed
-    def create_conn_envlist(self, pyvenv, icon_name="python", icon_size=32):
+    def create_fileconn_envlist(self, pyvenv, icon_name="python", icon_size=32):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # ICON
         icon = Gtk.Image.new_from_icon_name(icon_name)
@@ -1026,10 +1027,10 @@ class pyvenv_manager(Gtk.Application):
         # BUTTON
         button = Gtk.Button()
         button.set_valign(Gtk.Align.CENTER)
-        button.connect("clicked", self.on_envconn_clicked, pyvenv)
+        button.connect("clicked", self.on_env_fileconn_clicked, pyvenv)
 
         btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-        btn_icon = Gtk.Image.new_from_icon_name("help-about-symbolic")
+        btn_icon = Gtk.Image.new_from_icon_name("list-add-symbolic")
         btn_icon.set_pixel_size(20)
 
         btn_label = Gtk.Label(label=_("Connect"))
@@ -1072,7 +1073,7 @@ class pyvenv_manager(Gtk.Application):
         dialog.destroy()
 
     # connect python file to environment
-    def on_envconn_clicked(self, button, pyvenv):
+    def on_env_fileconn_clicked(self, button, pyvenv):
         # checking the selected file type
         if not self.selected_connpy_file:
             self.selected_pyfile_label.show()
@@ -1118,18 +1119,18 @@ class pyvenv_manager(Gtk.Application):
             self.main_successimg.set_pixel_size(128)
             self.main_successfully_msg.set_label(_("The '{}' file was linked with the '{}' environment").format(os.path.basename(self.selected_connpy_file), pyvenv))
             self.mainwindow_stack.set_visible_child_name("page7")
-            print("connected successfully")
+            print("file connected successfully")
         else:
             self.main_successimg.set_from_icon_name("dialog-error-symbolic")
             self.main_successimg.set_pixel_size(128)
             self.main_successfully_msg.set_label(_("The association between the environment and the file failed"))
             self.mainwindow_stack.set_visible_child_name("page7")
-            print("connected failed")
+            print("file connected failed")
         return False
     # -------------------------------------------
 
 
-    # ---------- Disconnect Python File ----------
+    # ---------- Disconnect Python File or App ----------
     def on_disconn(self, button, pyvenv, selected, typ, status):
         self.disconn_stack.set_visible_child_name("disconn_dialogpage")
         if typ == "pyfile":
@@ -1206,21 +1207,57 @@ class pyvenv_manager(Gtk.Application):
         # listing of launchers
         for row in list(self.select_applist):
             self.select_applist.remove(row)
-        for lst in launchers_list:
-            launcher_icon = lst["icon"]
-            launcher_name = os.path.basename(lst["desktop"])
-            self.select_applist.append(self.create_row(launcher_icon, launcher_name))
+        # checking to prevent relisting applications that have already connected to any environment
+        self.connected_apps = self.loadmetadata().get("connected_apps")  # load json metadata - connected apps
+        if self.connected_apps:
+            for lst in launchers_list:
+                for pyvenv in self.connected_apps:
+                    if not lst["desktop"] in self.connected_apps[pyvenv]:
+                        self.select_applist.append(self.create_pyapp_row(lst))
+        else:
+            # if no Python applications are connected to any environment, then normal listing is performed
+            for lst in launchers_list:
+                self.select_applist.append(self.create_pyapp_row(lst))
 
         # listing of environments
         for envlst in list(self.selectenv_list2):
             self.selectenv_list2.remove(envlst)
         for lst in envlist:
             row = Gtk.ListBoxRow()
-            row.set_child(self.create_conn_envlist(lst))
+            row.set_child(self.create_appconn_envlist(lst))
             print("selectable enviroment: ", "child id:", id(row), "type:", type(row))
             row.set_activatable(True)
             self.selectenv_list2.append(row)
         self.mainwindow_stack.set_visible_child_name("page5")
+        return False
+
+    def on_env_appconn_clicked(self, button, pyvenv):
+        if not any(cb.get_active() for cb in self._checks):  # check selected
+            self.selected_pyapp_label.show()
+            self.selected_pyapp_label.set_label(_("Select a Python app!"))
+            return False
+
+        for cb in self._checks:
+            if cb.get_active():
+                payload = getattr(cb, "payload", None)  # retrieve selected app payload data
+        print("selected python app: ", payload)
+        self.progress_status_label.set_label(_("The Python file is connecting to the selected environment..."))
+        self.mainwindow_stack.set_visible_child_name("page1")
+        venvconn_thread = threading.Thread(target=self.selectedapp_connect, args=(self.pyvenv_path, pyvenv, payload), daemon=True)
+        venvconn_thread.start()
+
+    def selectedapp_connect(self, pyvenv_path, pyvenv, payload):
+        module_dir = os.path.dirname(os.path.abspath(__file__))  # module dir
+        # since this operation requires root privileges, the password will be obtained from the user using pkexec, and the venv_manager library will be accessed via the python3 interpreter using the -c parameter
+        output = subprocess.run(["pkexec", "python3", "-c", "import sys; sys.path.insert(0, \"{0}\"); import venv_manager; venv_manager.connect_environment_app(\"{1}\", \"{2}\", {3})".format(module_dir, pyvenv_path, pyvenv, payload)])
+        GLib.idle_add(self.connectedapp_success, pyvenv, payload["appname"])
+
+    def connectedapp_success(self, pyvenv, appname):
+        self.main_successimg.set_from_icon_name("emblem-success")
+        self.main_successimg.set_pixel_size(128)
+        self.main_successfully_msg.set_label(_("The '{}' file was linked with the '{}' environment").format(appname, pyvenv))
+        self.mainwindow_stack.set_visible_child_name("page7")
+        print("file connected successfully")
         return False
 
     def _on_check_toggled(self, toggled_button):  # if the user has activated one checkbox, deactivate the others
@@ -1232,7 +1269,9 @@ class pyvenv_manager(Gtk.Application):
                     cb.set_active(False)
                     cb.handler_unblock_by_func(self._on_check_toggled)
 
-    def create_row(self, icon_spec, text):
+    def create_pyapp_row(self, appinfo_list):
+        icon_spec = appinfo_list["icon"]
+        appname = appinfo_list["appname"]
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=14)
         hbox.set_margin_top(5)
         hbox.set_margin_bottom(5)
@@ -1253,7 +1292,7 @@ class pyvenv_manager(Gtk.Application):
             image.set_from_icon_name("image-missing")
         image.set_pixel_size(48)
 
-        label = Gtk.Label(label=text)
+        label = Gtk.Label(label=appname)
         label.set_xalign(0)
         label.set_hexpand(True)
         label.set_halign(Gtk.Align.FILL)
@@ -1264,12 +1303,51 @@ class pyvenv_manager(Gtk.Application):
         check.set_halign(Gtk.Align.END)
         check.set_valign(Gtk.Align.CENTER)
         check.set_margin_start(20)
+        check.payload = appinfo_list  # add paylad in checkbox
         check.connect("toggled", self._on_check_toggled)
 
         self._checks.append(check)
         hbox.append(image)
         hbox.append(label)
         hbox.append(check)
+        return hbox
+
+    # the created environments are listed
+    def create_appconn_envlist(self, pyvenv, icon_name="python", icon_size=32):
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        # ICON
+        icon = Gtk.Image.new_from_icon_name(icon_name)
+        icon.set_pixel_size(icon_size)
+
+        # LABEL
+        label = Gtk.Label(label=pyvenv, xalign=0)
+        label.set_hexpand(True)
+        label.set_halign(Gtk.Align.START)
+
+        # BUTTON
+        button = Gtk.Button()
+        button.set_valign(Gtk.Align.CENTER)
+        button.connect("clicked", self.on_env_appconn_clicked, pyvenv)
+
+        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        btn_icon = Gtk.Image.new_from_icon_name("list-add-symbolic")
+        btn_icon.set_pixel_size(20)
+
+        btn_label = Gtk.Label(label=_("Connect"))
+        btn_box.append(btn_icon)
+        btn_box.append(btn_label)
+
+        button.set_child(btn_box)
+        label.set_selectable(False)
+
+        hbox.append(icon)
+        hbox.append(label)
+        hbox.append(button)
+
+        hbox.set_margin_top(6)
+        hbox.set_margin_bottom(6)
+        hbox.set_margin_start(6)
+        hbox.set_margin_end(6)
         return hbox
     # -------------------------------------------
 
