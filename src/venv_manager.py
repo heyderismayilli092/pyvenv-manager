@@ -540,7 +540,6 @@ def connect_environment_app(venv_path, venv_name, app_info):  # since this opera
             break
         with open(desktop_file, "w", encoding="utf-8") as f:
             f.writelines(lines)
-        return True
 
     elif launcher_type == "shebang":
         script_file = app_info["target"]
@@ -556,8 +555,6 @@ def connect_environment_app(venv_path, venv_name, app_info):  # since this opera
             pyfile.write("\n")  # extra line
             pyfile.write(tmpcontent)  # main code is being written
 
-        return True
-
     # connection is saved to a JSON metadata file
     data["connected_apps"].setdefault(venv_name, [])
     data["connected_apps"][venv_name].extend([
@@ -567,3 +564,4 @@ def connect_environment_app(venv_path, venv_name, app_info):  # since this opera
         json.dump(data, f, indent=2, ensure_ascii=False)
 
     return True
+
