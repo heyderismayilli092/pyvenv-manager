@@ -448,7 +448,7 @@ def environment_remove(venv_name):
     return True
 
 
-#
+# The system lists .desktop launchers belonging to Python applications
 def list_python_desktop_files():
     python_desktops = []
 
@@ -461,10 +461,9 @@ def list_python_desktop_files():
         if not parser.has_section("Desktop Entry"):
             continue
 
+        appname_line = parser["Desktop Entry"].get("Name")  # Name line
         exec_line = parser["Desktop Entry"].get("Exec")  # Exec line
         icon_line = parser["Desktop Entry"].get("Icon")  # Icon line
-        if not exec_line:
-            continue
         try:
             args = shlex.split(exec_line)
         except ValueError:
@@ -496,6 +495,7 @@ def list_python_desktop_files():
                     script = os.path.abspath(script)
                 if os.path.exists(script):
                     is_python = True
+                    launcher_type = "interpreter"
 
         # if the file being executed is a Python script, it finds it
         else:
@@ -504,12 +504,66 @@ def list_python_desktop_files():
                     first_line = f.readline(200)
                 if first_line.startswith(b"#!") and b"python" in first_line.lower():
                     is_python = True
+                    launcher_type = "shebang"
                 elif executable.endswith(".py"):
                     is_python = True
             except Exception:
                 pass
 
         if is_python:
-            python_desktops.append({"desktop": desktop, "exec": exec_line, "icon": icon_line, "target": executable})
+            python_desktops.append({"appname": appname_line, "desktop": desktop, "exec": exec_line, "icon": icon_line, "target": executable, "launcher_type": launcher_type})
     return python_desktops
 
+
+# function that maps a Python application to an environment
+def connect_environment_app(venv_path, venv_name, app_info):  # since this operation requires root access, the venv path is provided externally
+    venv_python = str(venv_path) + "/" + venv_name + "/bin/python3"
+    connfile = str(venv_path) + "/connections.json"  # connectedions info file
+
+    # reading json metadata
+    with open(connfile, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    launcher_type = app_info["launcher_type"]
+    if launcher_type == "interpreter":
+        desktop_file = app_info["desktop"]
+        with open(desktop_file, encoding="utf-8") as f:
+            lines = f.readlines()
+
+        for i, line in enumerate(lines):
+            if not line.startswith("Exec="):
+                continue
+            exec_line = line[len("Exec="):].rstrip("\n")
+            args = shlex.split(exec_line)
+            args[0] = venv_python
+            lines[i] = "Exec=" + shlex.join(args) + "\n"
+            break
+        with open(desktop_file, "w", encoding="utf-8") as f:
+            f.writelines(lines)
+        return True
+
+    elif launcher_type == "shebang":
+        script_file = app_info["target"]
+        # the new shebang is printed to the first line of the Python file
+        with open(script_file, "r", encoding="utf-8") as pyfile:
+            tmpcontent = pyfile.read()
+
+        with open(script_file, "w", encoding="utf-8") as pyfile:
+            pyfile.write(f"#!{venv_python}"+"\n")
+            pyfile.write("# '{}' environment was connected to by 'pyvenv-manager'\n".format(venv_name))
+            pyfile.write("# Generated automatically by 'pyvenv-manager'\n# Do not edit manually.\n")
+            pyfile.write("#--------------------------------------\n")  # separator line
+            pyfile.write("\n")  # extra line
+            pyfile.write(tmpcontent)  # main code is being written
+
+        return True
+
+    # connection is saved to a JSON metadata file
+    data["connected_apps"].setdefault(venv_name, [])
+    data["connected_apps"][venv_name].extend([
+        f"{app_info['desktop']}"
+    ])
+    with open(connfile, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+    return True
