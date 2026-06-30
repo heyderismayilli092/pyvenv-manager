@@ -582,7 +582,10 @@ def disconnect_environment_app(venv_path, venv_name, app_info):
         with open(desktop_file, encoding="utf-8") as f:
             lines = f.readlines()
         for i, line in enumerate(lines):
+            if not line.startswith("Exec="):
+                continue
             exec_line = line[len("Exec="):].rstrip("\n")
+            print(exec_line)
             args = shlex.split(exec_line)
             args[0] = "python"
             lines[i] = "Exec=" + shlex.join(args) + "\n"
