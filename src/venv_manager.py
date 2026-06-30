@@ -4,6 +4,7 @@ import os
 import subprocess
 import venv
 import json
+import ast
 import requests
 import socket
 import configparser
@@ -519,7 +520,6 @@ def list_python_desktop_files():
 def connect_environment_app(venv_path, venv_name, app_info):  # since this operation requires root access, the venv path is provided externally
     venv_python = str(venv_path) + "/" + venv_name + "/bin/python3"
     connfile = str(venv_path) + "/connections.json"  # connectedions info file
-
     # reading json metadata
     with open(connfile, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -558,8 +558,51 @@ def connect_environment_app(venv_path, venv_name, app_info):  # since this opera
     # connection is saved to a JSON metadata file
     data["connected_apps"].setdefault(venv_name, [])
     data["connected_apps"][venv_name].extend([
-        f"{app_info['desktop']}"
+        f"{app_info}"
     ])
+    with open(connfile, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+    return True
+
+
+# it disconnect Python applications that are connected to any environment
+def disconnect_environment_app(venv_path, venv_name, app_info):
+    connfile = str(venv_path) + "/connections.json"  # connectedions info file
+    # reading json metadata
+    with open(connfile, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    print(app_info)
+    app_info = ast.literal_eval(str(app_info))
+    launcher_type = app_info["launcher_type"]
+    desktop_file = app_info["desktop"]
+
+    if launcher_type == "interpreter":
+        with open(desktop_file, encoding="utf-8") as f:
+            lines = f.readlines()
+        for i, line in enumerate(lines):
+            exec_line = line[len("Exec="):].rstrip("\n")
+            args = shlex.split(exec_line)
+            args[0] = "python"
+            lines[i] = "Exec=" + shlex.join(args) + "\n"
+            break
+        with open(desktop_file, "w", encoding="utf-8") as f:
+            f.writelines(lines)
+
+    elif launcher_type == "shebang":
+        targetfile = app_info["target"]
+        # shebang and other routing codes are being removed from the file.
+        with open(targetfile, "r", encoding="utf-8") as pyfile:
+            lines = pyfile.readlines()
+        with open(targetfile, "w", encoding="utf-8") as pyfile:
+            pyfile.writelines(lines[6:])
+
+    if venv_name in data["connected_apps"]:
+        data["connected_apps"][venv_name].remove(str(app_info))  # list data of the disconnected Python application is extracted directly from the metadata file
+        # if the list is empty, also delete the key that exists in the environment name
+        if not data["connected_apps"][venv_name]:
+            del data["connected_apps"][venv_name]
     with open(connfile, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
