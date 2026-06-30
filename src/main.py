@@ -9,6 +9,7 @@ from gi.repository import Gtk, Gdk, Gio, GdkPixbuf, GLib #Adw
 import locale
 import os
 import json
+import ast
 import threading
 import venv_manager
 import mimetypes
@@ -682,8 +683,10 @@ class pyvenv_manager(Gtk.Application):
             for row in list(self.list_connapps):
                 self.list_connapps.remove(row)
             # apps are being listing...
+            # NOTE: The list containing Python applications stores all the necessary information in dict format (desktop, appname, target, etc.). This dict can be used to retrieve and display the required information, or passed to other functions for further processing
             for lst in connapps:
-                if not os.path.exists(lst):  # system is checking whether this linked file has been deleted or not
+                lst = ast.literal_eval(lst)
+                if os.path.exists(lst['desktop']):  # system is checking whether this linked file has been deleted or not
                     self.list_connapps.append(self.create_connected_line(pyvenv, lst, "appfile", "avaliable"))
                 else:
                     print(f"{lst} file removed")
@@ -726,9 +729,16 @@ class pyvenv_manager(Gtk.Application):
         # LABEL
         label = Gtk.Label(xalign=0)
         if status == "avaliable":
-            label.set_label(os.path.basename(selected))
+            # if the selected application is a Python application, the returned data is a list type, and only the full name of the .desktop file will be displayed
+            if typ == "appfile":
+                label.set_label(selected['appname'])
+            else:
+                label.set_label(os.path.basename(selected))
         elif status == "notfound":
-            label.set_label(os.path.basename(selected) + " " + _("(Deleted)"))
+            if typ == "appfile":
+                label.set_label(selected['appname'] + " " + _("(Deleted)"))
+            else:
+                label.set_label(os.path.basename(selected) + " " + _("(Deleted)"))
         label.set_hexpand(True)
         label.set_halign(Gtk.Align.START)
         label.set_selectable(False)
@@ -745,7 +755,7 @@ class pyvenv_manager(Gtk.Application):
         hbox.set_margin_bottom(6)
         hbox.set_margin_start(6)
         hbox.set_margin_end(6)
-        hbox.set_tooltip_text(_("Full path: ")+selected)
+        hbox.set_tooltip_text(_("Full path: ")+selected['desktop'])
         return hbox
     # -----------------------------------------------
 
@@ -1169,8 +1179,11 @@ class pyvenv_manager(Gtk.Application):
     def disconn_process(self, pyvenv, selected, typ):
         if typ == "pyfile":
             venv_manager.disconnect_environment_file(pyvenv, selected)
-        #elif typ == "appfile":
-            #venv_manager.disconnect_environment_app(pyvenv, selected)
+        elif typ == "appfile":
+            #venv_manager.disconnect_environment_app(self.pyvenv_path, pyvenv, selected)
+            module_dir = os.path.dirname(os.path.abspath(__file__))  # module dir
+            # since this operation requires root privileges, the password will be obtained from the user using pkexec, and the venv_manager library will be accessed via the python3 interpreter using the -c parameter
+            subprocess.run(["pkexec", "python3", "-c", "import sys; sys.path.insert(0, \"{0}\"); import venv_manager; venv_manager.disconnect_environment_app(\"{1}\", \"{2}\", {3})".format(module_dir, self.pyvenv_path, pyvenv, selected)])
         GLib.idle_add(self.disconn_success)
 
     def disconn_success(self):
@@ -1212,7 +1225,7 @@ class pyvenv_manager(Gtk.Application):
         if self.connected_apps:
             for lst in launchers_list:
                 for pyvenv in self.connected_apps:
-                    if not lst["desktop"] in self.connected_apps[pyvenv]:
+                    if not lst["desktop"] in str(self.connected_apps[pyvenv]):  # environment list data returned by the 'connected_apps' list is being made correctly accessible
                         self.select_applist.append(self.create_pyapp_row(lst))
         else:
             # if no Python applications are connected to any environment, then normal listing is performed
@@ -1243,13 +1256,13 @@ class pyvenv_manager(Gtk.Application):
         print("selected python app: ", payload)
         self.progress_status_label.set_label(_("The Python file is connecting to the selected environment..."))
         self.mainwindow_stack.set_visible_child_name("page1")
-        venvconn_thread = threading.Thread(target=self.selectedapp_connect, args=(self.pyvenv_path, pyvenv, payload), daemon=True)
+        venvconn_thread = threading.Thread(target=self.selectedapp_connect, args=(pyvenv, payload), daemon=True)
         venvconn_thread.start()
 
-    def selectedapp_connect(self, pyvenv_path, pyvenv, payload):
+    def selectedapp_connect(self, pyvenv, payload):
         module_dir = os.path.dirname(os.path.abspath(__file__))  # module dir
         # since this operation requires root privileges, the password will be obtained from the user using pkexec, and the venv_manager library will be accessed via the python3 interpreter using the -c parameter
-        output = subprocess.run(["pkexec", "python3", "-c", "import sys; sys.path.insert(0, \"{0}\"); import venv_manager; venv_manager.connect_environment_app(\"{1}\", \"{2}\", {3})".format(module_dir, pyvenv_path, pyvenv, payload)])
+        output = subprocess.run(["pkexec", "python3", "-c", "import sys; sys.path.insert(0, \"{0}\"); import venv_manager; venv_manager.connect_environment_app(\"{1}\", \"{2}\", {3})".format(module_dir, self.pyvenv_path, pyvenv, payload)])
         GLib.idle_add(self.connectedapp_success, pyvenv, payload["appname"])
 
     def connectedapp_success(self, pyvenv, appname):
