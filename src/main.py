@@ -590,7 +590,7 @@ class pyvenv_manager(Gtk.Application):
             # since this operation requires root privileges, the password will be obtained from the user using pkexec, and the venv_manager library will be accessed via the python3 interpreter using the -c parameter
             subprocess.run(["pkexec", "python3", "-c", "import sys; sys.path.insert(0, \"{0}\"); import venv_manager; venv_manager.environment_remove(\"{1}\", \"{2}\")".format(module_dir, venvname, self.pyvenv_path)])
         else:
-            venv_manager.environment_remove(venvname)  # environment removing process
+            venv_manager.environment_remove(venvname, self.pyvenv_path)  # environment removing process
         GLib.idle_add(self.venvrm_process_success)
 
     def venvrm_process_success(self):

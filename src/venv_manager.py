@@ -394,10 +394,13 @@ if os.path.realpath(sys.executable) != os.path.realpath(VENV_PYTHON):
 
 
 # this function disconnects the Python script from its environment and returns it to its normal state
-def disconnect_environment_file(venv_name, selectedpy):
-    venv_path = pyvenv_path / venv_name
-    if not os.path.exists(venv_path):
-        return None
+def disconnect_environment_file(venv_name, selectedpy, connapps_venvpath=None):
+    if not connapps_venvpath:  # NOTE: 'environment_remove' function might not be able to find the path where the environments are located when it runs, so the environment paths must be obtained from the edge
+        venv_path = pyvenv_path / venv_name
+        connfile = pyvenv_path / "connections.json"  # connectedions info file
+    else:
+        venv_path = connapps_venvpath + "/" + venv_name
+        connfile = connapps_venvpath + "/connections.json"
 
     # reading json metadata
     with open(connfile, "r", encoding="utf-8") as f:
@@ -438,7 +441,7 @@ def environment_remove(venv_name, connapps_venvpath=None):
     if venv_name in data["connected_files"]:
         # environment is disconnected from all files associated with it
         for connlist in data["connected_files"][venv_name]:
-            disconnect_environment_file(venv_name, connlist)
+            disconnect_environment_file(venv_name, connlist, connapps_venvpath)
         del data["connected_files"][venv_name]
 
     if venv_name in data["connected_apps"]:
