@@ -742,14 +742,14 @@
                     <child>
                       <object class="GtkScrolledWindow">
                         <child>
-                          <object class="GtkListBox">
+                          <object class="GtkListBox" id="all_connections_list">
                             <property name="vexpand">True</property>
                           </object>
                         </child>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkButton">
+                      <object class="GtkButton" id="back_main_window4">
                         <property name="label">Back Main Window</property>
                         <property name="margin-bottom">5</property>
                       </object>

@@ -75,12 +75,15 @@ class pyvenv_manager(Gtk.Application):
         self.back_main_window1 = builder.get_object("back_main_window1")  # back main window
         self.back_main_window2 = builder.get_object("back_main_window2")  # back main window
         self.back_main_window3 = builder.get_object("back_main_window3")  # back main window
+        self.back_main_window4 = builder.get_object("back_main_window4")  # back main window
         self.selected_pyfile_label = builder.get_object("selected_pyfile_label")  # selected connection python file show label
         self.selected_pyapp_label = builder.get_object("selected_pyapp_label")
         self.select_applist = builder.get_object("select_applist")
         self.main_successfully_msg = builder.get_object("main_successfully_msg")
         self.main_successimg = builder.get_object("main_successimg")
         self.environments_stack = builder.get_object("environments_stack")  # environments page stack
+        self.connection_list = builder.get_object("connection_list")  # connections list button
+        self.all_connections_list = builder.get_object("all_connections_list")  # all connections listbox
         # venv about page labels
         self.venvinfo_cfg = builder.get_object("venvinfo_cfg")
         self.venvinfo_implementation = builder.get_object("venvinfo_implementation")
@@ -197,8 +200,10 @@ class pyvenv_manager(Gtk.Application):
         self.back_main_window1.connect("clicked", self.on_back_mainwindow)
         self.back_main_window2.connect("clicked", self.on_back_mainwindow)
         self.back_main_window3.connect("clicked", self.on_back_mainwindow)
+        self.back_main_window4.connect("clicked", self.on_back_mainwindow)
         self.connremove_cancel.connect("clicked", self.on_disconn_cancel_win_hide)
         self.venvrm_cancel.connect("clicked", self.on_venvrm_hide)
+        self.connection_list.connect("clicked", self.on_connections_list)
 
         self.list_environment_mainwindow()
         self.window.set_application(self)
@@ -1335,11 +1340,11 @@ class pyvenv_manager(Gtk.Application):
         return hbox
 
     # the created environments are listed
-    def create_appconn_envlist(self, pyvenv, icon_name="python", icon_size=32):
+    def create_appconn_envlist(self, pyvenv, icon_name="python"):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # ICON
         icon = Gtk.Image.new_from_icon_name(icon_name)
-        icon.set_pixel_size(icon_size)
+        icon.set_pixel_size(32)
 
         # LABEL
         label = Gtk.Label(label=pyvenv, xalign=0)
@@ -1365,6 +1370,79 @@ class pyvenv_manager(Gtk.Application):
         hbox.append(icon)
         hbox.append(label)
         hbox.append(button)
+
+        hbox.set_margin_top(6)
+        hbox.set_margin_bottom(6)
+        hbox.set_margin_start(6)
+        hbox.set_margin_end(6)
+        return hbox
+    # -------------------------------------------
+
+
+    # ---------- Connections List Window ----------
+    def on_connections_list(self, button):
+        self.mainwindow_stack.set_visible_child_name("page1")
+        self.progress_status_label.set_label(_("Retrieving a list of connected applications and files..."))
+        connlist_thread = threading.Thread(target=self.connlist_process, daemon=True)
+        connlist_thread.start()
+
+    def connlist_process(self):
+        all_list = []
+        self.connected_files = self.loadmetadata().get("connected_files")  # load json metadata - connected files
+        self.connected_apps = self.loadmetadata().get("connected_apps")  # load json metadata - connected apps
+        for lst in self.connected_files:
+            all_list.append({'data': lst, 'type': 'file'})
+        for lst in self.connected_apps:
+            all_list.append({'data': lst, 'type': 'app'})
+        GLib.idle_add(self.connlist_success, all_list)
+
+    def connlist_success(self, all_list):
+        print("list all connections...")
+        self.connected_files = self.loadmetadata().get("connected_files")  # load json metadata - connected files
+        self.connected_apps = self.loadmetadata().get("connected_apps")  # load json metadata - connected apps
+        if self.all_connections_list:
+            for row in list(self.all_connections_list):
+                self.all_connections_list.remove(row)
+
+        for connlst in all_list:
+            if connlst['type'] == "file":
+                for venvlst in self.connected_files[connlst['data']]:
+                    self.all_connections_list.append(self.create_allconn_list(venvlst, venvlst, connlst['data'], "application-x-python-bytecode"))
+            else:
+                for venvlst in self.connected_apps[connlst['data']]:
+                    venvlst = ast.literal_eval(venvlst)
+                    self.all_connections_list.append(self.create_allconn_list(venvlst['appname'], venvlst['desktop'], connlst['data'], venvlst['icon']))
+
+        self.mainwindow_stack.set_visible_child_name("page6")
+        return False
+
+    def create_allconn_list(self, name, tooltip_txt, venvname, icon_name):
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        # ICON
+        icon = Gtk.Image.new_from_icon_name(icon_name)
+        icon.set_pixel_size(32)
+        # this part works by finding the icon path data from the list when the Python application is listed
+        if icon_name:
+            if os.path.exists(icon_name):
+                try:
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(icon_name, 32, 32, True)
+                    icon.set_from_pixbuf(pixbuf)
+                except Exception:
+                    icon.set_from_icon_name("image-missing")
+            else:
+                icon.set_from_icon_name(icon_name)
+        else:
+            icon.set_from_icon_name("image-missing")
+
+        # LABEL
+        label = Gtk.Label(xalign=0)
+        label.set_hexpand(True)
+        label.set_halign(Gtk.Align.START)
+        label.set_selectable(False)
+        label.set_label(os.path.basename(name) + "  -  " + f"({venvname})")
+        hbox.append(icon)
+        hbox.append(label)
+        hbox.set_tooltip_text(_("Full path: ")+tooltip_txt)
 
         hbox.set_margin_top(6)
         hbox.set_margin_bottom(6)
