@@ -762,7 +762,10 @@ class pyvenv_manager(Gtk.Application):
         hbox.set_margin_bottom(6)
         hbox.set_margin_start(6)
         hbox.set_margin_end(6)
-        hbox.set_tooltip_text(_("Full path: ")+selected['desktop'])
+        if typ == "appfile":
+            hbox.set_tooltip_text(_("Full path: ")+str(selected['desktop']))
+        else:
+            hbox.set_tooltip_text(_("Full path: ")+selected)
         return hbox
     # -----------------------------------------------
 
