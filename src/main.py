@@ -34,6 +34,10 @@ class pyvenv_manager(Gtk.Application):
         self.pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing the created Python environments
         self.connfile = self.pyvenv_path / "connections.json"  # connectedions info file
 
+        # check cache folder
+        if not os.path.exists(self.pyvenv_path):
+            os.makedirs(str(self.pyvenv_path))
+
         # checking json file
         if not os.path.exists(self.connfile):
             json_content = """{

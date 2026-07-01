@@ -18,7 +18,7 @@
   <object class="GtkWindow" id="main_window">
     <property name="default-height">450</property>
     <property name="default-width">800</property>
-    <property name="gravity">center</property>
+    <!----property name="gravity">center</property---->
     <property name="title">Python Environment Manager</property>
     <property name="titlebar">
       <object class="GtkHeaderBar">
