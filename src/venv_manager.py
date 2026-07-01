@@ -399,8 +399,8 @@ def disconnect_environment_file(venv_name, selectedpy, connapps_venvpath=None):
         venv_path = pyvenv_path / venv_name
         connfile = pyvenv_path / "connections.json"  # connectedions info file
     else:
-        venv_path = connapps_venvpath + "/" + venv_name
-        connfile = connapps_venvpath + "/connections.json"
+        venv_path = str(connapps_venvpath) + "/" + venv_name
+        connfile = str(connapps_venvpath) + "/connections.json"
 
     # reading json metadata
     with open(connfile, "r", encoding="utf-8") as f:
@@ -430,8 +430,8 @@ def environment_remove(venv_name, connapps_venvpath=None):
         venv_path = pyvenv_path / venv_name
         connfile = pyvenv_path / "connections.json"  # connectedions info file
     else:
-        venv_path = connapps_venvpath + "/" + venv_name
-        connfile = connapps_venvpath + "/connections.json"
+        venv_path = str(connapps_venvpath) + "/" + venv_name
+        connfile = str(connapps_venvpath) + "/connections.json"
 
     # reading json metadata
     with open(connfile, "r", encoding="utf-8") as f:
