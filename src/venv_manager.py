@@ -395,6 +395,7 @@ if os.path.realpath(sys.executable) != os.path.realpath(VENV_PYTHON):
 
 # this function disconnects the Python script from its environment and returns it to its normal state
 def disconnect_environment_file(venv_name, selectedpy):
+    global connfile
     venv_path = pyvenv_path / venv_name
     if not os.path.exists(venv_path):
         return None
