@@ -204,6 +204,7 @@ class pyvenv_manager(Gtk.Application):
         self.connremove_cancel.connect("clicked", self.on_disconn_cancel_win_hide)
         self.venvrm_cancel.connect("clicked", self.on_venvrm_hide)
         self.connection_list.connect("clicked", self.on_connections_list)
+        self.change_connpage.connect("clicked", self.on_changepage_connections)
 
         self.list_environment_mainwindow()
         self.window.set_application(self)
@@ -680,7 +681,7 @@ class pyvenv_manager(Gtk.Application):
         if connfiles == False and connapps == False:
             self.connected_pages.set_visible_child_name("connected_notfound")
             self.change_connpage.set_sensitive(False)
-        elif connfiles:
+        if connfiles:
             self.connected_pages.set_visible_child_name("connected_fileslist")
             for row in list(self.list_connfiles):
                 self.list_connfiles.remove(row)
@@ -690,7 +691,7 @@ class pyvenv_manager(Gtk.Application):
                     self.list_connfiles.append(self.create_connected_line(pyvenv, lst, "pyfile", "avaliable"))
                 else:
                     self.list_connfiles.append(self.create_connected_line(pyvenv, lst, "pyfile", "notfound"))
-        elif connapps:
+        if connapps:
             self.connected_pages.set_visible_child_name("connected_appslist")
             for row in list(self.list_connapps):
                 self.list_connapps.remove(row)
@@ -704,6 +705,13 @@ class pyvenv_manager(Gtk.Application):
                     print(f"{lst} file removed")
                     self.list_connapps.append(self.create_connected_line(pyvenv, lst, "appfile", "notfound"))
         return False
+
+    # change connection apps and connection files pages between
+    def on_changepage_connections(self, button):
+        if self.connected_pages.get_visible_child_name() == "connected_appslist":
+            self.connected_pages.set_visible_child_name("connected_fileslist")
+        else:
+            self.connected_pages.set_visible_child_name("connected_appslist")
 
     # function that creates rows to add to the listbox so that each installed package is displayed
     def create_envabout_line(self, pyvenv, text):
