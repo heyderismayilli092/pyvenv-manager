@@ -422,10 +422,12 @@ def disconnect_environment_file(venv_name, selectedpy):
 
 
 # this function removes the given environment from the computer
-def environment_remove(venv_name):
-    venv_path = pyvenv_path / venv_name
-    if not os.path.exists(venv_path):
-        return None
+def environment_remove(venv_name, connapps_venvpath=None):
+    if not connapps_venvpath:
+        venv_path = pyvenv_path / venv_name
+    else:
+        venv_path = connapps_venvpath + "/" + venv_name
+        connfile = connapps_venvpath + "/connections.json"
 
     # reading json metadata
     with open(connfile, "r", encoding="utf-8") as f:
@@ -439,9 +441,11 @@ def environment_remove(venv_name):
         del data["connected_files"][venv_name]
 
     if venv_name in data["connected_apps"]:
-        #for connlist in data["connected_app"][venv_name]:
-            #disconnect_environment_app(venv_name, connlist)
+        for connlist in data["connected_apps"][venv_name]:
+            disconnect_environment_app(connapps_venvpath, venv_name, connlist)
         del data["connected_apps"][venv_name]
+
+    # writing metadata in json
     with open(connfile, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 

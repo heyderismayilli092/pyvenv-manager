@@ -562,7 +562,8 @@ class pyvenv_manager(Gtk.Application):
             try:
                 if self.connected_apps[venvname]:
                     for lst in self.connected_apps[venvname]:
-                        self.venvrm_connlist.append(self.create_connlist(lst))
+                        lst = ast.literal_eval(lst)
+                        self.venvrm_connlist.append(self.create_connlist(lst['appname']))
             except KeyError:
                 pass
             self.venvrm_nextbtn.connect("clicked", self.venvrm_process_resume, venvname)
@@ -578,7 +579,13 @@ class pyvenv_manager(Gtk.Application):
         venvrm_thread.start()
 
     def venvrm_process(self, venvname):
-        output = venv_manager.environment_remove(venvname)  # environment removing process
+        self.connected_apps = self.loadmetadata().get("connected_apps")  # load json metadata - connected apps
+        if self.connected_apps:
+            module_dir = os.path.dirname(os.path.abspath(__file__))  # module dir
+            # since this operation requires root privileges, the password will be obtained from the user using pkexec, and the venv_manager library will be accessed via the python3 interpreter using the -c parameter
+            subprocess.run(["pkexec", "python3", "-c", "import sys; sys.path.insert(0, \"{0}\"); import venv_manager; venv_manager.environment_remove(\"{1}\", \"{2}\")".format(module_dir, venvname, self.pyvenv_path)])
+        else:
+            venv_manager.environment_remove(venvname)  # environment removing process
         GLib.idle_add(self.venvrm_process_success)
 
     def venvrm_process_success(self):
@@ -1180,7 +1187,6 @@ class pyvenv_manager(Gtk.Application):
         if typ == "pyfile":
             venv_manager.disconnect_environment_file(pyvenv, selected)
         elif typ == "appfile":
-            #venv_manager.disconnect_environment_app(self.pyvenv_path, pyvenv, selected)
             module_dir = os.path.dirname(os.path.abspath(__file__))  # module dir
             # since this operation requires root privileges, the password will be obtained from the user using pkexec, and the venv_manager library will be accessed via the python3 interpreter using the -c parameter
             subprocess.run(["pkexec", "python3", "-c", "import sys; sys.path.insert(0, \"{0}\"); import venv_manager; venv_manager.disconnect_environment_app(\"{1}\", \"{2}\", {3})".format(module_dir, self.pyvenv_path, pyvenv, selected)])
