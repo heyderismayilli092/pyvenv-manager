@@ -347,7 +347,7 @@ class pyvenv_manager(Gtk.Application):
                 self.selected_reqfile_label.set_label(_("Selected requirements file: ")+self.requirements_filedir)
                 self.unselect_reqbtn.show()
                 self.unselect_reqbtn.connect("clicked", self.on_unselect_reqbtn)
-        dialog.destroy()
+        dialog.hide()
 
 
     # ---------- Create New Environment ----------
@@ -1482,4 +1482,5 @@ class pyvenv_manager(Gtk.Application):
 
 app = pyvenv_manager()
 app.run()
+
 
