@@ -18,7 +18,6 @@
   <object class="GtkWindow" id="main_window">
     <property name="default-height">450</property>
     <property name="default-width">800</property>
-    <!----property name="gravity">center</property---->
     <property name="title">Python Environment Manager</property>
     <property name="titlebar">
       <object class="GtkHeaderBar">
@@ -177,8 +176,7 @@
                       <object class="GtkBox">
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkImage">
-                            <property name="icon-name">python</property>
+                          <object class="GtkImage" id="environment_about_img">
                             <property name="margin-top">30</property>
                             <property name="pixel-size">70</property>
                           </object>
@@ -765,7 +763,7 @@
                   <object class="GtkBox">
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkImage" id="main_successimg">
+                      <object class="GtkImage" id="main_successicon">
                         <property name="margin-top">10</property>
                       </object>
                     </child>
@@ -852,8 +850,7 @@
                                     <property name="child">
                                       <object class="GtkBox">
                                         <child>
-                                          <object class="GtkImage">
-                                            <property name="icon-name">python</property>
+                                          <object class="GtkImage" id="item_python2_logo">
                                             <property name="margin-end">3</property>
                                             <property name="margin-start">0</property>
                                           </object>
@@ -872,8 +869,7 @@
                                     <property name="child">
                                       <object class="GtkBox">
                                         <child>
-                                          <object class="GtkImage">
-                                            <property name="icon-name">python</property>
+                                          <object class="GtkImage" id="item_python3_logo">
                                             <property name="margin-end">3</property>
                                           </object>
                                         </child>
@@ -1050,8 +1046,7 @@
                 <property name="homogeneous">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkImage">
-                    <property name="icon-name">emblem-success</property>
+                  <object class="GtkImage" id="newvenv_successicon">
                     <property name="pixel-size">64</property>
                   </object>
                 </child>
@@ -1088,8 +1083,7 @@
             <property name="homogeneous">True</property>
             <property name="orientation">vertical</property>
             <child>
-              <object class="GtkImage">
-                <property name="icon-name">python</property>
+              <object class="GtkImage" id="new_package_venvicon">
                 <property name="pixel-size">68</property>
               </object>
             </child>
@@ -1185,7 +1179,7 @@
               <object class="GtkBox">
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkImage">
+                  <object class="GtkImage" id="removepack_questionicon">
                     <property name="icon-name">dialog-question</property>
                     <property name="pixel-size">64</property>
                   </object>
@@ -1276,8 +1270,7 @@
                 <property name="homogeneous">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkImage">
-                    <property name="icon-name">emblem-success</property>
+                  <object class="GtkImage" id="removepack_successicon">
                     <property name="pixel-size">64</property>
                   </object>
                 </child>
@@ -1312,7 +1305,7 @@
               <object class="GtkBox">
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkImage">
+                  <object class="GtkImage" id="disconn_questionicon">
                     <property name="icon-name">gtk-dialog-question</property>
                     <property name="pixel-size">64</property>
                   </object>
@@ -1371,7 +1364,7 @@
                 <property name="homogeneous">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkImage">
+                  <object class="GtkImage" id="disconn_successicon">
                     <property name="icon-name">emblem-success</property>
                     <property name="pixel-size">64</property>
                   </object>
@@ -1409,8 +1402,7 @@
               <object class="GtkBox">
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkImage">
-                    <property name="icon-name">dialog-question</property>
+                  <object class="GtkImage" id="venvrm_questionicon">
                     <property name="pixel-size">64</property>
                   </object>
                 </child>
@@ -1528,7 +1520,7 @@
                 <property name="homogeneous">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkImage">
+                  <object class="GtkImage" id="venvrm_successicon">
                     <property name="icon-name">emblem-success</property>
                     <property name="pixel-size">64</property>
                   </object>

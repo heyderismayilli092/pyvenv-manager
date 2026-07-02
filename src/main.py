@@ -33,6 +33,7 @@ class pyvenv_manager(Gtk.Application):
         homefolder = Path.home()
         self.pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing the created Python environments
         self.connfile = self.pyvenv_path / "connections.json"  # connectedions info file
+        self.icons_path = os.path.dirname(os.path.abspath(__file__)) + "/../icons"
 
         # check cache folder
         if not os.path.exists(self.pyvenv_path):
@@ -84,7 +85,6 @@ class pyvenv_manager(Gtk.Application):
         self.selected_pyapp_label = builder.get_object("selected_pyapp_label")
         self.select_applist = builder.get_object("select_applist")
         self.main_successfully_msg = builder.get_object("main_successfully_msg")
-        self.main_successimg = builder.get_object("main_successimg")
         self.environments_stack = builder.get_object("environments_stack")  # environments page stack
         self.connection_list = builder.get_object("connection_list")  # connections list button
         self.all_connections_list = builder.get_object("all_connections_list")  # all connections listbox
@@ -186,6 +186,34 @@ class pyvenv_manager(Gtk.Application):
 
         # About Window
         self.about_window = builder.get_object("about_window")
+        texture = Gdk.Texture.new_from_file(Gio.File.new_for_path(str(self.icons_path) + "/python-64x64.svg"))
+        self.about_window.set_logo(texture)
+
+        # Icons
+        self.environment_about_img = builder.get_object("environment_about_img")  # environment about page logo
+        self.new_package_venvicon = builder.get_object("new_package_venvicon")
+        self.main_successicon = builder.get_object("main_successicon")
+        self.newvenv_successicon = builder.get_object("newvenv_successicon")
+        self.removepack_questionicon = builder.get_object("removepack_questionicon")
+        self.venvrm_questionicon = builder.get_object("venvrm_questionicon")
+        self.disconn_questionicon = builder.get_object("disconn_questionicon")
+        self.disconn_successicon = builder.get_object("disconn_successicon")
+        self.removepack_successicon = builder.get_object("removepack_successicon")
+        self.item_python2_logo = builder.get_object("item_python2_logo")
+        self.item_python3_logo = builder.get_object("item_python3_logo")
+        self.venvrm_successicon = builder.get_object("venvrm_successicon")
+        # set icons
+        self.item_python2_logo.set_from_file(self.icons_path+"/python-16x16.svg")
+        self.item_python3_logo.set_from_file(self.icons_path+"/python-16x16.svg")
+        self.newvenv_successicon.set_from_file(self.icons_path+"/success.svg")
+        self.removepack_successicon.set_from_file(self.icons_path+"/success.svg")
+        self.removepack_questionicon.set_from_file(self.icons_path+"/dialog-question-48x48.svg")
+        self.venvrm_questionicon.set_from_file(self.icons_path+"/dialog-question-48x48.svg")
+        self.dissconn_questionicon.set_from_file(self.icons_path+"/dialog-question-48x48.svg")
+        self.environment_about_img.set_from_file(self.icons_path+"/python-64x64.svg")
+        self.main_successicon.set_from_file(self.icons_path+"/success.svg")
+        self.venvrm_successicon.set_from_file(self.icons_path+"/success.svg")
+        self.disconn_successicon.set_from_file(self.icons_path+"/success.svg")
 
         # ----Signals----
         self.new_environment.connect("clicked", self.on_new_environment)
@@ -240,11 +268,11 @@ class pyvenv_manager(Gtk.Application):
         return data
 
 
-    def create_envlist(self, venv_name, icon_name="python", icon_size=32):
+    def create_envlist(self, venv_name):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # ICON
-        icon = Gtk.Image.new_from_icon_name(icon_name)
-        icon.set_pixel_size(icon_size)
+        icon = Gtk.Image.new_from_file(self.icons_path+"/python-32x32.svg")
+        icon.set_pixel_size(32)
 
         # LABEL
         label = Gtk.Label(label=venv_name, xalign=0)
@@ -909,6 +937,7 @@ class pyvenv_manager(Gtk.Application):
         self._debounce_source_id = None
 
         self.new_package_venvname.set_label(_("Environment: ") + pyvenv)  # environment name is also displayed on the screen
+        self.new_package_venvicon.set_from_file(self.icons_path+"/python-64x64.svg")
         self.install_new_package_window.present()
 
     def on_entry_changed(self, entry, pyvenv):
@@ -1049,11 +1078,11 @@ class pyvenv_manager(Gtk.Application):
             self.selectenv_list1.append(row)
 
     # the created environments are listed
-    def create_fileconn_envlist(self, pyvenv, icon_name="python", icon_size=32):
+    def create_fileconn_envlist(self, pyvenv):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # ICON
-        icon = Gtk.Image.new_from_icon_name(icon_name)
-        icon.set_pixel_size(icon_size)
+        icon = Gtk.Image.new_from_file(self.icons_path+"/python-32x32.svg")
+        icon.set_pixel_size(32)
 
         # LABEL
         label = Gtk.Label(label=pyvenv, xalign=0)
@@ -1151,14 +1180,14 @@ class pyvenv_manager(Gtk.Application):
 
     def connectedpy_success(self, output, pyvenv):
         if output:
-            self.main_successimg.set_from_icon_name("emblem-success")
-            self.main_successimg.set_pixel_size(128)
+            self.main_successicon.set_from_file(self.icons_path+"/success.svg")
+            self.main_successicon.set_pixel_size(128)
             self.main_successfully_msg.set_label(_("The '{}' file was linked with the '{}' environment").format(os.path.basename(self.selected_connpy_file), pyvenv))
             self.mainwindow_stack.set_visible_child_name("page7")
             print("file connected successfully")
         else:
-            self.main_successimg.set_from_icon_name("dialog-error-symbolic")
-            self.main_successimg.set_pixel_size(128)
+            self.main_successicon.set_from_file(self.icons_path+"/error.svg")
+            self.main_successicon.set_pixel_size(128)
             self.main_successfully_msg.set_label(_("The association between the environment and the file failed"))
             self.mainwindow_stack.set_visible_child_name("page7")
             print("file connected failed")
@@ -1291,8 +1320,7 @@ class pyvenv_manager(Gtk.Application):
         GLib.idle_add(self.connectedapp_success, pyvenv, payload["appname"])
 
     def connectedapp_success(self, pyvenv, appname):
-        self.main_successimg.set_from_icon_name("emblem-success")
-        self.main_successimg.set_pixel_size(128)
+        self.main_successicon.set_pixel_size(128)
         self.main_successfully_msg.set_label(_("The '{}' file was linked with the '{}' environment").format(appname, pyvenv))
         self.mainwindow_stack.set_visible_child_name("page7")
         print("file connected successfully")
@@ -1351,10 +1379,10 @@ class pyvenv_manager(Gtk.Application):
         return hbox
 
     # the created environments are listed
-    def create_appconn_envlist(self, pyvenv, icon_name="python"):
+    def create_appconn_envlist(self, pyvenv):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # ICON
-        icon = Gtk.Image.new_from_icon_name(icon_name)
+        icon = Gtk.Image.new_from_file(self.icons_path+"/python-32x32.svg")
         icon.set_pixel_size(32)
 
         # LABEL
@@ -1418,7 +1446,7 @@ class pyvenv_manager(Gtk.Application):
         for connlst in all_list:
             if connlst['type'] == "file":
                 for venvlst in self.connected_files[connlst['data']]:
-                    self.all_connections_list.append(self.create_allconn_list(venvlst, venvlst, connlst['data'], "application-x-python-bytecode"))
+                    self.all_connections_list.append(self.create_allconn_list(venvlst, venvlst, connlst['data']))
             else:
                 for venvlst in self.connected_apps[connlst['data']]:
                     venvlst = ast.literal_eval(venvlst)
@@ -1427,10 +1455,10 @@ class pyvenv_manager(Gtk.Application):
         self.mainwindow_stack.set_visible_child_name("page6")
         return False
 
-    def create_allconn_list(self, name, tooltip_txt, venvname, icon_name):
+    def create_allconn_list(self, name, tooltip_txt, venvname, icon_name=None):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # ICON
-        icon = Gtk.Image.new_from_icon_name(icon_name)
+        icon = Gtk.Image.new_from_file(self.icons_path+"/text-x-python-32x32.svg")
         icon.set_pixel_size(32)
         # this part works by finding the icon path data from the list when the Python application is listed
         if icon_name:
@@ -1441,9 +1469,9 @@ class pyvenv_manager(Gtk.Application):
                 except Exception:
                     icon.set_from_icon_name("image-missing")
             else:
-                icon.set_from_icon_name(icon_name)
+                icon.set_from_file(self.icons_path+"/python-16x16.svg")
         else:
-            icon.set_from_icon_name("image-missing")
+            icon.set_from_file(self.icons_path+"/text-x-python-24x24.svg")
 
         # LABEL
         label = Gtk.Label(xalign=0)
