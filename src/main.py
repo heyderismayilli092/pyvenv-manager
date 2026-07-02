@@ -209,7 +209,7 @@ class pyvenv_manager(Gtk.Application):
         self.removepack_successicon.set_from_file(self.icons_path+"/success.svg")
         self.removepack_questionicon.set_from_file(self.icons_path+"/dialog-question-48x48.svg")
         self.venvrm_questionicon.set_from_file(self.icons_path+"/dialog-question-48x48.svg")
-        self.dissconn_questionicon.set_from_file(self.icons_path+"/dialog-question-48x48.svg")
+        self.disconn_questionicon.set_from_file(self.icons_path+"/dialog-question-48x48.svg")
         self.environment_about_img.set_from_file(self.icons_path+"/python-64x64.svg")
         self.main_successicon.set_from_file(self.icons_path+"/success.svg")
         self.venvrm_successicon.set_from_file(self.icons_path+"/success.svg")
