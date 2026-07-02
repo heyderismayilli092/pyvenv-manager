@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-unzip isolated-python2.zip -d /tmp/
+unzip /usr/share/pyvenv-manager/isolated-python2.zip -d /tmp/
 cp -ra /tmp/pyvenv-manager /usr/lib
 rm -r /tmp/pyvenv-manager
 
