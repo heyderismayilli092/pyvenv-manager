@@ -35,14 +35,19 @@ if os.path.exists(changelog):
     f.close()
 
 data_files = [
+                 ("/usr/bin", ["pyvenv-manager"]),
+
                  ("/usr/share/applications/",
-                  ["tr.org.pardus.mycomputer.desktop"]),
+                  ["opensf90.pyvenv-manager.desktop"]),
+
                  ("/usr/share/pyvenv-manager/src", [
                      "src/main.py",
                      "src/venv_manager.py"
                  ]),
+
                  ("/usr/share/pyvenv-manager/ui",
                   ["ui/MainWindow.ui"]),
+
                  ("/usr/share/pyvenv-manager/icons",
                   ["icons/dialog-question-48x48.svg",
                    "icons/error.svg",
