@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+unzip isolated-python2.zip -d /tmp/
+cp -ra /tmp/pyvenv-manager /usr/lib
+rm -r /tmp/pyvenv-manager
+
 PY2ROOT="/usr/lib/pyvenv-manager/python2"
 PY2BIN="$PY2ROOT/bin/python2"
 
