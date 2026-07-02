@@ -123,8 +123,9 @@ def pack_install(venv_name, package):
     if not os.path.exists(venv_path):
         return False
 
+    env = envset_python2()
     cmd = [str(venv_path / "bin" / "pip"), "install", package]  # install package
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env, text=True, bufsize=1)
     # using 'yield', the results are returned in parts for printing on the main screen
     try:
         for line in proc.stdout:
