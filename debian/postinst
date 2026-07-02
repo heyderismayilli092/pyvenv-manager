@@ -1,0 +1,29 @@
+#!/bin/bash
+set -e
+
+PY2ROOT="/usr/lib/pyvenv-manager/python2"
+PY2BIN="$PY2ROOT/bin/python2"
+
+export LD_LIBRARY_PATH="$PY2ROOT/lib:$PY2ROOT/lib/python2.7/x86_64-linux-gnu${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+echo "Installing Python 2 pip..."
+
+TMPFILE=$(mktemp)
+
+cleanup() {
+    rm -f "$TMPFILE"
+}
+
+trap cleanup EXIT
+
+curl -fsSL https://bootstrap.pypa.io/pip/2.7/get-pip.py -o "$TMPFILE"
+
+"$PY2BIN" "$TMPFILE"
+echo "Installing Python2 packages..."
+
+"$PY2BIN" -m pip install --upgrade \
+    setuptools \
+    wheel \
+    virtualenv
+
+echo "Python2 runtime installation completed."
+exit 0
