@@ -14,13 +14,13 @@ import threading
 import venv_manager
 import mimetypes
 import subprocess
-import gettext as
+import gettext
 from pathlib import Path
 
 APP = "pyvenv-manager"
 LOCALE_DIR = "/usr/share/locale"
-gettext.bind(APP, LOCALE_DIR)
-gettext.domain(APP)
+gettext.bindtextdomain(APP, LOCALE_DIR)
+gettext.textdomain(APP)
 _ = gettext.gettext
 
 GLADE_FILE = os.path.dirname(os.path.abspath(__file__)) + "/../ui/MainWindow.ui"  # interface file
