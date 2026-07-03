@@ -124,7 +124,7 @@
                                 <property name="homogeneous">True</property>
                                 <property name="orientation">vertical</property>
                                 <child>
-                                  <object class="GtkImage">
+                                  <object class="GtkImage" id="notfound_virtualenv_icon">
                                     <property name="icon-name">edit-none-symbolic</property>
                                     <property name="pixel-size">100</property>
                                   </object>
