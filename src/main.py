@@ -14,11 +14,14 @@ import threading
 import venv_manager
 import mimetypes
 import subprocess
-from locale import gettext as _
+import gettext as
 from pathlib import Path
 
-locale.bindtextdomain('pyvenv-manager', '/usr/share/locale')
-locale.textdomain('pyvenv-manager')
+APP = "pyvenv-manager"
+LOCALE_DIR = "/usr/share/locale"
+gettext.bind(APP, LOCALE_DIR)
+gettext.domain(APP)
+_ = gettext.gettext
 
 GLADE_FILE = os.path.dirname(os.path.abspath(__file__)) + "/../ui/MainWindow.ui"  # interface file
 
@@ -28,6 +31,7 @@ class pyvenv_manager(Gtk.Application):
 
     def do_activate(self):
         builder = Gtk.Builder()
+        builder.set_translation_domain(APP)
         builder.add_from_file(GLADE_FILE)  # ui path
 
         homefolder = Path.home()
@@ -898,7 +902,7 @@ class pyvenv_manager(Gtk.Application):
         if packinfo["Required-by"] != None:
           self.packinfo_requiredby.set_label(packinfo["Required-by"])
         else:
-          self.packinfo_requiredby.set_label("Not Found")
+          self.packinfo_requiredby.set_label(_("Not Found"))
         return False
     # -----------------------------------------------
 
