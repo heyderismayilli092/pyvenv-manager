@@ -26,7 +26,7 @@
         </property>
         <property name="title-widget">
           <object class="GtkLabel">
-            <property name="label">Python Environment Manager</property>
+            <property name="label" translatable="yes">Python Environment Manager</property>
           </object>
         </property>
         <property name="use-native-controls">True</property>
@@ -66,19 +66,19 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="connect_pyfile">
-                            <property name="label">Connect Python File</property>
+                            <property name="label" translatable="yes">Connect Python File</property>
                             <property name="margin-start">5</property>
                           </object>
                         </child>
                         <child>
                           <object class="GtkButton" id="connect_pyapp">
-                            <property name="label">Connect Python App</property>
+                            <property name="label" translatable="yes">Connect Python App</property>
                             <property name="margin-start">5</property>
                           </object>
                         </child>
                         <child>
                           <object class="GtkButton" id="connection_list">
-                            <property name="label">Connections List</property>
+                            <property name="label" translatable="yes">Connections List</property>
                             <property name="margin-start">5</property>
                           </object>
                         </child>
@@ -86,7 +86,7 @@
                     </child>
                     <child>
                       <object class="GtkLabel" id="environments_list_label">
-                        <property name="label">Environments list:</property>
+                        <property name="label" translatable="yes">Environments list:</property>
                         <property name="margin-bottom">5</property>
                         <property name="margin-top">10</property>
                       </object>
@@ -131,7 +131,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkLabel">
-                                    <property name="label">No virtual environment exists yet</property>
+                                    <property name="label" translatable="yes">No virtual environment exists yet</property>
                                   </object>
                                 </child>
                               </object>
@@ -188,13 +188,13 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="back_mainwindow">
-                            <property name="label">Back main window</property>
+                            <property name="label" translatable="yes">Back main window</property>
                             <property name="margin-top">20</property>
                           </object>
                         </child>
                         <child>
                           <object class="GtkButton" id="install_new_package">
-                            <property name="label">Install new package</property>
+                            <property name="label" translatable="yes">Install new package</property>
                             <property name="margin-top">5</property>
                           </object>
                         </child>
@@ -214,7 +214,7 @@
                                     <property name="orientation">vertical</property>
                                     <child>
                                       <object class="GtkLabel">
-                                        <property name="label">Connected Files:</property>
+                                        <property name="label" translatable="yes">Connected Files:</property>
                                         <property name="lines">-2</property>
                                       </object>
                                     </child>
@@ -240,7 +240,7 @@
                                     <property name="orientation">vertical</property>
                                     <child>
                                       <object class="GtkLabel">
-                                        <property name="label">Connected Apps:</property>
+                                        <property name="label" translatable="yes">Connected Apps:</property>
                                       </object>
                                     </child>
                                     <child>
@@ -271,7 +271,7 @@
                                     </child>
                                     <child>
                                       <object class="GtkLabel">
-                                        <property name="label">No files were found linked to this environment!</property>
+                                        <property name="label" translatable="yes">No files were found linked to this environment!</property>
                                       </object>
                                     </child>
                                   </object>
@@ -283,7 +283,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="change_connpage">
-                            <property name="label">Change</property>
+                            <property name="label" translatable="yes">Change</property>
                             <property name="margin-bottom">2</property>
                             <property name="margin-top">3</property>
                           </object>
@@ -393,13 +393,13 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="back_mainwindow_2">
-                            <property name="label">Back main window</property>
+                            <property name="label" translatable="yes">Back main window</property>
                             <property name="margin-top">20</property>
                           </object>
                         </child>
                         <child>
                           <object class="GtkButton" id="remove_package">
-                            <property name="label">Remove package</property>
+                            <property name="label" translatable="yes">Remove package</property>
                             <property name="margin-top">5</property>
                           </object>
                         </child>
@@ -422,7 +422,7 @@
                                         <property name="margin-bottom">5</property>
                                         <child>
                                           <object class="GtkLabel">
-                                            <property name="label">Version:</property>
+                                            <property name="label" translatable="yes">Version:</property>
                                             <property name="xalign">0.0</property>
                                           </object>
                                         </child>
@@ -439,7 +439,7 @@
                                         <property name="vexpand">True</property>
                                         <child>
                                           <object class="GtkLabel">
-                                            <property name="label">Summary:</property>
+                                            <property name="label" translatable="yes">Summary:</property>
                                           </object>
                                         </child>
                                         <child>
@@ -454,13 +454,13 @@
                                         <property name="margin-top">2</property>
                                         <child>
                                           <object class="GtkLabel">
-                                            <property name="label">Home Page:</property>
+                                            <property name="label" translatable="yes">Home Page:</property>
                                             <property name="xalign">0.0</property>
                                           </object>
                                         </child>
                                         <child>
                                           <object class="GtkLinkButton" id="packinfo_homepage">
-                                            <property name="label">Open</property>
+                                            <property name="label" translatable="yes">Open</property>
                                           </object>
                                         </child>
                                       </object>
@@ -471,7 +471,7 @@
                                         <property name="margin-top">2</property>
                                         <child>
                                           <object class="GtkLabel">
-                                            <property name="label">Author:</property>
+                                            <property name="label" translatable="yes">Author:</property>
                                             <property name="xalign">0.0</property>
                                           </object>
                                         </child>
@@ -488,7 +488,7 @@
                                         <property name="margin-top">2</property>
                                         <child>
                                           <object class="GtkLabel">
-                                            <property name="label">Author Email:</property>
+                                            <property name="label" translatable="yes">Author Email:</property>
                                             <property name="xalign">0.0</property>
                                           </object>
                                         </child>
@@ -505,7 +505,7 @@
                                         <property name="margin-top">2</property>
                                         <child>
                                           <object class="GtkLabel">
-                                            <property name="label">License:</property>
+                                            <property name="label" translatable="yes">License:</property>
                                             <property name="xalign">0.0</property>
                                           </object>
                                         </child>
@@ -521,7 +521,7 @@
                                         <property name="margin-top">2</property>
                                         <child>
                                           <object class="GtkLabel">
-                                            <property name="label">Required by:</property>
+                                            <property name="label" translatable="yes">Required by:</property>
                                             <property name="xalign">0.0</property>
                                           </object>
                                         </child>
@@ -546,7 +546,7 @@
                         </child>
                         <child>
                           <object class="GtkLabel" id="requires_label">
-                            <property name="label">Requires:</property>
+                            <property name="label" translatable="yes">Requires:</property>
                           </object>
                         </child>
                         <child>
@@ -576,7 +576,7 @@
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">Connect Python file to Environment</property>
+                        <property name="label" translatable="yes">Connect Python file to Environment</property>
                         <property name="margin-bottom">5</property>
                         <property name="margin-top">10</property>
                       </object>
@@ -593,7 +593,7 @@
                             </child>
                             <child>
                               <object class="GtkLabel">
-                                <property name="label">Select Python project file</property>
+                                <property name="label" translatable="yes">Select Python project file</property>
                                 <property name="margin-start">10</property>
                               </object>
                             </child>
@@ -621,7 +621,7 @@
                         <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="label">Select Environment:</property>
+                            <property name="label" translatable="yes">Select Environment:</property>
                           </object>
                         </child>
                         <child>
@@ -637,7 +637,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="back_main_window1">
-                        <property name="label">Back Main Window</property>
+                        <property name="label" translatable="yes">Back Main Window</property>
                         <property name="margin-bottom">5</property>
                         <property name="margin-top">2</property>
                       </object>
@@ -654,7 +654,7 @@
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">Connect Python app to Environment</property>
+                        <property name="label" translatable="yes">Connect Python app to Environment</property>
                         <property name="margin-bottom">5</property>
                         <property name="margin-top">10</property>
                       </object>
@@ -664,7 +664,7 @@
                         <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="label">Select App:</property>
+                            <property name="label" translatable="yes">Select App:</property>
                             <property name="margin-top">10</property>
                           </object>
                         </child>
@@ -696,7 +696,7 @@
                         <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="label">Select Environment:</property>
+                            <property name="label" translatable="yes">Select Environment:</property>
                           </object>
                         </child>
                         <child>
@@ -712,7 +712,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="back_main_window2">
-                        <property name="label">Back Main Window</property>
+                        <property name="label" translatable="yes">Back Main Window</property>
                       </object>
                     </child>
                   </object>
@@ -727,7 +727,7 @@
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">Connection List:</property>
+                        <property name="label" translatable="yes">Connection List:</property>
                         <property name="margin-top">10</property>
                       </object>
                     </child>
@@ -748,7 +748,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="back_main_window4">
-                        <property name="label">Back Main Window</property>
+                        <property name="label" translatable="yes">Back Main Window</property>
                         <property name="margin-bottom">5</property>
                       </object>
                     </child>
@@ -775,7 +775,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="back_main_window3">
-                        <property name="label">Back Main Window</property>
+                        <property name="label" translatable="yes">Back Main Window</property>
                         <property name="margin-top">10</property>
                       </object>
                     </child>
@@ -801,12 +801,12 @@
   <object class="GtkWindow" id="new_venv_window">
     <property name="default-height">450</property>
     <property name="default-width">600</property>
-    <property name="title">Create New Environment</property>
+    <property name="title" translatable="yes">Create New Environment</property>
     <property name="titlebar">
       <object class="GtkHeaderBar">
         <property name="title-widget">
           <object class="GtkLabel">
-            <property name="label">Create New Environment</property>
+            <property name="label" translatable="yes">Create New Environment</property>
           </object>
         </property>
       </object>
@@ -824,7 +824,7 @@
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">Enter Environment Name:</property>
+                        <property name="label" translatable="yes">Enter Environment Name:</property>
                         <property name="margin-bottom">3</property>
                         <property name="margin-top">10</property>
                       </object>
@@ -832,12 +832,12 @@
                     <child>
                       <object class="GtkEntry" id="environment_name">
                         <property name="margin-bottom">5</property>
-                        <property name="placeholder-text">Environment Name:</property>
+                        <property name="placeholder-text" translatable="yes">Environment Name:</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkMenuButton" id="python_verselect">
-                        <property name="label">Select Python Version</property>
+                        <property name="label" translatable="yes">Select Python Version</property>
                         <property name="margin-top">3</property>
                         <property name="popover">
                           <object class="GtkPopover" id="popover_menu">
@@ -856,7 +856,7 @@
                                         </child>
                                         <child>
                                           <object class="GtkLabel">
-                                            <property name="label">Python 2</property>
+                                            <property name="label" translatable="yes">Python 2</property>
                                           </object>
                                         </child>
                                       </object>
@@ -874,7 +874,7 @@
                                         </child>
                                         <child>
                                           <object class="GtkLabel">
-                                            <property name="label">Python 3</property>
+                                            <property name="label" translatable="yes">Python 3</property>
                                           </object>
                                         </child>
                                       </object>
@@ -900,7 +900,7 @@
                             </child>
                             <child>
                               <object class="GtkLabel">
-                                <property name="label">Choose Requirement File (optional)</property>
+                                <property name="label" translatable="yes">Choose Requirement File (optional)</property>
                               </object>
                             </child>
                           </object>
@@ -927,7 +927,7 @@
                             </child>
                             <child>
                               <object class="GtkLabel">
-                                <property name="label">Unselect requirements file</property>
+                                <property name="label" translatable="yes">Unselect requirements file</property>
                                 <property name="margin-start">5</property>
                               </object>
                             </child>
@@ -961,12 +961,12 @@
                     <property name="homogeneous">True</property>
                     <child>
                       <object class="GtkButton" id="cancel_btn">
-                        <property name="label">Cancel</property>
+                        <property name="label" translatable="yes">Cancel</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkButton" id="create_venv">
-                        <property name="label">Create</property>
+                        <property name="label" translatable="yes">Create</property>
                       </object>
                     </child>
                   </object>
@@ -1011,7 +1011,7 @@
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkLabel">
-                    <property name="label">Packages to be installed:</property>
+                    <property name="label" translatable="yes">Packages to be installed:</property>
                     <property name="margin-bottom">5</property>
                     <property name="margin-top">5</property>
                   </object>
@@ -1028,7 +1028,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="next_installbtn">
-                    <property name="label">Next</property>
+                    <property name="label" translatable="yes">Next</property>
                     <property name="margin-bottom">5</property>
                     <property name="margin-top">10</property>
                   </object>
@@ -1051,7 +1051,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="label">Environment Created Successfully</property>
+                    <property name="label" translatable="yes">Environment Created Successfully</property>
                   </object>
                 </child>
               </object>
@@ -1069,7 +1069,7 @@
       <object class="GtkHeaderBar">
         <property name="title-widget">
           <object class="GtkLabel">
-            <property name="label">Install New Package</property>
+            <property name="label" translatable="yes">Install New Package</property>
           </object>
         </property>
       </object>
@@ -1105,7 +1105,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="new_package_insbutton">
-                        <property name="label">Install</property>
+                        <property name="label" translatable="yes">Install</property>
                         <property name="margin-top">15</property>
                       </object>
                     </child>
@@ -1133,7 +1133,7 @@
                     </child>
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">Installing package...</property>
+                        <property name="label" translatable="yes">Installing package...</property>
                       </object>
                     </child>
                   </object>
@@ -1165,7 +1165,7 @@
       <object class="GtkHeaderBar">
         <property name="title-widget">
           <object class="GtkLabel">
-            <property name="label">Remove Package</property>
+            <property name="label" translatable="yes">Remove Package</property>
           </object>
         </property>
       </object>
@@ -1198,7 +1198,7 @@
                         <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="label">Requirements:</property>
+                            <property name="label" translatable="yes">Requirements:</property>
                           </object>
                         </child>
                         <child>
@@ -1214,7 +1214,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="label">Are you sure you want to remove the package?</property>
+                    <property name="label" translatable="yes">Are you sure you want to remove the package?</property>
                     <property name="margin-top">15</property>
                   </object>
                 </child>
@@ -1224,13 +1224,13 @@
                     <property name="margin-top">10</property>
                     <child>
                       <object class="GtkButton" id="removepack_cancelbtn">
-                        <property name="label">Cancel</property>
+                        <property name="label" translatable="yes">Cancel</property>
                         <property name="margin-end">5</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkButton" id="removepack_removebtn">
-                        <property name="label">Remove</property>
+                        <property name="label" translatable="yes">Remove</property>
                         <property name="margin-start">6</property>
                       </object>
                     </child>
@@ -1254,7 +1254,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="label">Package is being removed from the relevant environment...</property>
+                    <property name="label" translatable="yes">Package is being removed from the relevant environment...</property>
                   </object>
                 </child>
               </object>
@@ -1275,7 +1275,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="label">Package removed successfully</property>
+                    <property name="label" translatable="yes">Package removed successfully</property>
                   </object>
                 </child>
               </object>
@@ -1320,13 +1320,13 @@
                     <property name="homogeneous">True</property>
                     <child>
                       <object class="GtkButton" id="connremove_cancel">
-                        <property name="label">Cancel</property>
+                        <property name="label" translatable="yes">Cancel</property>
                         <property name="margin-end">3</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkButton" id="conn_removebtn">
-                        <property name="label">Disconnect</property>
+                        <property name="label" translatable="yes">Disconnect</property>
                         <property name="margin-start">3</property>
                       </object>
                     </child>
@@ -1370,7 +1370,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="label">Disconnected Successfully</property>
+                    <property name="label" translatable="yes">Disconnected Successfully</property>
                   </object>
                 </child>
               </object>
@@ -1388,7 +1388,7 @@
       <object class="GtkHeaderBar">
         <property name="title-widget">
           <object class="GtkLabel">
-            <property name="label">Environment Remove</property>
+            <property name="label" translatable="yes">Environment Remove</property>
           </object>
         </property>
       </object>
@@ -1412,7 +1412,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="label">Are you sure you want to delete this environment?</property>
+                    <property name="label" translatable="yes">Are you sure you want to delete this environment?</property>
                     <property name="margin-top">10</property>
                   </object>
                 </child>
@@ -1422,13 +1422,13 @@
                     <property name="margin-top">10</property>
                     <child>
                       <object class="GtkButton" id="venvrm_cancel">
-                        <property name="label">Cancel</property>
+                        <property name="label" translatable="yes">Cancel</property>
                         <property name="margin-end">4</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkButton" id="venvrm_btn">
-                        <property name="label">Remove</property>
+                        <property name="label" translatable="yes">Remove</property>
                         <property name="margin-start">5</property>
                       </object>
                     </child>
@@ -1447,7 +1447,7 @@
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkLabel">
-                    <property name="label">Connections:</property>
+                    <property name="label" translatable="yes">Connections:</property>
                     <property name="margin-bottom">5</property>
                     <property name="margin-top">10</property>
                   </object>
@@ -1472,7 +1472,7 @@
                     </child>
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">The above are currently connected to this environment. These will also be removed.</property>
+                        <property name="label" translatable="yes">The above are currently connected to this environment. These will also be removed.</property>
                         <property name="margin-bottom">5</property>
                         <property name="margin-start">3</property>
                         <property name="margin-top">5</property>
@@ -1482,7 +1482,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="venvrm_nextbtn">
-                    <property name="label">Next</property>
+                    <property name="label" translatable="yes">Next</property>
                     <property name="margin-bottom">5</property>
                   </object>
                 </child>
@@ -1504,7 +1504,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="label">Environment is being deleted from the computer...</property>
+                    <property name="label" translatable="yes">Environment is being deleted from the computer...</property>
                   </object>
                 </child>
               </object>
@@ -1526,7 +1526,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="label">Environment Deleted</property>
+                    <property name="label" translatable="yes">Environment Deleted</property>
                   </object>
                 </child>
               </object>
