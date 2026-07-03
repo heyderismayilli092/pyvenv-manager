@@ -793,7 +793,6 @@
     <property name="authors">Heydar Ismayilli &lt;heyderismayilli092@gmail.com&gt;</property>
     <property name="comments">Software that allows you to control Python environments from a graphical interface and to map Python programs to the relevant environments</property>
     <property name="copyright">© OpenSF90</property>
-    <property name="logo-icon-name">python</property>
     <property name="program-name">Python Environment Manager</property>
     <property name="translator-credits">Heydar Ismayilli</property>
     <property name="version">0.0.1</property>

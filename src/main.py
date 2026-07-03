@@ -186,7 +186,7 @@ class pyvenv_manager(Gtk.Application):
 
         # About Window
         self.about_window = builder.get_object("about_window")
-        texture = Gdk.Texture.new_from_file(Gio.File.new_for_path(str(self.icons_path) + "/python-64x64.svg"))
+        texture = Gdk.Texture.new_from_file(Gio.File.new_for_path("/usr/share/icons/hicolor/scalable/apps/pyvenv-manager-64x64.png"))
         self.about_window.set_logo(texture)
 
         # Icons
