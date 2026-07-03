@@ -138,6 +138,7 @@ class pyvenv_manager(Gtk.Application):
         self.selected_reqfile_label = builder.get_object("selected_reqfile_label")
         self.unselect_reqbtn = builder.get_object("unselect_reqbtn")
         self.back_handler6 = None
+        self.back_handler9 = None
         self.packversion = None
 
         # File Chooser Dialog
@@ -358,27 +359,36 @@ class pyvenv_manager(Gtk.Application):
 
     # select requirements file
     def on_requirements_file_select(self, button):
-        dialog = Gtk.FileChooserNative(
+        # we're putting the dialog into `self` so it doesn't get collected early by the GC
+        self._req_dialog = Gtk.FileChooserNative(
             title=_("Choose requirements file"),
             transient_for=self.window,
             action=Gtk.FileChooserAction.OPEN,
             accept_label=_("Open"),
             cancel_label=_("Cancel")
         )
-        dialog.connect("response", self.on_file_response)
-        dialog.show()
+        # connect the response handler
+        self._req_dialog.connect("response", self.on_file_response)
+        self._req_dialog.show()
 
     def on_file_response(self, dialog, response):
         if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
-            if file:
-                self.requirements_filedir = file.get_path()
-                print("Selected requirements file: ", self.requirements_filedir)
-                self.selected_reqfile_label.show()
-                self.selected_reqfile_label.set_label(_("Selected requirements file: ")+self.requirements_filedir)
-                self.unselect_reqbtn.show()
-                self.unselect_reqbtn.connect("clicked", self.on_unselect_reqbtn)
-        dialog.hide()
+            if file is not None:
+                path = file.get_path()
+                if path:
+                    self.requirements_filedir = path
+                    print("Selected requirements file: ", self.requirements_filedir)
+                    self.selected_reqfile_label.show()
+                    self.selected_reqfile_label.set_label(_("Selected requirements file: ") + self.requirements_filedir)
+                    self.unselect_reqbtn.show()
+                    if self.back_handler9:
+                        self.unselect_reqbtn.disconnect(self.back_handler9)
+                        self.back_handler9 = None
+                    print("Added signal: ", venvname)
+                    self.back_handler9 = self.unselect_reqbtn.connect("clicked", self.on_unselect_reqbtn)
+        # Delay the destroy operation in the main loop (safer on some platforms)
+        GLib.idle_add(lambda: (dialog.destroy(), setattr(self, "_req_dialog", None))[0])
 
 
     # ---------- Create New Environment ----------
