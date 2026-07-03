@@ -25,3 +25,297 @@ msgstr "Python Uygulaması Bağla"
 
 msgid "Environments list:"
 msgstr "Ortamlar listesi:"
+
+msgid "No virtual environment exists yet"
+msgstr "Henüz sanal bir ortam mevcut değil"
+
+msgid "Install new package"
+msgstr "Yeni paket kur"
+
+msgid "Connected Files:"
+msgstr "Bağlanmış Dosyalar:"
+
+msgid "Connected Apps:"
+msgstr "Bağlanmış Uygulamalar:"
+
+msgid "No files were found linked to this environment!"
+msgstr "Bu ortama bağlı hiçbir dosya bulunamadı!"
+
+msgid "Change"
+msgstr "Değiştir"
+
+msgid "Remove package"
+msgstr "Paketi kaldır"
+
+msgid "Version:"
+msgstr "Sürüm:"
+
+msgid "Summary:"
+msgstr "Özet:"
+
+msgid "Home Page:"
+msgstr "Ana Sayfa:"
+
+msgid "Open"
+msgstr "Aç"
+
+msgid "Author:"
+msgstr "Yazar:"
+
+msgid "Author Email:"
+msgstr "Yazar Mail:"
+
+msgid "License:"
+msgstr "Lisans:"
+
+msgid "Required by:"
+msgstr "Talep eden:"
+
+msgid "Requires:"
+msgstr "Gereksinimler:"
+
+msgid "Connect Python file to Environment"
+msgstr "Python dosyasını Ortama bağla"
+
+msgid "Select Python project file"
+msgstr "Python proje dosyası seç"
+
+msgid "Select Environment:"
+msgstr "Ortam Seç:"
+
+msgid "Back Main Window"
+msgstr "Ana Sayfaya Dön"
+
+msgid "Connect Python app to Environment"
+msgstr "Python uygulamasını Ortama Bağla"
+
+msgid "Select App:"
+msgstr "Uygulama Seç:"
+
+msgid "Select Environment:"
+msgstr "Ortam Seç:"
+
+msgid "Connection List:"
+msgstr "Bağlananlar Listesi:"
+
+msgid "Create New Environment"
+msgstr "Yeni Ortam Oluştur"
+
+msgid "Enter Environment Name:"
+msgstr "Ortam İsmini Gir:"
+
+msgid "Select Python Version"
+msgstr "Python Sürümü Seç"
+
+msgid "Choose Requirement File (optional)"
+msgstr "Gereksinim Dosyasını Seçin (isteğe bağlı)"
+
+msgid "Unselect requirements file"
+msgstr "Gereksinim dosyasını iptal et"
+
+msgid "Cancel"
+msgstr "İptal"
+
+msgid "Create"
+msgstr "Oluştur"
+
+msgid "Packages to be installed:"
+msgstr "Kurulacak paketler:"
+
+msgid "Next"
+msgstr "İlerle"
+
+msgid "Environment Created Successfully"
+msgstr "Kurulacak paketler"
+
+msgid "Install New Package"
+msgstr "Yeni Paket Kur"
+
+msgid "Install"
+msgstr "Kur"
+
+msgid "Installing package..."
+msgstr "Paket kuruluyor..."
+
+msgid "Requirements:"
+msgstr "Bağımlılıklar:"
+
+msgid "Are you sure you want to remove the package?"
+msgstr "Paketi kaldırmak istediğinizden emin misiniz?"
+
+msgid "Remove"
+msgstr "Kaldır"
+
+msgid "Package is being removed from the relevant environment..."
+msgstr "Package is being removed from the relevant environment..."
+
+msgid "Package removed successfully"
+msgstr "Paket başarıyla kaldırıldı"
+
+msgid "Disconnect"
+msgstr "Bağlantıyı Kes"
+
+msgid "Disconnected Successfully"
+msgstr "Bağlantı başarıyla kesildi"
+
+msgid "Environment Remove"
+msgstr "Ortamı Kaldır"
+
+msgid "Are you sure you want to delete this environment?"
+msgstr "Bu ortamı kaldırmak istediğinizden emin misiniz?"
+
+msgid "Connections:"
+msgstr "Bağlantılar:"
+
+msgid "The above are currently connected to this environment. These will also be removed."
+msgstr "The above are currently connected to this environment. These will also be removed."
+
+msgid "Environment is being deleted from the computer..."
+msgstr "Ortam bilgisayardan siliniyor..."
+
+msgid "Environment Deleted"
+msgstr "Ortam Kaldırıldı"
+
+msgid "Selected requirements file: "
+msgstr "Seçilen gereksinimler dosyası: "
+
+msgid "Enter the environment name !"
+msgstr "Ortam ismi giriniz !"
+
+msgid "This environment avaliable"
+msgstr "Bu ortam zaten mevcut"
+
+msgid "Select a Python version !"
+msgstr "Python sürümü seçiniz !"
+
+msgid "The file you selected may not be the\ncorrect one containing the necessary libraries !"
+msgstr "Seçtiğiniz dosya gerekli kütüphaneleri içeren doğru dosya olmayabilir!"
+
+msgid "For requirements to install,\nthe computer must be connected to the internet !"
+msgstr "Kurulum için bilgisayarın\ninternete bağlı olması gerekmektedir!"
+
+msgid "Status of the packages to be installed is listed..."
+msgstr "Kurulacak paketlerin durumu listeleniyor..."
+
+msgid "Creating virtual environment..."
+msgstr "Ortam oluşturuluyor..."
+
+msgid "Version: "
+msgstr "Sürüm: "
+
+msgid "Package can be installed"
+msgstr "Paket kurulabilir"
+
+msgid "Package cannot be installed"
+msgstr "Paket kurulamayacak"
+
+msgid "Creating virtual environment.."
+msgstr "Ortam oluşturuluyor..."
+
+msgid "Retrieve environment about informations..."
+msgstr "Ortam hakkında bilgiler alınıyor..."
+
+msgid "Installed packages (total {} packages):"
+msgstr "Kurulan paketler (toplam {} paket):"
+
+msgid "About"
+msgstr "Hakkında"
+
+msgid "(Deleted)"
+msgstr "(Silinmiş)"
+
+msgid "Full path: "
+msgstr "Yol: "
+
+msgid "Retrieve package info..."
+msgstr "Paket hakkında bilgi alınıyor..."
+
+msgid "Not Found"
+msgstr "Bulunamadı"
+
+msgid "Environment: "
+msgstr "Ortam: "
+
+msgid "Package installed"
+msgstr "Paket kuruldu"
+
+msgid "Package is avaliable"
+msgstr "Paket mevcuttur"
+
+msgid "Package not found"
+msgstr "Paket bulunamadı"
+
+msgid "Enter a package name!"
+msgstr "Paket ismi giriniz!"
+
+msgid "Environment:\n"
+msgstr "Ortam:\n"
+
+msgid "Package:\n"
+msgstr "Paket:\n"
+
+msgid "Connect"
+msgstr "Bağla"
+
+msgid "Choose Python Script"
+msgstr "Python Betiği Seç"
+
+msgid "Selected script: "
+msgstr "Seçilen betik: "
+
+msgid "Choose a Python file!"
+msgstr "Python dosyası seç!"
+
+msgid "No valid Python file was selected!"
+msgstr "Geçerli bir Python dosyası seçilemedi!"
+
+msgid "This file is already attached to this environment"
+msgstr "Bu dosya zaten bu ortama bağlanmış"
+
+msgid "The file you want to link is linked to the '{}' environment."
+msgstr "Bağlamak istediğiniz dosya '{}' ortamına bağlıdır."
+
+msgid "The Python file is connecting to the selected environment..."
+msgstr "Python dosyası seçilen ortama bağlanıyor..."
+
+msgid "The '{}' file was linked with the '{}' environment"
+msgstr "'{}' dosyası '{}' ortamıyla ilişkilendirildi."
+
+msgid "The association between the environment and the file failed"
+msgstr "Ortam ile dosya arasındaki bağlantı kurulamadı."
+
+msgid "Disconnect Python script"
+msgstr "Python betiğinin bağlantısını kes"
+
+msgid "Are you sure you want to remove the Python file you selected from the '{}' environment?"
+msgstr "Seçtiğiniz Python dosyasını '{}' ortamından kaldırmak istediğinizden emin misiniz?"
+
+msgid "Are you sure you want to remove the Python file you selected from the '{}' environment?\n(This file removed in system)"
+msgstr "Seçtiğiniz Python dosyasını '{}' ortamından kaldırmak istediğinizden emin misiniz?\n(Bu dosya sistemden kaldırıldı)"
+
+msgid "Disconnect Python app"
+msgstr "Python uygulamasının bağlantısını kes"
+
+msgid "Are you sure you want to remove the Python app you selected from the '{}' environment?"
+msgstr "Seçtiğiniz Python uygulamasını '{}' ortamından kaldırmak istediğinizden emin misiniz?"
+
+msgid "Connection between file and virtual environment is being severed..."
+msgstr "Dosya ile ortam arasındaki bağlantı kesiliyor..."
+
+msgid "Connection between app and virtual environment is being severed..."
+msgstr "Uygulama ile ortam arasındaki bağlantı kesiliyor.."
+
+msgid "Python applications and Environments are listed..."
+msgstr "Python uygulamaları ve ortamları listeleniyor..."
+
+msgid "Select a Python app!"
+msgstr "Python uygulaması seç!"
+
+msgid "The Python file is connecting to the selected environment..."
+msgstr "Python dosyası seçilen ortama bağlanıyor..."
+
+msgid "The '{}' file was linked with the '{}' environment"
+msgstr "'{}' dosyası '{}' ortamıyla ilişkilendirildi"
+
+msgid "Retrieving a list of connected applications and files..."
+msgstr "Bağlı uygulamaların ve dosyaların listesi alınıyor..."
