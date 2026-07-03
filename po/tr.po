@@ -47,6 +47,9 @@ msgstr "Değiştir"
 msgid "Remove package"
 msgstr "Paketi kaldır"
 
+msgid "Remove Package"
+msgstr "Paket Kaldır"
+
 msgid "Version:"
 msgstr "Sürüm:"
 
@@ -86,6 +89,9 @@ msgstr "Ortam Seç:"
 msgid "Back Main Window"
 msgstr "Ana Sayfaya Dön"
 
+msgid "Connections List"
+msgstr "Bağlananlar Listesi"
+
 msgid "Connect Python app to Environment"
 msgstr "Python uygulamasını Ortama Bağla"
 
@@ -123,7 +129,7 @@ msgid "Next"
 msgstr "İlerle"
 
 msgid "Environment Created Successfully"
-msgstr "Kurulacak paketler"
+msgstr "Ortam Başarıyla Oluşturuldu"
 
 msgid "Install New Package"
 msgstr "Yeni Paket Kur"
@@ -144,7 +150,7 @@ msgid "Remove"
 msgstr "Kaldır"
 
 msgid "Package is being removed from the relevant environment..."
-msgstr "Package is being removed from the relevant environment..."
+msgstr "Paket ilgili ortamdan kaldırılıyor..."
 
 msgid "Package removed successfully"
 msgstr "Paket başarıyla kaldırıldı"
@@ -165,7 +171,7 @@ msgid "Connections:"
 msgstr "Bağlantılar:"
 
 msgid "The above are currently connected to this environment. These will also be removed."
-msgstr "The above are currently connected to this environment. These will also be removed."
+msgstr "Yukarıdakiler şu anda bu ortama bağlıdır. Bunlar da kaldırılacaktır."
 
 msgid "Environment is being deleted from the computer..."
 msgstr "Ortam bilgisayardan siliniyor..."

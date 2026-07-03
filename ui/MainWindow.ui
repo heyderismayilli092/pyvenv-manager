@@ -188,7 +188,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="back_mainwindow">
-                            <property name="label" translatable="yes">Back main window</property>
+                            <property name="label" translatable="yes">Back Main Window</property>
                             <property name="margin-top">20</property>
                           </object>
                         </child>
@@ -393,7 +393,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="back_mainwindow_2">
-                            <property name="label" translatable="yes">Back main window</property>
+                            <property name="label" translatable="yes">Back Main Window</property>
                             <property name="margin-top">20</property>
                           </object>
                         </child>
