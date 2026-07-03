@@ -1131,25 +1131,28 @@ class pyvenv_manager(Gtk.Application):
 
     # select python script file on computer
     def on_select_pythonfile(self, button):
-        dialog = Gtk.FileChooserNative(
+        # we're putting the dialog into `self` so it doesn't get collected early by the GC
+        self._req_dialog = Gtk.FileChooserNative(
             title=_("Choose Python Script"),
             transient_for=self.window,
             action=Gtk.FileChooserAction.OPEN,
             accept_label=_("Open"),
             cancel_label=_("Cancel")
         )
-        dialog.connect("response", self.on_connpy_response)
-        dialog.show()
+        # connect the response handler
+        self._req_dialog.connect("response", self.on_connpy_response)
+        self._req_dialog.show()
 
     def on_connpy_response(self, dialog, response):
         if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
-            if file:
+            if file is not None:
                 self.selected_connpy_file = file.get_path()
                 print("Selected Python script file: ", self.selected_connpy_file)
                 self.selected_pyfile_label.show()
                 self.selected_pyfile_label.set_label(_("Selected script: ")+self.selected_connpy_file)
-        dialog.destroy()
+        # Delay the destroy operation in the main loop (safer on some platforms)
+        GLib.idle_add(lambda: (dialog.destroy(), setattr(self, "_req_dialog", None))[0])
 
     # connect python file to environment
     def on_env_fileconn_clicked(self, button, pyvenv):
