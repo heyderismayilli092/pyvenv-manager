@@ -207,6 +207,7 @@ class pyvenv_manager(Gtk.Application):
         self.item_python2_logo = builder.get_object("item_python2_logo")
         self.item_python3_logo = builder.get_object("item_python3_logo")
         self.venvrm_successicon = builder.get_object("venvrm_successicon")
+        self.notfound_virtualenv_icon = builder.get_object("notfound_virtualenv_icon")
         # set icons
         self.item_python2_logo.set_from_file(self.icons_path+"/python-16x16.svg")
         self.item_python3_logo.set_from_file(self.icons_path+"/python-16x16.svg")
@@ -219,6 +220,8 @@ class pyvenv_manager(Gtk.Application):
         self.main_successicon.set_from_file(self.icons_path+"/success.svg")
         self.venvrm_successicon.set_from_file(self.icons_path+"/success.svg")
         self.disconn_successicon.set_from_file(self.icons_path+"/success.svg")
+        self.notfound_virtualenv_icon.set_from_file(self.icons_path+"/notfound.svg")
+        self.notfound_virtualenv_icon.set_pixel_size(100)
 
         # ----Signals----
         self.new_environment.connect("clicked", self.on_new_environment)
