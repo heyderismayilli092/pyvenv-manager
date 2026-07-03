@@ -17,6 +17,9 @@ msgstr ""
 msgid "Python Environment Manager"
 msgstr "Python Ortam Yöneticisi"
 
+msgid "Software that allows you to control Python environments from a graphical interface and to map Python programs to the relevant environments"
+msgstr "Python ortamlarını grafik arayüzden kontrol etmenizi ve Python programlarını ilgili ortamlara eşlemenizi sağlayan yazılım"
+
 msgid "Connect Python File"
 msgstr "Python Dosyası Bağla"
 
