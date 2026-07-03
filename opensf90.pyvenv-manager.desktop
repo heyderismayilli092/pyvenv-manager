@@ -1,12 +1,12 @@
 [Desktop Entry]
 Name=Python Environment Manager
-Name[tr]=Python Orta Yöneticisi
+Name[tr]=Python Ortam Yöneticisi
 GenericName=Python Environments
 GenericName[tr]=Python Ortamları
 Comment=Software that allows you to control Python environments from a graphical interface and to map Python programs to the relevant environments
 Comment[tr]=Python ortamlarını grafik arayüzden kontrol etmenizi ve Python programlarını ilgili ortamlara eşlemenizi sağlayan yazılım
 Exec=pyvenv-manager
-Icon=/usr/share/icons/hicolor/scalable/apps/pyvenv-manager.png
+Icon=/usr/share/icons/hicolor/scalable/apps/pyvenv-manager-256x256.png
 Terminal=false
 Type=Application
 Categories=System;

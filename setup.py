@@ -58,6 +58,10 @@ data_files = [
                    "icons/success.svg",
                    "icons/text-x-python-24x24.svg",
                    "icons/text-x-python-32x32.svg"]),
+
+                 ("/usr/share/icons/hicolor/scalable/apps/",
+                   ["pyvenv-manager-256x256.png",
+                    "pyvenv-manager-64x64.png"])
              ] + create_mo_files()
 
 setup(
