@@ -92,9 +92,6 @@ msgstr "Python uygulamasını Ortama Bağla"
 msgid "Select App:"
 msgstr "Uygulama Seç:"
 
-msgid "Select Environment:"
-msgstr "Ortam Seç:"
-
 msgid "Connection List:"
 msgstr "Bağlananlar Listesi:"
 
@@ -278,9 +275,6 @@ msgstr "Bağlamak istediğiniz dosya '{}' ortamına bağlıdır."
 msgid "The Python file is connecting to the selected environment..."
 msgstr "Python dosyası seçilen ortama bağlanıyor..."
 
-msgid "The '{}' file was linked with the '{}' environment"
-msgstr "'{}' dosyası '{}' ortamıyla ilişkilendirildi."
-
 msgid "The association between the environment and the file failed"
 msgstr "Ortam ile dosya arasındaki bağlantı kurulamadı."
 
@@ -310,9 +304,6 @@ msgstr "Python uygulamaları ve ortamları listeleniyor..."
 
 msgid "Select a Python app!"
 msgstr "Python uygulaması seç!"
-
-msgid "The Python file is connecting to the selected environment..."
-msgstr "Python dosyası seçilen ortama bağlanıyor..."
 
 msgid "The '{}' file was linked with the '{}' environment"
 msgstr "'{}' dosyası '{}' ortamıyla ilişkilendirildi"
