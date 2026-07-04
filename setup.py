@@ -41,8 +41,7 @@ data_files = [
 
                  ("/usr/share/pyvenv-manager/src", [
                      "src/main.py",
-                     "src/venv_manager.py",
-                     "src/isolated-python2.zip"
+                     "src/venv_manager.py"
                  ]),
 
                  ("/usr/share/pyvenv-manager/ui",
