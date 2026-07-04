@@ -542,6 +542,7 @@ class pyvenv_manager(Gtk.Application):
         if self.requirements_filedir:
             with open(self.requirements_filedir) as reqtxt:
                 for pack in reqtxt.read().splitlines():
+                    pack = pack.strip()
                     print("install package ->", venvname, "->", pack)
                     for insprocess in venv_manager.pack_install(venvname, pack):
                         GLib.idle_add(self.packins_append_text, insprocess)
@@ -722,10 +723,10 @@ class pyvenv_manager(Gtk.Application):
         except KeyError:
             pass
         # --------------------------------------
-        self.env_packlist = json.loads(venv_manager.list_packages(pyvenv))  # the installed packages in the selected environment are listed (output is reloaded in JSON format)
         for row in list(self.installed_packages_list):  # package list is being cleaned up for rewriting
             self.installed_packages_list.remove(row)
 
+        self.env_packlist = json.loads(venv_manager.list_packages(pyvenv))  # the installed packages in the selected environment are listed (output is reloaded in JSON format)
         for packlst in self.env_packlist:  # the newly received list is being writed
             child = self.create_envabout_line(pyvenv, packlst["name"])  # only the name portion is extracted from the output and added to the list
             self.installed_packages_list.append(child)
