@@ -73,7 +73,7 @@ gbp buildpackage --git-export-dir=/tmp/build/pyvenv-manager -us -uc
 ```
 
 ### Preview Video
-![pyvenv-manager video](vokoscreenNG-2026-07-04_16-27-36.mp4)
+[▶ Watch Preview Video](https://drive.google.com/file/d/12ub27_fHhbzf9f2pKJwOopM46mhlVrnR/view?usp=sharing)
 
 ### **Screenshots**
 
