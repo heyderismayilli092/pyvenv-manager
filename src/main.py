@@ -698,6 +698,7 @@ class pyvenv_manager(Gtk.Application):
         self.venvinfo_virtualenv_version.set_label("")
         self.venvinfo_baseprefix.set_label("")
         self.venvinfo_baseexecprefix.set_label("")
+        self.installed_packages_num = 0
 
         # information about the environment is being written
         # IMPORTANT NOTE: Environments built with Python 2 and Python 3 may display different information. Therefore, KeyError handlers have been added below. The information shown for Python 2 may not be shown for Python 3
