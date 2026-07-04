@@ -360,6 +360,35 @@ class pyvenv_manager(Gtk.Application):
     # ------------------------------
 
 
+
+    # ---------- Create New Environment ----------
+    def on_new_environment(self, button):
+        self.new_venv_window.set_transient_for(self.window)
+        self.new_venv_window.set_application(self)
+        self.new_venv_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
+
+        self.new_venv_stack.set_visible_child_name("packins_page")  # returning to the first page
+        self.environment_name.set_text("")  # being cleaned
+        self.processpage_stream_buffer.set_text("")  # previously written data is being cleared
+        self.requirements_filedir = None
+        self.venv_error_msg.hide()
+        self.unselect_reqbtn.hide()
+        self.selected_reqfile_label.hide()
+        self.new_venv_window.present()
+
+    # -Python version select buttons-
+    def on_item_python2(self, button):
+        self.python_version = "python2"
+        self.pythonver_popover_menu.popdown()
+        print(self.python_version)
+        return True
+
+    def on_item_python3(self, button):
+        self.python_version = "python3"
+        self.pythonver_popover_menu.popdown()
+        print(self.python_version)
+        return True
+
     # select requirements file
     def on_requirements_file_select(self, button):
         # we're putting the dialog into `self` so it doesn't get collected early by the GC
@@ -388,38 +417,9 @@ class pyvenv_manager(Gtk.Application):
                     if self.back_handler9:
                         self.unselect_reqbtn.disconnect(self.back_handler9)
                         self.back_handler9 = None
-                    print("Added signal: ", venvname)
                     self.back_handler9 = self.unselect_reqbtn.connect("clicked", self.on_unselect_reqbtn)
         # Delay the destroy operation in the main loop (safer on some platforms)
         GLib.idle_add(lambda: (dialog.destroy(), setattr(self, "_req_dialog", None))[0])
-
-
-    # ---------- Create New Environment ----------
-    def on_new_environment(self, button):
-        self.new_venv_window.set_transient_for(self.window)
-        self.new_venv_window.set_application(self)
-        self.new_venv_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
-
-        self.new_venv_stack.set_visible_child_name("packins_page")  # returning to the first page
-        self.environment_name.set_text("")  # being cleaned
-        self.processpage_stream_buffer.set_text("")  # previously written data is being cleared
-        self.venv_error_msg.hide()
-        self.unselect_reqbtn.hide()
-        self.selected_reqfile_label.hide()
-        self.new_venv_window.present()
-
-    # -Python version select buttons-
-    def on_item_python2(self, button):
-        self.python_version = "python2"
-        self.pythonver_popover_menu.popdown()
-        print(self.python_version)
-        return True
-
-    def on_item_python3(self, button):
-        self.python_version = "python3"
-        self.pythonver_popover_menu.popdown()
-        print(self.python_version)
-        return True
 
     def _on_create_venv(self, button):
         venvname = self.environment_name.get_text()
@@ -688,6 +688,13 @@ class pyvenv_manager(Gtk.Application):
             self.back_handler3 = None
         print("Added signal: ", pyvenv)
         self.back_handler3 = self.install_new_package.connect("clicked", self.on_install_new_package_window, pyvenv)
+        # clear info texts
+        self.venvinfo_cfg.set_label("")
+        self.venvinfo_implementation.set_label("")
+        self.venvinfo_versioninfo.set_label("")
+        self.venvinfo_virtualenv_version.set_label("")
+        self.venvinfo_baseprefix.set_label("")
+        self.venvinfo_baseexecprefix.set_label("")
 
         # information about the environment is being written
         # IMPORTANT NOTE: Environments built with Python 2 and Python 3 may display different information. Therefore, KeyError handlers have been added below. The information shown for Python 2 may not be shown for Python 3
