@@ -480,7 +480,9 @@ class pyvenv_manager(Gtk.Application):
         reqfile_infolist = []
         with open(self.requirements_filedir, "r") as reqfile:
             for pack in reqfile.read().splitlines():
+                pack = pack.strip()
                 output = venv_manager.package_exists_check(pack)
+                print("package to download: ->", pack, "->", output)
                 reqfile_infolist.append({"pack": pack, "status": output})
         GLib.idle_add(self.create_reqinfo_list, reqfile_infolist)
 
