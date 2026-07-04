@@ -72,6 +72,10 @@ sudo mk-build-deps -ir
 gbp buildpackage --git-export-dir=/tmp/build/pyvenv-manager -us -uc
 ```
 
+### Preview Video
+<video src="https://github.com/heyderismayilli092/pyvenv-manager/blob/main/vokoscreenNG-2026-07-04_16-27-36.mp4" controls width="100%"></video>
+
+
 ### **Screenshots**
 
 ![pyvenv-manager 1](screenshots/1.png)
