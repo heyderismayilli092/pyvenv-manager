@@ -10,6 +10,7 @@ import socket
 import configparser
 import shlex
 import shutil
+import re
 import glob
 
 homefolder = Path.home()
@@ -69,7 +70,16 @@ def list_packages(venv_name):
         capture_output=True,
         text=True
     )
-    return result.stdout
+    raw = result.stdout or result.stderr
+    m = re.search(r'([\[\{].*)', raw, flags=re.DOTALL)
+
+    j = m.group(1).strip()
+    # Trim after last closing bracket/brace if trailing garbage present
+    cut = max(j.rfind(']'), j.rfind('}'))
+    if cut != -1:
+        j = j[:cut+1]
+    return j
+
 
 
 # lists the packages installed on the selected venv environment
