@@ -631,13 +631,14 @@ def disconnect_environment_app(venv_path, venv_name, app_info):
 def system_site_packs_change(venv_name, activestatus):
     cfg_path = str(pyvenv_path) + "/" + venv_name + "/pyvenv.cfg"
 
-    value = "true" if activestatus else "false"
+    value = "true" if activestatus else "false"  # parameter to be written
     with open(cfg_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
     found = False
     new_lines = []
 
+    # relevant line is found and the sent parameter is printed
     for line in lines:
         if line.strip().startswith("include-system-site-packages"):
             new_lines.append(f"include-system-site-packages = {value}\n")
