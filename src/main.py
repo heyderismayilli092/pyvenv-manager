@@ -116,6 +116,7 @@ class pyvenv_manager(Gtk.Application):
         self.back_handler1 = None
         self.back_handler2 = None
         self.back_handler3 = None
+        self.back_handler10 = None
         self.installed_packages_num = 0
         self.requirements_filedir = False
         self.python_version = None  # it saves the selected Python version
@@ -699,7 +700,10 @@ class pyvenv_manager(Gtk.Application):
             self.back_handler3 = None
         print("Added signal: ", pyvenv)
         self.back_handler3 = self.install_new_package.connect("clicked", self.on_install_new_package_window, pyvenv)
-        self.systemsitepacks_allow.connect("toggled", self.on_systemsitepacks_allow, pyvenv)
+        if self.back_handler10:
+            self.systemsitepacks_allow.disconnect(self.back_handler10)
+            self.back_handler10 = None
+        self.back_handler10 = self.systemsitepacks_allow.connect("toggled", self.on_systemsitepacks_allow, pyvenv)
         # clear info texts
         self.venvinfo_cfg.set_label("")
         self.venvinfo_implementation.set_label("")
