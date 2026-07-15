@@ -626,3 +626,28 @@ def disconnect_environment_app(venv_path, venv_name, app_info):
 
     return True
 
+
+# function that specifies access to global Python libraries for the selected environment
+def system_site_packs_change(venv_name, activestatus):
+    cfg_path = str(pyvenv_path) + "/" + venv_name + "/pyvenv.cfg"
+
+    value = "true" if activestatus else "false"
+    with open(cfg_path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    found = False
+    new_lines = []
+
+    for line in lines:
+        if line.strip().startswith("include-system-site-packages"):
+            new_lines.append(f"include-system-site-packages = {value}\n")
+            found = True
+        else:
+            new_lines.append(line)
+    if not found:
+        new_lines.append(f"include-system-site-packages = {value}\n")
+    with open(cfg_path, "w", encoding="utf-8") as f:
+        f.writelines(new_lines)
+
+    return True
+
