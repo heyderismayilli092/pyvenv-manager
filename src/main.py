@@ -92,6 +92,7 @@ class pyvenv_manager(Gtk.Application):
         self.environments_stack = builder.get_object("environments_stack")  # environments page stack
         self.connection_list = builder.get_object("connection_list")  # connections list button
         self.all_connections_list = builder.get_object("all_connections_list")  # all connections listbox
+        self.systemsitepacks_allow = builder.get_object("systemsitepacks_allow")
         # venv about page labels
         self.venvinfo_cfg = builder.get_object("venvinfo_cfg")
         self.venvinfo_implementation = builder.get_object("venvinfo_implementation")
@@ -687,9 +688,10 @@ class pyvenv_manager(Gtk.Application):
         venvinfo = venv_manager.venv_about(pyvenv)  # retrieve environment about
         connfiles = venv_manager.connfiles_list(pyvenv)  # retrieve connected files
         connapps = venv_manager.connapps_list(pyvenv)  # retrieve connected apps
-        GLib.idle_add(self.on_envabout_show, pyvenv, venvinfo, connfiles, connapps)
+        sys_sitepacks_status = venv_manager.system_site_packs_status(pyvenv)  # environment's access status to general Python libraries is being retrieved
+        GLib.idle_add(self.on_envabout_show, pyvenv, venvinfo, connfiles, connapps, sys_sitepacks_status)
 
-    def on_envabout_show(self, pyvenv, venvinfo, connfiles, connapps):
+    def on_envabout_show(self, pyvenv, venvinfo, connfiles, connapps, sys_sitepacks_status):
         self.mainwindow_stack.set_visible_child_name("page2")
         self.environment_about_name.set_label(pyvenv)  # environment name write
         if self.back_handler3:
@@ -697,6 +699,7 @@ class pyvenv_manager(Gtk.Application):
             self.back_handler3 = None
         print("Added signal: ", pyvenv)
         self.back_handler3 = self.install_new_package.connect("clicked", self.on_install_new_package_window, pyvenv)
+        self.systemsitepacks_allow.connect("toggled", self.on_systemsitepacks_allow, pyvenv)
         # clear info texts
         self.venvinfo_cfg.set_label("")
         self.venvinfo_implementation.set_label("")
@@ -769,6 +772,13 @@ class pyvenv_manager(Gtk.Application):
                 else:
                     print(f"{lst} file removed")
                     self.list_connapps.append(self.create_connected_line(pyvenv, lst, "appfile", "notfound"))
+
+        # checkbutton remains enabled if the environment has access to global Python libraries
+        if sys_sitepacks_status:
+            self.systemsitepacks_allow.set_active(True)
+        else:
+            self.systemsitepacks_allow.set_active(False)
+
         return False
 
     # change connection apps and connection files pages between
@@ -777,6 +787,12 @@ class pyvenv_manager(Gtk.Application):
             self.connected_pages.set_visible_child_name("connected_fileslist")
         else:
             self.connected_pages.set_visible_child_name("connected_appslist")
+
+    def on_systemsitepacks_allow(self, button, pyvenv):
+        if self.systemsitepacks_allow.get_active():
+            venv_manager.system_site_packs_change(pyvenv, True)
+        else:
+            venv_manager.system_site_packs_change(pyvenv, False)
 
     # function that creates rows to add to the listbox so that each installed package is displayed
     def create_envabout_line(self, pyvenv, text):

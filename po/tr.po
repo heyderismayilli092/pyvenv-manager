@@ -319,3 +319,9 @@ msgstr "'{}' dosyası '{}' ortamıyla ilişkilendirildi"
 
 msgid "Retrieving a list of connected applications and files..."
 msgstr "Bağlı uygulamaların ve dosyaların listesi alınıyor..."
+
+msgid "Allow the virtual environment to access global Python libraries"
+msgstr "Sanal ortamın global Python kütüphanelerine erişmesine izin verin"
+
+msgid "The environment should have access to global Python libraries"
+msgstr "Ortamın global Python kütüphanelerine erişimi olsun"

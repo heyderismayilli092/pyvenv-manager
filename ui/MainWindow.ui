@@ -187,14 +187,20 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton" id="back_mainwindow">
-                            <property name="label" translatable="yes">Back Main Window</property>
-                            <property name="margin-top">20</property>
+                          <object class="GtkButton" id="install_new_package">
+                            <property name="label" translatable="yes">Install new package</property>
+                            <property name="margin-top">5</property>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton" id="install_new_package">
-                            <property name="label" translatable="yes">Install new package</property>
+                          <object class="GtkButton" id="back_mainwindow">
+                            <property name="label" translatable="yes">Back Main Window</property>
+                            <property name="margin-top">5</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkCheckButton" id="systemsitepacks_allow">
+                            <property name="label">Allow the virtual environment to access global Python libraries</property>
                             <property name="margin-top">5</property>
                           </object>
                         </child>
@@ -910,7 +916,7 @@
                     </child>
                     <child>
                       <object class="GtkCheckButton" id="systemsite_packs_checkbox">
-                        <property name="label">Environment to be created should have access to the libraries in the system</property>
+                        <property name="label">The environment should have access to global Python libraries</property>
                         <property name="margin-bottom">2</property>
                         <property name="margin-end">5</property>
                         <property name="margin-start">5</property>
