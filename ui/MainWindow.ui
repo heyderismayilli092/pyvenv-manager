@@ -909,6 +909,15 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkCheckButton" id="systemsite_packs_checkbox">
+                        <property name="label">Environment to be created should have access to the libraries in the system</property>
+                        <property name="margin-bottom">2</property>
+                        <property name="margin-end">5</property>
+                        <property name="margin-start">5</property>
+                        <property name="margin-top">5</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkLabel" id="selected_reqfile_label">
                         <property name="margin-bottom">3</property>
                         <property name="margin-top">10</property>

@@ -137,6 +137,7 @@ class pyvenv_manager(Gtk.Application):
         self.processpage_stream_buffer = self.processpage_stream.get_buffer()
         self.selected_reqfile_label = builder.get_object("selected_reqfile_label")
         self.unselect_reqbtn = builder.get_object("unselect_reqbtn")
+        self.systemsite_packs_checkbox = builder.get_object("systemsite_packs_checkbox")
         self.back_handler6 = None
         self.back_handler9 = None
         self.packversion = None
@@ -375,6 +376,7 @@ class pyvenv_manager(Gtk.Application):
         self.unselect_reqbtn.hide()
         self.selected_reqfile_label.hide()
         self.new_venv_window.present()
+        self.systemsite_packs_checkbox.set_active(False)
 
     # -Python version select buttons-
     def on_item_python2(self, button):
@@ -538,7 +540,11 @@ class pyvenv_manager(Gtk.Application):
         thread.start()
 
     def venv_creating(self, venvname, python_version):
-        venv_manager.venv_create(venvname, python_version)  # create virtual environment
+        if self.systemsite_packs_checkbox.get_active():
+            venv_manager.venv_create(venvname, python_version, True)  # create virtual environment
+        else:
+            venv_manager.venv_create(venvname, python_version, False)
+
         if self.requirements_filedir:
             with open(self.requirements_filedir) as reqtxt:
                 for pack in reqtxt.read().splitlines():

@@ -34,7 +34,7 @@ def envset_python2():
 
 
 # a function that creates a new Python environment
-def venv_create(venv_name, python_version):
+def venv_create(venv_name, python_version, system_sitepacks):
     venv_path = pyvenv_path / venv_name  # environment full path
     if os.path.exists(venv_path):
         return False
@@ -52,10 +52,10 @@ def venv_create(venv_name, python_version):
     # create environment for python3 version
     elif python_version == "python3":
         print(f"'{venv_path}' creating...")
-        venv.create(
-            env_dir=venv_path,
-            with_pip=True
-        )
+        if system_sitepacks:
+            venv.create(env_dir=venv_path, with_pip=True, system_site_packages=True)
+        else:
+            venv.create(env_dir=venv_path, with_pip=True)
         return True
 
 
