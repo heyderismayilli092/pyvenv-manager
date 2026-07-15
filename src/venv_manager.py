@@ -652,3 +652,19 @@ def system_site_packs_change(venv_name, activestatus):
 
     return True
 
+
+# this shows the access status of the virtual environment to global Python libraries
+def system_site_packs_status(venv_name):
+    cfg_path = str(pyvenv_path) + "/" + venv_name + "/pyvenv.cfg"
+    with open(cfg_path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    for line in lines:
+        if line.strip().startswith("include-system-site-packages"):
+            output = line.split()[-1]
+
+    if output == "true":
+        return True
+    elif output == "false":
+        return False
+
