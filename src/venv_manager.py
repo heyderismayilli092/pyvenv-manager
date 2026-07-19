@@ -688,3 +688,4 @@ def cache_list():
     output_lst = json.dumps(items, indent=2, ensure_ascii=False)
     return output_lst
 
+print(cache_list())

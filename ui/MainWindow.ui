@@ -82,6 +82,12 @@
                             <property name="margin-start">5</property>
                           </object>
                         </child>
+                        <child>
+                          <object class="GtkButton" id="cachelist_button">
+                            <property name="label">PIP Cache</property>
+                            <property name="margin-start">5</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child>
@@ -1547,6 +1553,48 @@
               </object>
             </property>
             <property name="name">venvrm_success</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="cachelist_window">
+    <property name="default-height">250</property>
+    <property name="default-width">500</property>
+    <property name="title">Cache List</property>
+    <property name="titlebar">
+      <object class="GtkHeaderBar">
+        <property name="title-widget">
+          <object class="GtkLabel">
+            <property name="label">Cache List</property>
+          </object>
+        </property>
+      </object>
+    </property>
+    <child>
+      <object class="GtkBox">
+        <property name="margin-top">5</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="cachelist_label"/>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <child>
+              <object class="GtkViewport">
+                <child>
+                  <object class="GtkListBox" id="cache_listbox">
+                    <property name="vexpand">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="clearcache_btn">
+            <property name="label">Clear Cache</property>
+            <property name="margin-bottom">3</property>
           </object>
         </child>
       </object>
