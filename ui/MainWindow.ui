@@ -1572,29 +1572,74 @@
       </object>
     </property>
     <child>
-      <object class="GtkBox">
-        <property name="margin-top">5</property>
-        <property name="orientation">vertical</property>
+      <object class="GtkStack" id="clearcache_stack">
         <child>
-          <object class="GtkLabel" id="cachelist_label"/>
-        </child>
-        <child>
-          <object class="GtkScrolledWindow">
-            <child>
-              <object class="GtkViewport">
+          <object class="GtkStackPage" id="cachelist">
+            <property name="child">
+              <object class="GtkBox">
+                <property name="margin-bottom">5</property>
+                <property name="margin-top">5</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkListBox" id="cache_listbox">
-                    <property name="vexpand">True</property>
+                  <object class="GtkLabel" id="cachelist_label"/>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <child>
+                      <object class="GtkListBox" id="cache_listbox">
+                        <property name="vexpand">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="clearcache_btn">
+                    <property name="label">Clear Cache</property>
                   </object>
                 </child>
               </object>
-            </child>
+            </property>
+            <property name="name">cachelist</property>
           </object>
         </child>
         <child>
-          <object class="GtkButton" id="clearcache_btn">
-            <property name="label">Clear Cache</property>
-            <property name="margin-bottom">3</property>
+          <object class="GtkStackPage" id="cleaning">
+            <property name="child">
+              <object class="GtkBox">
+                <property name="homogeneous">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkSpinner">
+                    <property name="spinning">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Cleaning cache...</property>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="name">cleaning</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStackPage" id="clearsuccess">
+            <property name="child">
+              <object class="GtkBox">
+                <property name="homogeneous">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkImage" id="cachelist_doneicon"/>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Cache cleaned</property>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="name">clearsuccess</property>
           </object>
         </child>
       </object>
