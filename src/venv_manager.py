@@ -668,3 +668,23 @@ def system_site_packs_status(venv_name):
     elif output == "false":
         return False
 
+
+# function that lists pip cache
+def cache_list():
+    proc = subprocess.run(["pip", "cache", "list"], capture_output=True, text=True, check=True)
+    text = proc.stdout
+    items = []
+    pattern = re.compile(r'^[\s-]*([^\s].*?\.whl)\s*\(([\d.]+)\s*([kMGT]?B)\)\s*$', re.IGNORECASE | re.MULTILINE)  # package name and size are separated
+
+    for m in pattern.finditer(text):
+        filename = m.group(1)  # package name
+        size_val = float(m.group(2))  # package size
+        size_unit = m.group(3).upper()  # KB, MB,...
+        items.append({
+            "filename": filename,
+            "size": f"{size_val} {size_unit}"
+        })
+
+    output_lst = json.dumps(items, indent=2, ensure_ascii=False)
+    return output_lst
+
