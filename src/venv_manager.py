@@ -688,4 +688,17 @@ def cache_list():
     output_lst = json.dumps(items, indent=2, ensure_ascii=False)
     return output_lst
 
-print(cache_list())
+
+# clear cache function
+def clear_cache():
+    # manual cleaning
+    cache_dir = homefolder / ".cache" / "pip"
+    if os.path.isdir(cache_dir):
+        try:
+            shutil.rmtree(cache_dir)
+            return True
+        except Exception as e:
+            return False
+    else:
+        return False
+
