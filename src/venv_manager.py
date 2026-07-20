@@ -12,6 +12,9 @@ import shlex
 import shutil
 import re
 import glob
+import sysconfig
+import runpy
+import sys
 
 homefolder = Path.home()
 pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing the created Python environments
@@ -700,10 +703,11 @@ def system_site_packs_status(venv_name):
 
 # function that lists pip cache
 def cache_list():
-    proc = subprocess.run(["pip", "cache", "list"], capture_output=True, text=True, check=True)
-    text = proc.stdout
+    text = run_pip_from_wheel(["cache", "list"])
     items = []
     pattern = re.compile(r'^[\s-]*([^\s].*?\.whl)\s*\(([\d.]+)\s*([kMGT]?B)\)\s*$', re.IGNORECASE | re.MULTILINE)  # package name and size are separated
+    if "No locally built" in text:
+        return False
 
     for m in pattern.finditer(text):
         filename = m.group(1)  # package name
