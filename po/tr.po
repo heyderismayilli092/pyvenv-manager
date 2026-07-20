@@ -325,3 +325,30 @@ msgstr "Sanal ortamın global Python kütüphanelerine erişmesine izin verin"
 
 msgid "The environment should have access to global Python libraries"
 msgstr "Ortamın global Python kütüphanelerine erişimi olsun"
+
+msgid "Cache List"
+msgstr "Önbellek Listesi"
+
+msgid "Clear Cache"
+msgstr "Önbelleği Temizle"
+
+msgid "Cleaning cache..."
+msgstr "Önbellek temizleniyor..."
+
+msgid "Cache cleaned"
+msgstr "Önbellek temizlendi"
+
+msgid "No cache data found"
+msgstr "Önbellek verisi bulunamadı"
+
+msgid "Cache clearing operation could not be completed successfully"
+msgstr "Önbellek temizleme işlemi başarıyla tamamlanamadı"
+
+msgid "Cache clearing successfully"
+msgstr "Önbellek başarıyla temizlendi"
+
+msgid "Size: "
+msgstr "Boyut: "
+
+msgid "Cached packages: (total {} package)"
+msgstr "Önbelleğe alınmış paketler: (toplam {} paket)"
