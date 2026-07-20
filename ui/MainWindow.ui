@@ -1642,6 +1642,25 @@
             <property name="name">clearsuccess</property>
           </object>
         </child>
+        <child>
+          <object class="GtkStackPage" id="notcache">
+            <property name="child">
+              <object class="GtkBox">
+                <property name="homogeneous">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkImage" id="notcache_icon"/>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">No cache data found</property>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="name">notcache</property>
+          </object>
+        </child>
       </object>
     </child>
   </object>

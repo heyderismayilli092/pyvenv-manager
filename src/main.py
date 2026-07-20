@@ -222,6 +222,7 @@ class pyvenv_manager(Gtk.Application):
         self.item_python3_logo = builder.get_object("item_python3_logo")
         self.venvrm_successicon = builder.get_object("venvrm_successicon")
         self.notfound_virtualenv_icon = builder.get_object("notfound_virtualenv_icon")
+        self.notcache_icon = builder.get_object("notcache_icon")
         # set icons
         self.item_python2_logo.set_from_file(self.icons_path+"/python-16x16.svg")
         self.item_python3_logo.set_from_file(self.icons_path+"/python-16x16.svg")
@@ -1577,13 +1578,18 @@ class pyvenv_manager(Gtk.Application):
         if self.cache_listbox:
             for row in list(self.cache_listbox):
                 self.cache_listbox.remove(row)
-        for lst in json.loads(output):
-            filename = lst["filename"]
-            size = lst["size"]
-            self.packnum += 1
-            self.cache_listbox.append(self.cachelist_row(filename, size))
-        self.cachelist_label.set_label(_("Cached packages: (total {} package)").format(self.packnum))
-        self.packnum = 0
+        if output:
+            for lst in json.loads(output):
+                filename = lst["filename"]
+                size = lst["size"]
+                self.packnum += 1
+                self.cache_listbox.append(self.cachelist_row(filename, size))
+            self.cachelist_label.set_label(_("Cached packages: (total {} package)").format(self.packnum))
+            self.packnum = 0
+        else:
+            self.notcache_icon.set_from_file(self.icons_path+"/notfound.svg")
+            self.notcache_icon.set_pixel_size(100)
+            self.clearcache_stack.set_visible_child_name("notcache")
         self.cachelist_window.present()
 
     def cachelist_row(self, title_text, subtitle_text):
@@ -1614,10 +1620,12 @@ class pyvenv_manager(Gtk.Application):
         if output:
             self.clearcache_stack.set_visible_child_name("clearsuccess")
             self.cachelist_doneicon.set_from_file(self.icons_path+"/success.svg")
+            self.cachelist_doneicon.set_pixel_size(100)
             self.cleaning_success_label.set_label(_("Cache clearing successfully"))
         else:
             self.clearcache_stack.set_visible_child_name("clearsuccess")
             self.cachelist_doneicon.set_from_file(self.icons_path+"/error.svg")
+            self.cachelist_doneicon.set_pixel_size(100)
             self.cleaning_success_label.set_label(_("Cache clearing operation could not be completed successfully"))
 
 
