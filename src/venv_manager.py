@@ -15,6 +15,8 @@ import glob
 import sysconfig
 import runpy
 import sys
+import io
+from contextlib import redirect_stdout, redirect_stderr
 
 homefolder = Path.home()
 pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing the created Python environments
@@ -29,7 +31,6 @@ def run_pip_from_wheel(args):
 
     wheel_dir = Path(wheel_dir)
     wheels = sorted(wheel_dir.glob("pip-*.whl"))
-
     if not wheels:
         raise FileNotFoundError(f"No pip wheel found inside {wheel_dir}")
 
@@ -44,7 +45,16 @@ def run_pip_from_wheel(args):
         sys.argv = ["pip"] + list(args)
         # Equivalent to:
         # python -m pip ...
-        runpy.run_module("pip", run_name="__main__", alter_sys=True)
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        try:
+            with redirect_stdout(stdout), redirect_stderr(stderr):
+                runpy.run_module("pip", run_name="__main__", alter_sys=True)
+            exit_code = 0
+        except SystemExit as e:
+            exit_code = e.code
+        return {"stdout": stdout.getvalue(), "stderr": stderr.getvalue()}
+
     finally:
         sys.path[:] = old_path
         sys.argv[:] = old_argv
@@ -706,7 +716,7 @@ def cache_list():
     text = run_pip_from_wheel(["cache", "list"])
     items = []
     pattern = re.compile(r'^[\s-]*([^\s].*?\.whl)\s*\(([\d.]+)\s*([kMGT]?B)\)\s*$', re.IGNORECASE | re.MULTILINE)  # package name and size are separated
-    if "No locally built" in text:
+    if "No locally built" in text["stdout"]:
         return False
 
     for m in pattern.finditer(text):
