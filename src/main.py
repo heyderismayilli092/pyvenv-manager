@@ -1629,7 +1629,6 @@ class pyvenv_manager(Gtk.Application):
             self.cleaning_success_label.set_label(_("Cache clearing operation could not be completed successfully"))
 
 
-
     # hide window
     def _on_second_close_request(self, win):
         win.hide()

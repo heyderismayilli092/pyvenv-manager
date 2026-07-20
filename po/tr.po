@@ -352,3 +352,6 @@ msgstr "Boyut: "
 
 msgid "Cached packages: (total {} package)"
 msgstr "Önbelleğe alınmış paketler: (toplam {} paket)"
+
+msgid "PIP Cache"
+msgstr "PIP Önbellek"

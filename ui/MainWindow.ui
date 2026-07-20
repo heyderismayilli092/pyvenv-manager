@@ -84,7 +84,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="cachelist_button">
-                            <property name="label">PIP Cache</property>
+                            <property name="label" translatable="yes">PIP Cache</property>
                             <property name="margin-start">5</property>
                           </object>
                         </child>
