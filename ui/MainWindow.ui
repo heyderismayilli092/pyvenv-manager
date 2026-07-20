@@ -1633,7 +1633,7 @@
                   <object class="GtkImage" id="cachelist_doneicon"/>
                 </child>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkLabel" id="cleaning_success_label">
                     <property name="label">Cache cleaned</property>
                   </object>
                 </child>

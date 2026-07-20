@@ -93,6 +93,7 @@ class pyvenv_manager(Gtk.Application):
         self.connection_list = builder.get_object("connection_list")  # connections list button
         self.all_connections_list = builder.get_object("all_connections_list")  # all connections listbox
         self.systemsitepacks_allow = builder.get_object("systemsitepacks_allow")
+        self.cachelist_button = builder.get_object("cachelist_button")
         # venv about page labels
         self.venvinfo_cfg = builder.get_object("venvinfo_cfg")
         self.venvinfo_implementation = builder.get_object("venvinfo_implementation")
@@ -192,6 +193,16 @@ class pyvenv_manager(Gtk.Application):
         self.venvrm_nextbtn = builder.get_object("venvrm_nextbtn")
         self.back_handler8 = None
 
+        # Clear Cache Window
+        self.cachelist_window = builder.get_object("cachelist_window")
+        self.clearcache_stack = builder.get_object("clearcache_stack")
+        self.cachelist_label = builder.get_object("cachelist_label")
+        self.cache_listbox = builder.get_object("cache_listbox")
+        self.clearcache_btn = builder.get_object("clearcache_btn")
+        self.cachelist_doneicon = builder.get_object("cachelist_doneicon")
+        self.cleaning_success_label = builder.get_object("cleaning_success_label")
+        self.packnum = 0
+
         # About Window
         self.about_window = builder.get_object("about_window")
         texture = Gdk.Texture.new_from_file(Gio.File.new_for_path("/usr/share/icons/hicolor/scalable/apps/pyvenv-manager-64x64.png"))
@@ -247,6 +258,8 @@ class pyvenv_manager(Gtk.Application):
         self.venvrm_cancel.connect("clicked", self.on_venvrm_hide)
         self.connection_list.connect("clicked", self.on_connections_list)
         self.change_connpage.connect("clicked", self.on_changepage_connections)
+        self.cachelist_button.connect("clicked", self.on_cachelist)
+        self.clearcache_btn.connect("clicked", self.on_clearcache)
 
         self.list_environment_mainwindow()
         self.window.set_application(self)
@@ -1548,6 +1561,67 @@ class pyvenv_manager(Gtk.Application):
     # -------------------------------------------
 
 
+    # ---------- Cache List Window ----------
+    def on_cachelist(self, button):
+        self.cache_listbox.set_selection_mode(Gtk.SelectionMode.NONE)
+        self.clearcache_stack.set_visible_child_name("cachelist")
+        self.cachelist_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
+        cachelist_thread = threading.Thread(target=self.cachelist_process, daemon=True)
+        cachelist_thread.start()
+
+    def cachelist_process(self):
+        output = venv_manager.cache_list()  # retrieve cache list
+        GLib.idle_add(self.cachelist_success, output)
+
+    def cachelist_success(self, output):
+        if self.cache_listbox:
+            for row in list(self.cache_listbox):
+                self.cache_listbox.remove(row)
+        for lst in json.loads(output):
+            filename = lst["filename"]
+            size = lst["size"]
+            self.packnum += 1
+            self.cache_listbox.append(self.cachelist_row(filename, size))
+        self.cachelist_label.set_label(_("Cached packages: (total {} package)").format(self.packnum))
+        self.packnum = 0
+        self.cachelist_window.present()
+
+    def cachelist_row(self, title_text, subtitle_text):
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        # top line (heading)
+        title = Gtk.Label(label=title_text)
+        title.set_xalign(0.0)
+
+        # bottom line (footer)
+        subtitle = Gtk.Label(label=_("Size: ")+subtitle_text)
+        subtitle.set_xalign(0.0)
+        subtitle.get_style_context().add_class("subtitle")
+
+        vbox.append(title)
+        vbox.append(subtitle)
+        return vbox
+
+    def on_clearcache(self, button):
+        self.clearcache_stack.set_visible_child_name("cleaning")
+        clearing_thread = threading.Thread(target=self.clearcache_process, daemon=True)
+        clearing_thread.start()
+
+    def clearcache_process(self):
+        output = venv_manager.clear_cache()  # cache clearing
+        GLib.idle_add(self.clearing_success, output)
+
+    def clearing_success(self, output):
+        if output:
+            self.clearcache_stack.set_visible_child_name("clearsuccess")
+            self.cachelist_doneicon.set_from_file(self.icons_path+"/success.svg")
+            self.cleaning_success_label.set_label(_("Cache clearing successfully"))
+        else:
+            self.clearcache_stack.set_visible_child_name("clearsuccess")
+            self.cachelist_doneicon.set_from_file(self.icons_path+"/error.svg")
+            self.cleaning_success_label.set_label(_("Cache clearing operation could not be completed successfully"))
+
+
+
     # hide window
     def _on_second_close_request(self, win):
         win.hide()
@@ -1555,7 +1629,7 @@ class pyvenv_manager(Gtk.Application):
 
     # back main window
     def on_back_mainwindow(self, button):
-        print("Relist environments...")
+        print("Relist environmients...")
         self.list_environment_mainwindow()
         self.mainwindow_stack.set_visible_child_name("page0")
         return True
@@ -1566,5 +1640,4 @@ class pyvenv_manager(Gtk.Application):
 
 app = pyvenv_manager()
 app.run()
-
 
