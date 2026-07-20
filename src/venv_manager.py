@@ -18,6 +18,35 @@ pyvenv_path = homefolder / ".cache" / "pyvenv-manager"  # the folder containing 
 connfile = pyvenv_path / "connections.json"  # connectedions info file
 
 
+# A function that runs Pip directly from the wheel file located in the WHEEL_PKG_DIR directory
+def run_pip_from_wheel(args):
+    wheel_dir = sysconfig.get_config_var("WHEEL_PKG_DIR")
+    if not wheel_dir:
+        raise RuntimeError("Python was not compiled with WHEEL_PKG_DIR")
+
+    wheel_dir = Path(wheel_dir)
+    wheels = sorted(wheel_dir.glob("pip-*.whl"))
+
+    if not wheels:
+        raise FileNotFoundError(f"No pip wheel found inside {wheel_dir}")
+
+    pip_wheel = wheels[-1]
+    old_path = sys.path[:]
+    old_argv = sys.argv[:]
+
+    try:
+        # Make the wheel importable
+        sys.path.insert(0, str(pip_wheel))
+        # Simulate command line
+        sys.argv = ["pip"] + list(args)
+        # Equivalent to:
+        # python -m pip ...
+        runpy.run_module("pip", run_name="__main__", alter_sys=True)
+    finally:
+        sys.path[:] = old_path
+        sys.argv[:] = old_argv
+
+
 # function to link an isolated Python2 installation to the system's environment variables
 def envset_python2():
     print("environment variable assigned for Python 2")
