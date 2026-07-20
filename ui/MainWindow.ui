@@ -922,7 +922,7 @@
                     </child>
                     <child>
                       <object class="GtkCheckButton" id="systemsite_packs_checkbox">
-                        <property name="label">The environment should have access to global Python libraries</property>
+                        <property name="label" translatable="yes">The environment should have access to global Python libraries</property>
                         <property name="margin-bottom">2</property>
                         <property name="margin-end">5</property>
                         <property name="margin-start">5</property>
@@ -1561,12 +1561,12 @@
   <object class="GtkWindow" id="cachelist_window">
     <property name="default-height">250</property>
     <property name="default-width">500</property>
-    <property name="title">Cache List</property>
+    <property name="title" translatable="yes">Cache List</property>
     <property name="titlebar">
       <object class="GtkHeaderBar">
         <property name="title-widget">
           <object class="GtkLabel">
-            <property name="label">Cache List</property>
+            <property name="label" translatable="yes">Cache List</property>
           </object>
         </property>
       </object>
@@ -1594,7 +1594,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="clearcache_btn">
-                    <property name="label">Clear Cache</property>
+                    <property name="label" translatable="yes">Clear Cache</property>
                   </object>
                 </child>
               </object>
@@ -1615,7 +1615,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="label">Cleaning cache...</property>
+                    <property name="label" translatable="yes">Cleaning cache...</property>
                   </object>
                 </child>
               </object>
@@ -1633,9 +1633,7 @@
                   <object class="GtkImage" id="cachelist_doneicon"/>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="cleaning_success_label">
-                    <property name="label">Cache cleaned</property>
-                  </object>
+                  <object class="GtkLabel" id="cleaning_success_label"/>
                 </child>
               </object>
             </property>
@@ -1653,7 +1651,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="label">No cache data found</property>
+                    <property name="label" translatable="yes">No cache data found</property>
                   </object>
                 </child>
               </object>
