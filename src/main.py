@@ -198,9 +198,10 @@ class pyvenv_manager(Gtk.Application):
         self.clearcache_stack = builder.get_object("clearcache_stack")
         self.cachelist_label = builder.get_object("cachelist_label")
         self.cache_listbox = builder.get_object("cache_listbox")
-        self.clearcache_btn = builder.get_object("clearcache_btn")
-        self.cachelist_doneicon = builder.get_object("cachelist_doneicon")
+        self.clearcache_btn1 = builder.get_object("clearcache_btn1")
+        self.clearcache_btn2 = builder.get_object("clearcache_btn2")
         self.cleaning_success_label = builder.get_object("cleaning_success_label")
+        self.cachesize_label = builder.get_object("cachesize_label")
         self.packnum = 0
 
         # About Window
@@ -223,6 +224,8 @@ class pyvenv_manager(Gtk.Application):
         self.venvrm_successicon = builder.get_object("venvrm_successicon")
         self.notfound_virtualenv_icon = builder.get_object("notfound_virtualenv_icon")
         self.notcache_icon = builder.get_object("notcache_icon")
+        self.cacheinfo_icon = builder.get_object("cacheinfo_icon")
+        self.cachelist_doneicon = builder.get_object("cachelist_doneicon")
         # set icons
         self.item_python2_logo.set_from_file(self.icons_path+"/python-16x16.svg")
         self.item_python3_logo.set_from_file(self.icons_path+"/python-16x16.svg")
@@ -260,7 +263,8 @@ class pyvenv_manager(Gtk.Application):
         self.connection_list.connect("clicked", self.on_connections_list)
         self.change_connpage.connect("clicked", self.on_changepage_connections)
         self.cachelist_button.connect("clicked", self.on_cachelist)
-        self.clearcache_btn.connect("clicked", self.on_clearcache)
+        self.clearcache_btn1.connect("clicked", self.on_clearcache)
+        self.clearcache_btn2.connect("clicked", self.on_clearcache)
 
         self.list_environment_mainwindow()
         self.window.set_application(self)
@@ -1565,7 +1569,6 @@ class pyvenv_manager(Gtk.Application):
     # ---------- Cache List Window ----------
     def on_cachelist(self, button):
         self.cache_listbox.set_selection_mode(Gtk.SelectionMode.NONE)
-        self.clearcache_stack.set_visible_child_name("cachelist")
         self.cachelist_window.connect("close-request", self._on_second_close_request)  # pressing the Close (X) key will change "hide" to "destroy"
         cachelist_thread = threading.Thread(target=self.cachelist_process, daemon=True)
         cachelist_thread.start()
@@ -1575,17 +1578,24 @@ class pyvenv_manager(Gtk.Application):
         GLib.idle_add(self.cachelist_success, output)
 
     def cachelist_success(self, output):
-        if self.cache_listbox:
-            for row in list(self.cache_listbox):
-                self.cache_listbox.remove(row)
         if output:
-            for lst in json.loads(output):
-                filename = lst["filename"]
-                size = lst["size"]
-                self.packnum += 1
-                self.cache_listbox.append(self.cachelist_row(filename, size))
-            self.cachelist_label.set_label(_("Cached packages: (total {} package)").format(self.packnum))
-            self.packnum = 0
+            if isinstance(output, int):
+                self.clearcache_stack.set_visible_child_name("cacheinfo")
+                self.cacheinfo_icon.set_from_file(self.icons_path+"/info.svg")
+                self.cacheinfo_icon.set_pixel_size(100)
+                self.cachesize_label.set_label(_("There is cache data of size {}").format(self.format_bytes(output)))  # byte-sized data is converted into a readable format and printed
+            else:
+                self.clearcache_stack.set_visible_child_name("cachelist")
+                if self.cache_listbox:
+                    for row in list(self.cache_listbox):
+                        self.cache_listbox.remove(row)
+                for lst in json.loads(output):
+                    filename = lst["filename"]
+                    size = lst["size"]
+                    self.packnum += 1
+                    self.cache_listbox.append(self.cachelist_row(filename, size))
+                self.cachelist_label.set_label(_("Cached packages: (total {} package)").format(self.packnum))
+                self.packnum = 0
         else:
             self.notcache_icon.set_from_file(self.icons_path+"/notfound.svg")
             self.notcache_icon.set_pixel_size(100)
@@ -1627,6 +1637,14 @@ class pyvenv_manager(Gtk.Application):
             self.cachelist_doneicon.set_from_file(self.icons_path+"/error.svg")
             self.cachelist_doneicon.set_pixel_size(100)
             self.cleaning_success_label.set_label(_("Cache clearing operation could not be completed successfully"))
+
+    def format_bytes(self, size):
+        units = ["B", "KB", "MB", "GB", "TB"]
+        for unit in units:
+            if size < 1024:
+                return f"{size:.2f} {unit}"
+            size /= 1024
+        return f"{size:.2f} PB"
 
 
     # hide window
