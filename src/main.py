@@ -1645,6 +1645,7 @@ class pyvenv_manager(Gtk.Application):
                 return f"{size:.2f} {unit}"
             size /= 1024
         return f"{size:.2f} PB"
+    # -------------------------------------------
 
 
     # hide window
