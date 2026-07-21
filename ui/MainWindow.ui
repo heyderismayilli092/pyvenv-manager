@@ -1674,7 +1674,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="clearcache_btn2">
-                    <property name="label">Clear Cache</property>
+                    <property name="label" translatable="yes">Clear Cache</property>
                   </object>
                 </child>
               </object>
