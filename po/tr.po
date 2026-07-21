@@ -355,3 +355,6 @@ msgstr "Önbelleğe alınmış paketler: (toplam {} paket)"
 
 msgid "PIP Cache"
 msgstr "PIP Önbellek"
+
+msgid "There is cache data of size {}"
+msgstr "Önbellekte {} boyutunda veri bulunmaktadır"
