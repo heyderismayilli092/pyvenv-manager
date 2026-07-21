@@ -713,23 +713,33 @@ def system_site_packs_status(venv_name):
 
 # function that lists pip cache
 def cache_list():
-    text = run_pip_from_wheel(["cache", "list"])
+    cache_dir = homefolder / ".cache" / "pip"
+    out = run_pip_from_wheel(["cache", "list"])
     items = []
     pattern = re.compile(r'^[\s-]*([^\s].*?\.whl)\s*\(([\d.]+)\s*([kMGT]?B)\)\s*$', re.IGNORECASE | re.MULTILINE)  # package name and size are separated
-    if "No locally built" in text["stdout"]:
-        return False
-
-    for m in pattern.finditer(text):
-        filename = m.group(1)  # package name
-        size_val = float(m.group(2))  # package size
-        size_unit = m.group(3).upper()  # KB, MB,...
-        items.append({
-            "filename": filename,
-            "size": f"{size_val} {size_unit}"
-        })
-
-    output_lst = json.dumps(items, indent=2, ensure_ascii=False)
-    return output_lst
+    if "No locally built" in out["stdout"]:
+        totalsize = 0
+        http_dir = cache_dir / "http"  # older pips
+        httpv2_dir = cache_dir / "http-v2"  # pip v23.3+
+        if os.path.exists(http_dir):
+            totalsize += sum(f.stat().st_size for f in http_dir.rglob("*") if f.is_file())
+        if os.path.exists(httpv2_dir):
+            totalsize += sum(f.stat().st_size for f in httpv2_dir.rglob("*") if f.is_file())
+        if totalsize > 0:
+            return totalsize
+        else:
+            return False
+    else:
+        for m in pattern.finditer(out):
+            filename = m.group(1)  # package name
+            size_val = float(m.group(2))  # package size
+            size_unit = m.group(3).upper()  # KB, MB,...
+            items.append({
+                "filename": filename,
+                "size": f"{size_val} {size_unit}"
+            })
+        output_lst = json.dumps(items, indent=2, ensure_ascii=False)
+        return output_lst
 
 
 # clear cache function
