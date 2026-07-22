@@ -206,7 +206,7 @@
                         </child>
                         <child>
                           <object class="GtkCheckButton" id="systemsitepacks_allow">
-                            <property name="label">Allow the virtual environment to access global Python libraries</property>
+                            <property name="label" translatable="yes">Allow the virtual environment to access global Python libraries</property>
                             <property name="margin-top">5</property>
                           </object>
                         </child>

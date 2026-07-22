@@ -56,6 +56,7 @@ data_files = [
                    "icons/python-48x48.svg",
                    "icons/success.svg",
                    "icons/notfound.svg",
+                   "icons/info.svg"
                    "icons/text-x-python-24x24.svg",
                    "icons/text-x-python-32x32.svg"]),
 
